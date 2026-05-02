@@ -10,7 +10,8 @@ const Hero = () => {
         playsInline
         aria-hidden="true"
       >
-        <source src="/videos/hero-video.mp4" type="video/mp4" />
+        <source src="/videos/hero-a-mobile.mp4" type="video/mp4" media="(max-width: 767px)" />
+        <source src="/videos/hero-a.mp4" type="video/mp4" />
       </video>
 
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,20,15,0.68),rgba(23,20,15,0.38),rgba(23,20,15,0.62))]" />
