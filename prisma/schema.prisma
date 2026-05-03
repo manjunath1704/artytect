@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Category {
+  id                String   @id @default(uuid()) @db.Uuid
+  title             String
+  slug              String   @unique
+  description       String
+  thumbnailUrl      String   @map("thumbnail_url")
+  hoverThumbnailUrl String   @map("hover_thumbnail_url")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("categories")
+}

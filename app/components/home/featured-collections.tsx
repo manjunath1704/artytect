@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
 
 import {
@@ -11,45 +12,110 @@ import {
 } from "@/components/ui/carousel";
 import CategoryCard from "./category-card";
 
-const collections = [
-  {
-    title: "Mugs",
-    description: "Everyday forms with soft handles and warm glazes for slow mornings.",
-    //accent: "from-[#d9c4b0] via-[#ede4d7] to-[#a56c4c]",
-    href: "#shop",
-  },
+const fallbackCollections = [
   {
     title: "Bowls",
-    description: "Low, balanced silhouettes that work beautifully for serving and display.",
-    //accent: "from-[#d8d7cd] via-[#f0ede4] to-[#8f9c83]",
+    description: "Everyday forms with soft handles and warm glazes for slow mornings.",
     href: "#shop",
+    thumbnailSrc: "/images/bowl-a.avif",
+    hoverThumbnailSrc: "/images/bowl-b.avif",
   },
   {
     title: "Vases",
-    description: "Tall statement pieces with clean necks and tactile surface variation.",
-   // accent: "from-[#e7d2b9] via-[#f4ede2] to-[#c28a61]",
+    description: "Low, balanced silhouettes that work beautifully for serving and display.",
     href: "#shop",
+    thumbnailSrc: "/images/vase-a.avif",
+    hoverThumbnailSrc: "/images/vase-b.avif",
   },
   {
-    title: "Decor",
-    description: "Quiet sculptural accents that bring texture to shelves and tabletops.",
-   // accent: "from-[#e3ddd2] via-[#f6f1e8] to-[#80725f]",
+    title: "Mugs",
+    description: "Tall statement pieces with clean necks and tactile surface variation.",
     href: "#shop",
+    thumbnailSrc: "/images/mug-a.avif",
+    hoverThumbnailSrc: "/images/mug-b.avif",
+  },
+  {
+    title: "Planters",
+    description: "Quiet sculptural accents that bring texture to shelves and tabletops.",
+    href: "#shop",
+    thumbnailSrc: "/images/planter-a.avif",
+    hoverThumbnailSrc: "/images/planter-b.avif",
+  },
+  {
+    title: "Plates",
+    description: "Quiet sculptural accents that bring texture to shelves and tabletops.",
+    href: "#shop",
+    thumbnailSrc: "/images/plate-a.avif",
+    hoverThumbnailSrc: "/images/plate-b.avif",
+  },
+  {
+    title: "Deep plates",
+    description: "Quiet sculptural accents that bring texture to shelves and tabletops.",
+    href: "#shop",
+    thumbnailSrc: "/images/deep-a.avif",
+    hoverThumbnailSrc: "/images/deep-b.avif",
   },
 ];
 
+type CategoryRow = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  thumbnail_url: string;
+  hover_thumbnail_url: string;
+};
+
+type CollectionItem = {
+  title: string;
+  description: string;
+  href: string;
+  thumbnailSrc: string;
+  hoverThumbnailSrc: string;
+};
+
 const FeaturedCollections = () => {
+  const [collections, setCollections] = useState<CollectionItem[]>(fallbackCollections);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadCategories = async () => {
+      const response = await fetch("/api/categories");
+      const result = (await response.json().catch(() => null)) as
+        | { categories?: CategoryRow[] }
+        | null;
+
+      if (!isMounted || !response.ok || !result?.categories?.length) {
+        return;
+      }
+
+      const nextCollections = result.categories.map((category: CategoryRow) => ({
+        title: category.title,
+        description: category.description,
+        href: "#shop",
+        thumbnailSrc: category.thumbnail_url,
+        hoverThumbnailSrc: category.hover_thumbnail_url,
+      }));
+
+      setCollections(nextCollections);
+    };
+
+    void loadCategories();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <section id="collections" className="px-6 py-20 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
-        <div className="max-w-3xl">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-[#8a7765]">
-            Featured collections
-          </p>
-          <h2 className="mt-4 max-w-2xl text-4xl font-display tracking-[-0.05em] text-[#1b1511] sm:text-5xl lg:text-6xl">
-            Categories shaped for everyday rituals and calm interiors.
+        <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
+          <h2 className="max-w-2xl text-4xl font-display tracking-[-0.05em] text-[#1b1511] sm:text-5xl lg:text-6xl">
+            Categories
           </h2>
-          <p className="mt-5 max-w-2xl text-base leading-8 text-[#665b4f] sm:text-lg">
+          <p className="max-w-2xl text-base leading-8 text-[#665b4f] sm:text-lg">
             Explore a concise selection of mugs, bowls, vases, and decor pieces designed
             with a restrained, earthy palette and a premium finish.
           </p>
@@ -74,15 +140,16 @@ const FeaturedCollections = () => {
             <CarouselContent>
               {collections.map((collection, index) => (
                 <CarouselItem
-                  key={collection.title}
-                  className="basis-[88%] sm:basis-1/2 lg:basis-1/3 xl:basis-1/3"
+                  key={`${collection.title}-${index}`}
+                  className="basis-[88%] sm:basis-1/2 lg:basis-1/4 xl:basis-1/4"
                 >
                   <CategoryCard
                     title={collection.title}
                     description={collection.description}
-                   // accent={collection.accent}
                     href={collection.href}
                     index={index + 1}
+                    thumbnailSrc={collection.thumbnailSrc}
+                    hoverThumbnailSrc={collection.hoverThumbnailSrc}
                   />
                 </CarouselItem>
               ))}

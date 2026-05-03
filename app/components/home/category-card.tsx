@@ -1,38 +1,54 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 type CategoryCardProps = {
   title: string;
   description: string;
- // accent: string;
   href: string;
   index: number;
+  thumbnailSrc: string;
+  hoverThumbnailSrc: string;
 };
 
-const CategoryCard = ({ title, description, href, index }: CategoryCardProps) => {
+const CategoryCard = ({
+  title,
+  description,
+  href,
+  index,
+  thumbnailSrc,
+  hoverThumbnailSrc,
+}: CategoryCardProps) => {
   return (
     <motion.a
       href={href}
       className="group block h-full"
-      whileHover={{ y: -8, scale: 1.01 }}
+      // whileHover={{ y: -8, scale: 1.01 }}
       whileTap={{ scale: 0.99 }}
       transition={{ type: "spring", stiffness: 260, damping: 22 }}
       aria-label={`Shop ${title}`}
     >
       <article className="h-full">
-        <div className="relative overflow-hidden p-5">
+        <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.65),transparent_36%)]" />
           <div className="absolute inset-x-6 bottom-4 h-8 bg-black/10 blur-2xl" />
 
-          <div className="relative flex aspect-[4/3] items-center justify-center">
-            {/* <motion.div
-              whileHover={{ rotate: 4, scale: 1.04 }}
-              transition={{ type: "spring", stiffness: 220, damping: 18 }}
-              className={`h-28 w-28 bg-gradient-to-b ${accent} shadow-[0_20px_32px_rgba(23,20,15,0.16)]`}
-            /> */}
-            <div className="absolute inset-x-[24%] bottom-[18%] h-8 rounded-full bg-black/10 blur-lg" />
-            <div className="absolute left-[18%] top-[24%] h-9 w-9 rounded-full bg-white/35 blur-[2px]" />
+          <div className="relative aspect-[4/3] overflow-hidden bg-white">
+            <Image
+              src={thumbnailSrc}
+              alt={title}
+              fill
+              className="object-contain transition-opacity duration-500 ease-out group-hover:opacity-0"
+              sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 88vw"
+            />
+            <Image
+              src={hoverThumbnailSrc}
+              alt={`${title} hover preview`}
+              fill
+              className="object-cover opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+              sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 88vw"
+            />
           </div>
         </div>
 
