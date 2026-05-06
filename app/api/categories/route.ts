@@ -2,8 +2,17 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 
+type CategoryListItem = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  thumbnailUrl: string;
+  hoverThumbnailUrl: string;
+};
+
 export async function GET() {
-  const categories = await prisma.category.findMany({
+  const categories: CategoryListItem[] = await prisma.category.findMany({
     orderBy: {
       createdAt: "desc",
     },

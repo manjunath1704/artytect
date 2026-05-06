@@ -5,6 +5,15 @@ import { ensureCategoryThumbnailsBucket } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 
+type CategoryListItem = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  thumbnailUrl: string;
+  hoverThumbnailUrl: string;
+};
+
 export default async function AdminPage() {
   await ensureCategoryThumbnailsBucket();
 
@@ -15,7 +24,7 @@ export default async function AdminPage() {
     redirect("/admin/login");
   }
 
-  const categories = await prisma.category.findMany({
+  const categories: CategoryListItem[] = await prisma.category.findMany({
     orderBy: {
       createdAt: "desc",
     },
@@ -30,17 +39,16 @@ export default async function AdminPage() {
   });
 
   return (
-    // <AdminPanel
-    //   initialUserEmail={data.user.email ?? ""}
-    //   initialCategories={categories.map((category) => ({
-    //     id: category.id,
-    //     title: category.title,
-    //     slug: category.slug,
-    //     description: category.description,
-    //     thumbnail_url: category.thumbnailUrl,
-    //     hover_thumbnail_url: category.hoverThumbnailUrl,
-    //   }))}
-    // />
-    <></>
+    <AdminPanel
+      initialUserEmail={data.user.email ?? ""}
+      initialCategories={categories.map((category) => ({
+        id: category.id,
+        title: category.title,
+        slug: category.slug,
+        description: category.description,
+        thumbnail_url: category.thumbnailUrl,
+        hover_thumbnail_url: category.hoverThumbnailUrl,
+      }))}
+    />
   );
 }
