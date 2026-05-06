@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export default function AboutSection() {
   return (
-    <section className="w-full bg-[#FFF0EB] py-20 text-neutral-900">
+    <section id="about" className="w-full bg-[#FFF0EB] py-20 text-neutral-900">
       <div className="site-container grid items-center gap-12 md:grid-cols-2">
         
         {/* LEFT - IMAGE */}

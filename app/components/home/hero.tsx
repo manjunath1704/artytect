@@ -66,7 +66,7 @@ const Hero = () => {
               className="rounded-none border border-[#f8f2e8]/20 bg-[#f8f2e8] px-7 py-4 text-base text-[#17140f] hover:bg-[#efe4d6]"
               asChild
             >
-              <a href="#shop">Shop</a>
+              <a href="/products">Shop</a>
             </Button>
             <Button
               size="lg"
@@ -74,7 +74,7 @@ const Hero = () => {
               className="rounded-none border-white/25 bg-transparent px-7 py-4 text-base text-[#f8f2e8] hover:bg-white/10 hover:text-[#f8f2e8]"
               asChild
             >
-              <a href="#gallery">View Gallery</a>
+              <a href="/#gallery">View Gallery</a>
             </Button>
           </div>
         </div>

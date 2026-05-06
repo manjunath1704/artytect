@@ -5,6 +5,7 @@ import AboutSection from "./components/home/about";
 import TestimonialsSection from "./components/home/testimonials";
 import CraftsmanshipProcess from "./components/home/craftsmanship-process";
 import GalleryApp from "./components/home/gallery";
+import Footer from "./components/home/footer";
 
 export default function Page() {
   return (
@@ -18,6 +19,7 @@ export default function Page() {
         <TestimonialsSection/>
         <GalleryApp/>
       </main>
+      <Footer />
     </>
   );
 }

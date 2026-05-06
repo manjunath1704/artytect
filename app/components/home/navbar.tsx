@@ -4,16 +4,18 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 const navItems = [
-  { label: "Home", href: "#" },
-  { label: "Collections", href: "#collections" },
-  { label: "About", href: "#about" },
-  { label: "Shop", href: "#shop" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/" },
+  { label: "Collections", href: "/#collections" },
+  { label: "About", href: "/#about" },
+  { label: "Gallery", href: "/#gallery" },
+  { label: "Shop", href: "/products" },
+  { label: "Contact", href: "/#contact" },
 ];
 
-const Navbar = () => {
+const Navbar = ({ forceSolid = false }: { forceSolid?: boolean }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const showSolid = forceSolid || isScrolled;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,13 +32,13 @@ const Navbar = () => {
     <header
       className={[
         "sticky top-0 z-50 -mb-20 transition-colors duration-300",
-        isScrolled
+        showSolid
           ? "border-b border-black/8 bg-white/95 text-black shadow-[0_12px_40px_rgba(23,20,15,0.12)] backdrop-blur-md"
           : "bg-transparent text-white",
       ].join(" ")}
     >
       <div className="site-container flex h-20 items-center justify-between">
-        <a href="#" className="font-display text-2xl font-bold tracking-[0.22em] text-inherit sm:text-3xl">
+        <a href="/" className="font-display text-2xl font-bold tracking-[0.22em] text-inherit sm:text-3xl">
           ArtyTect
         </a>
 
@@ -56,7 +58,7 @@ const Navbar = () => {
           type="button"
           className={[
             "inline-flex h-11 w-11 items-center justify-center border transition md:hidden",
-            isScrolled
+            showSolid
               ? "border-black/10 bg-black/5 text-black hover:bg-black/10"
               : isOpen
                 ? "border-white/20 bg-black/70 text-white hover:bg-black/80"
@@ -83,7 +85,7 @@ const Navbar = () => {
           <div
             className={[
               "origin-top overflow-hidden border px-4 py-4 shadow-[0_18px_60px_rgba(23,20,15,0.18)] backdrop-blur-xl transition-all duration-300 ease-out",
-              isScrolled
+              showSolid
                 ? "border-black/10 bg-white/95 text-black"
                 : "border-white/10 bg-black/92 text-white",
               isOpen ? "scale-100" : "scale-[0.98]",
@@ -96,7 +98,7 @@ const Navbar = () => {
                   href={item.href}
                   className={[
                     "px-3 py-3 text-sm font-medium tracking-[0.08em] transition",
-                    isScrolled ? "hover:bg-black/5" : "hover:bg-white/10",
+                    showSolid ? "hover:bg-black/5" : "hover:bg-white/10",
                   ].join(" ")}
                   onClick={() => setIsOpen(false)}
                 >

@@ -87,7 +87,7 @@ export default function TestimonialsSection() {
           {testimonials.map((item, index) => (
             <CarouselItem
               key={index}
-              className="pl-4 basis-full md:basis-1/2 lg:basis-1/3"
+              className="basis-full pl-4 md:basis-1/2"
             >
               <div className={`p-8 ${item.bg} text-black flex gap-6 min-h-[220px] h-full`}>
                 
