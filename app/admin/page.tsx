@@ -30,16 +30,17 @@ export default async function AdminPage() {
   });
 
   return (
-    <AdminPanel
-      initialUserEmail={data.user.email ?? ""}
-      initialCategories={categories.map((category) => ({
-        id: category.id,
-        title: category.title,
-        slug: category.slug,
-        description: category.description,
-        thumbnail_url: category.thumbnailUrl,
-        hover_thumbnail_url: category.hoverThumbnailUrl,
-      }))}
-    />
+    // <AdminPanel
+    //   initialUserEmail={data.user.email ?? ""}
+    //   initialCategories={categories.map((category) => ({
+    //     id: category.id,
+    //     title: category.title,
+    //     slug: category.slug,
+    //     description: category.description,
+    //     thumbnail_url: category.thumbnailUrl,
+    //     hover_thumbnail_url: category.hoverThumbnailUrl,
+    //   }))}
+    // />
+    <></>
   );
 }
