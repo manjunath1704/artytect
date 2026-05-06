@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 
 export default function AboutSection() {
   return (
-    <section className="w-full bg-[#FFF0EB] text-neutral-900 py-20 px-6 md:px-16">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <section className="w-full bg-[#FFF0EB] py-20 text-neutral-900">
+      <div className="site-container grid items-center gap-12 md:grid-cols-2">
         
         {/* LEFT - IMAGE */}
         <div className="w-full h-[500px] overflow-hidden">

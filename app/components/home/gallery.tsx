@@ -141,8 +141,8 @@ export default function GalleryApp() {
   };
 
   return (
-    <section id="gallery" className="bg-[#fcfdfa] px-6 py-20 sm:px-8 lg:px-10">
-      <div className="mx-auto max-w-7xl">
+    <section id="gallery" className="bg-[#fcfdfa] py-20">
+      <div className="site-container">
         <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <h2 className="max-w-2xl text-4xl font-display tracking-[-0.05em] text-[#1b1511] sm:text-5xl lg:text-6xl">
             Gallery

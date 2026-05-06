@@ -62,14 +62,15 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   return (
-    <section className="w-full bg-[#fcfdfa] py-20 px-6 md:px-16">
-      <div className="max-w-6xl mx-auto text-center mb-12">
-        <h2 className="text-3xl md:text-5xl font-serif">
-          What our client say
-        </h2>
-      </div>
+    <section className="w-full bg-[#fcfdfa] py-20">
+      <div className="site-container">
+        <div className="mx-auto mb-12 max-w-3xl text-center">
+          <h2 className="text-3xl font-serif md:text-5xl">
+            What our client say
+          </h2>
+        </div>
 
-      <Carousel opts={{
+        <Carousel opts={{
                     align: "start",
                     loop: true,
                     dragFree: false,
@@ -127,7 +128,8 @@ export default function TestimonialsSection() {
           <CarouselPrevious className="static h-8 w-8 translate-y-0 rounded-none border-[#1b1511] bg-transparent text-[#1b1511] shadow-[0_16px_32px_rgba(27,21,17,0.12)] hover:bg-[#1b1511] hover:text-[#fcfdfa] disabled:opacity-40 sm:h-9 sm:w-9 [&_svg]:!h-4 [&_svg]:!w-4" />
           <CarouselNext className="static h-8 w-8 translate-y-0 rounded-none border-l-0 border-[#1b1511] bg-transparent text-[#1b1511] shadow-[0_16px_32px_rgba(27,21,17,0.12)] hover:bg-[#1b1511] hover:text-[#fcfdfa] disabled:opacity-40 sm:h-9 sm:w-9 [&_svg]:!h-4 [&_svg]:!w-4" />
         </div>
-      </Carousel>
+        </Carousel>
+      </div>
     </section>
   );
 }

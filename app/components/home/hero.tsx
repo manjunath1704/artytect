@@ -18,7 +18,7 @@ const Hero = () => {
   return (
     <section
       ref={heroRef}
-      className="relative isolate flex min-h-[100svh] items-center justify-center overflow-hidden px-6 py-20 text-center sm:px-8 lg:px-10"
+      className="relative isolate flex min-h-[100svh] items-center justify-center overflow-hidden py-20 text-center"
     >
       <motion.video
         className="absolute inset-0 h-[118%] w-full object-cover object-center"
@@ -40,41 +40,43 @@ const Hero = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(157,103,69,0.16),transparent_56%)]" />
 
       <motion.div
-        className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center justify-center will-change-transform"
+        className="site-container relative z-10 flex justify-center will-change-transform"
         style={{
           y: prefersReducedMotion ? 0 : contentY,
           opacity: prefersReducedMotion ? 1 : contentOpacity,
         }}
       >
-        {/* <p className="inline-flex border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.32em] text-[#f8f2e8] backdrop-blur-md">
-          Earthy handcrafted ceramics
-        </p> */}
+        <div className="flex w-full max-w-4xl flex-col items-center justify-center">
+          {/* <p className="inline-flex border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.32em] text-[#f8f2e8] backdrop-blur-md">
+            Earthy handcrafted ceramics
+          </p> */}
 
-        <h1 className="mt-6 max-w-4xl text-4xl font-display sm:leading-[0.94] sm:tracking-[-0.05em] text-[#f8f2e8] sm:text-6xl">
-          Quiet clay, warm light, and pieces that settle beautifully into daily life.
-        </h1>
+          <h1 className="mt-6 max-w-4xl text-4xl font-display sm:leading-[0.94] sm:tracking-[-0.05em] text-[#f8f2e8] sm:text-6xl">
+            Quiet clay, warm light, and pieces that settle beautifully into daily life.
+          </h1>
 
-        <p className="mt-6 max-w-2xl text-base leading-8 text-[#f2e6d7] sm:text-lg lg:text-xl">
-          Thoughtfully made pottery with soft shapes, natural tones, and a calm presence
-          that lets the material speak for itself.
-        </p>
+          <p className="mt-6 max-w-2xl text-base leading-8 text-[#f2e6d7] sm:text-lg lg:text-xl">
+            Thoughtfully made pottery with soft shapes, natural tones, and a calm presence
+            that lets the material speak for itself.
+          </p>
 
-        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
-          <Button
-            size="lg"
-            className="rounded-none border border-[#f8f2e8]/20 bg-[#f8f2e8] px-7 py-4 text-base text-[#17140f] hover:bg-[#efe4d6]"
-            asChild
-          >
-            <a href="#shop">Shop</a>
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="rounded-none border-white/25 bg-transparent px-7 py-4 text-base text-[#f8f2e8] hover:bg-white/10 hover:text-[#f8f2e8]"
-            asChild
-          >
-            <a href="#gallery">View Gallery</a>
-          </Button>
+          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
+            <Button
+              size="lg"
+              className="rounded-none border border-[#f8f2e8]/20 bg-[#f8f2e8] px-7 py-4 text-base text-[#17140f] hover:bg-[#efe4d6]"
+              asChild
+            >
+              <a href="#shop">Shop</a>
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="rounded-none border-white/25 bg-transparent px-7 py-4 text-base text-[#f8f2e8] hover:bg-white/10 hover:text-[#f8f2e8]"
+              asChild
+            >
+              <a href="#gallery">View Gallery</a>
+            </Button>
+          </div>
         </div>
       </motion.div>
     </section>

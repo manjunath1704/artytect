@@ -35,7 +35,7 @@ const Navbar = () => {
           : "bg-transparent text-white",
       ].join(" ")}
     >
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 sm:px-8 lg:px-10">
+      <div className="site-container flex h-20 items-center justify-between">
         <a href="#" className="font-display text-2xl font-bold tracking-[0.22em] text-inherit sm:text-3xl">
           ArtyTect
         </a>
@@ -72,37 +72,39 @@ const Navbar = () => {
 
       <div
         className={[
-          "pointer-events-none absolute left-0 right-0 top-full z-40 px-4 pt-3 md:hidden sm:px-8 lg:px-10",
+          "pointer-events-none absolute left-0 right-0 top-full z-40 pt-3 md:hidden",
           "transition-all duration-300 ease-out",
           isOpen
             ? "pointer-events-auto translate-y-0 opacity-100"
             : "translate-y-[-0.5rem] opacity-0",
         ].join(" ")}
       >
-        <div
-          className={[
-            "origin-top overflow-hidden border px-4 py-4 shadow-[0_18px_60px_rgba(23,20,15,0.18)] backdrop-blur-xl transition-all duration-300 ease-out",
-            isScrolled
-              ? "border-black/10 bg-white/95 text-black"
-              : "border-white/10 bg-black/92 text-white",
-            isOpen ? "scale-100" : "scale-[0.98]",
-          ].join(" ")}
-        >
-          <nav className="grid gap-1">
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className={[
-                  "px-3 py-3 text-sm font-medium tracking-[0.08em] transition",
-                  isScrolled ? "hover:bg-black/5" : "hover:bg-white/10",
-                ].join(" ")}
-                onClick={() => setIsOpen(false)}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
+        <div className="site-container">
+          <div
+            className={[
+              "origin-top overflow-hidden border px-4 py-4 shadow-[0_18px_60px_rgba(23,20,15,0.18)] backdrop-blur-xl transition-all duration-300 ease-out",
+              isScrolled
+                ? "border-black/10 bg-white/95 text-black"
+                : "border-white/10 bg-black/92 text-white",
+              isOpen ? "scale-100" : "scale-[0.98]",
+            ].join(" ")}
+          >
+            <nav className="grid gap-1">
+              {navItems.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={[
+                    "px-3 py-3 text-sm font-medium tracking-[0.08em] transition",
+                    isScrolled ? "hover:bg-black/5" : "hover:bg-white/10",
+                  ].join(" ")}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+          </div>
         </div>
       </div>
     </header>

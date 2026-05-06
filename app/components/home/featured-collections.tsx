@@ -109,8 +109,8 @@ const FeaturedCollections = () => {
   }, []);
 
   return (
-    <section id="collections" className="px-6 py-20 sm:px-8 lg:px-10">
-      <div className="mx-auto max-w-7xl">
+    <section id="collections" className="py-20">
+      <div className="site-container">
         <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
           <h2 className="max-w-2xl text-4xl font-display tracking-[-0.05em] text-[#1b1511] sm:text-5xl lg:text-6xl">
             Categories
