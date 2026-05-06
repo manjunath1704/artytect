@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { Button } from "@/components/ui/button";
 
 export default function AboutSection() {
@@ -8,11 +10,13 @@ export default function AboutSection() {
       <div className="site-container grid items-center gap-12 md:grid-cols-2">
         
         {/* LEFT - IMAGE */}
-        <div className="w-full h-[500px] overflow-hidden">
-          <img
+        <div className="relative h-[500px] w-full overflow-hidden">
+          <Image
             src="/images/author.jpg" // replace with your image
             alt="Pottery Artist"
-            className="w-full h-full object-cover"
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover"
           />
         </div>
 

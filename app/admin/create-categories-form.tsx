@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -206,11 +207,15 @@ const CreateCategoriesForm = () => {
                 <p className="text-xs uppercase tracking-[0.25em] text-[#8a7765]">
                   Default preview
                 </p>
-                <img
-                  src={thumbnailPreview}
-                  alt="Default thumbnail preview"
-                  className="mt-3 h-40 w-full object-cover"
-                />
+                <div className="relative mt-3 h-40 w-full">
+                  <Image
+                    src={thumbnailPreview}
+                    alt="Default thumbnail preview"
+                    fill
+                    unoptimized
+                    className="object-cover"
+                  />
+                </div>
               </div>
             ) : null}
 
@@ -233,11 +238,15 @@ const CreateCategoriesForm = () => {
                 <p className="text-xs uppercase tracking-[0.25em] text-[#8a7765]">
                   Hover preview
                 </p>
-                <img
-                  src={hoverThumbnailPreview}
-                  alt="Hover thumbnail preview"
-                  className="mt-3 h-40 w-full object-cover"
-                />
+                <div className="relative mt-3 h-40 w-full">
+                  <Image
+                    src={hoverThumbnailPreview}
+                    alt="Hover thumbnail preview"
+                    fill
+                    unoptimized
+                    className="object-cover"
+                  />
+                </div>
               </div>
             ) : null}
 

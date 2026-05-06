@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 
 import AdminPanel from "./admin-panel";
-import { ensureCategoryThumbnailsBucket } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 
@@ -14,9 +13,9 @@ type CategoryListItem = {
   hoverThumbnailUrl: string;
 };
 
-export default async function AdminPage() {
-  await ensureCategoryThumbnailsBucket();
+export const dynamic = "force-dynamic";
 
+export default async function AdminPage() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
 
