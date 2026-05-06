@@ -155,9 +155,13 @@ const FeaturedCollections = () => {
               ))}
             </CarouselContent>
 
-            <div className="mt-8 flex items-center justify-end gap-3">
-              <CarouselPrevious />
-              <CarouselNext />
+            <div className="mt-10 flex items-center justify-end">
+              <CarouselPrevious
+                className="static h-8 w-8 translate-y-0 rounded-none border-[#1b1511] bg-transparent text-[#1b1511] shadow-[0_16px_32px_rgba(27,21,17,0.12)] hover:bg-[#1b1511] hover:text-[#fcfdfa] disabled:opacity-40 sm:h-9 sm:w-9 [&_svg]:!h-4 [&_svg]:!w-4"
+              />
+              <CarouselNext
+                className="static h-8 w-8 translate-y-0 rounded-none border-l-0 border-[#1b1511] bg-transparent text-[#1b1511] shadow-[0_16px_32px_rgba(27,21,17,0.12)] hover:bg-[#1b1511] hover:text-[#fcfdfa] disabled:opacity-40 sm:h-9 sm:w-9 [&_svg]:!h-4 [&_svg]:!w-4"
+              />
             </div>
           </Carousel>
         </div>

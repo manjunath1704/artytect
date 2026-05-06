@@ -1,10 +1,31 @@
+"use client";
+
+import { useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 
 const Hero = () => {
+  const heroRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const videoY = useTransform(scrollYProgress, [0, 1], ["-6%", "14%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-18%"]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.78], [1, 0.72]);
+
   return (
-    <section className="relative isolate flex min-h-[100svh] items-center justify-center overflow-hidden px-6 py-20 text-center sm:px-8 lg:px-10">
-      <video
-        className="absolute inset-0 h-full w-full object-cover object-center"
+    <section
+      ref={heroRef}
+      className="relative isolate flex min-h-[100svh] items-center justify-center overflow-hidden px-6 py-20 text-center sm:px-8 lg:px-10"
+    >
+      <motion.video
+        className="absolute inset-0 h-[118%] w-full object-cover object-center"
+        style={{
+          y: prefersReducedMotion ? 0 : videoY,
+          scale: prefersReducedMotion ? 1 : 1.06,
+        }}
         autoPlay
         muted
         loop
@@ -13,12 +34,18 @@ const Hero = () => {
       >
         {/* <source src="/videos/hero-a-mobile.mp4" type="video/mp4" media="(max-width: 767px)" /> */}
         <source src="/videos/hero.mp4" type="video/mp4" />
-      </video>
+      </motion.video>
 
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,20,15,0.58),rgba(23,20,15,0.28),rgba(23,20,15,0.56))]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(157,103,69,0.16),transparent_56%)]" />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center justify-center">
+      <motion.div
+        className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center justify-center will-change-transform"
+        style={{
+          y: prefersReducedMotion ? 0 : contentY,
+          opacity: prefersReducedMotion ? 1 : contentOpacity,
+        }}
+      >
         {/* <p className="inline-flex border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.32em] text-[#f8f2e8] backdrop-blur-md">
           Earthy handcrafted ceramics
         </p> */}
@@ -49,7 +76,7 @@ const Hero = () => {
             <a href="#gallery">View Gallery</a>
           </Button>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
