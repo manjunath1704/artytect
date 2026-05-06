@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const footerLinks = [
   { label: "Home", href: "/" },
   { label: "Collections", href: "/#collections" },
@@ -13,12 +15,12 @@ export default function Footer() {
       <div className="site-container">
         <div className="grid gap-10 border-b border-white/15 pb-10 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
           <div>
-            <a
+            <Link
               href="/"
               className="font-display text-3xl font-bold tracking-[0.22em] text-white"
             >
               ArtyTect
-            </a>
+            </Link>
             <p className="mt-5 max-w-md text-base leading-7 text-white/65">
               Handcrafted ceramics shaped with calm forms, natural texture, and
               a quiet respect for everyday rituals.
@@ -30,13 +32,13 @@ export default function Footer() {
               Explore
             </h3>
             {footerLinks.map((link) => (
-              <a
+              <Link
                 key={link.label}
                 href={link.href}
                 className="text-sm text-white/75 transition hover:text-white"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
 

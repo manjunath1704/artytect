@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
@@ -38,19 +39,19 @@ const Navbar = ({ forceSolid = false }: { forceSolid?: boolean }) => {
       ].join(" ")}
     >
       <div className="site-container flex h-20 items-center justify-between">
-        <a href="/" className="font-display text-2xl font-bold tracking-[0.22em] text-inherit sm:text-3xl">
+        <Link href="/" className="font-display text-2xl font-bold tracking-[0.22em] text-inherit sm:text-3xl">
           ArtyTect
-        </a>
+        </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
           {navItems.map((item) => (
-            <a
+            <Link
               key={item.label}
               href={item.href}
               className="text-sm font-medium tracking-[0.08em] text-inherit transition-opacity hover:opacity-70"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -93,7 +94,7 @@ const Navbar = ({ forceSolid = false }: { forceSolid?: boolean }) => {
           >
             <nav className="grid gap-1">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.label}
                   href={item.href}
                   className={[
@@ -103,7 +104,7 @@ const Navbar = ({ forceSolid = false }: { forceSolid?: boolean }) => {
                   onClick={() => setIsOpen(false)}
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
             </nav>
           </div>

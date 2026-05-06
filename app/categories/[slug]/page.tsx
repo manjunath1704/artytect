@@ -219,7 +219,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               <div>
                 <Link
                   href="/#collections"
-                  className="mb-16 inline-flex text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8a7765] transition hover:text-[#1b1511] md:mb-28"
+                  className=" inline-flex text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8a7765] transition hover:text-[#1b1511]"
                 >
                   Catalog
                 </Link>
