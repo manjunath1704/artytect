@@ -14,7 +14,8 @@ type ProductCatalogProps = {
 type PriceFilter = "all" | "under-150" | "150-250" | "over-250";
 type SortOption = "featured" | "price-asc" | "price-desc" | "name-asc";
 
-const pageSize = 3;
+const pageSize = 15;
+const whatsappNumber = "918310012623";
 
 const priceOptions: { label: string; value: PriceFilter }[] = [
   { label: "All prices", value: "all" },
@@ -98,6 +99,22 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
     setPriceFilter("all");
     setSort("featured");
     setPage(1);
+  };
+
+  const getWhatsAppLink = (product: Product) => {
+    const message = encodeURIComponent(
+      [
+        "Hello ArtyTect, I would like to buy this product:",
+        "",
+        `Product: ${product.name}`,
+        `Category: ${product.category}`,
+        `SKU: ${product.sku}`,
+        `Price: $${product.price}`,
+        `Product page: /products/${product.id}`,
+      ].join("\n"),
+    );
+
+    return `https://wa.me/${whatsappNumber}?text=${message}`;
   };
 
   return (
@@ -230,44 +247,76 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
         </div>
 
         {visibleProducts.length ? (
-          <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {visibleProducts.map((product) => (
-              <Link
+              <article
                 key={product.id}
-                href={`/products/${product.id}`}
-                className="group block text-center"
+                className="group overflow-hidden border border-black/10 bg-white transition duration-300 hover:-translate-y-1 hover:border-[#cdb9a8] hover:shadow-[0_24px_70px_rgba(27,21,17,0.10)]"
               >
-                <div className="relative aspect-[1.03/1] overflow-hidden bg-[#f7f5f3]">
-                  {product.badge ? (
-                    <span className="absolute right-4 top-4 z-10 bg-[#f8e8e1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]">
-                      {product.badge}
-                    </span>
-                  ) : null}
-                  <Image
-                    src={product.images[0]}
-                    alt={product.name}
-                    fill
-                    sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
-                    className="object-cover transition duration-700 group-hover:scale-105"
-                  />
+                <Link href={`/products/${product.id}`} className="block">
+                  <div className="relative aspect-[0.94/1] overflow-hidden bg-[#f7f5f3]">
+                    {product.badge ? (
+                      <span className="absolute right-4 top-4 z-10 bg-[#f8e8e1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]">
+                        {product.badge}
+                      </span>
+                    ) : null}
+                    <Image
+                      src={product.images[0]}
+                      alt={product.name}
+                      fill
+                      sizes="(min-width: 1024px) 23vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
+                      className="object-cover"
+                    />
+                  </div>
+                </Link>
+
+                <div className="p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a8d82]">
+                      {product.category}
+                    </p>
+                    <p className="text-sm font-semibold text-[#1b1511]">
+                      {product.compareAtPrice ? (
+                        <>
+                          <span className="mr-2 text-[#9a8d82] line-through">
+                            ${product.compareAtPrice}
+                          </span>
+                          <span>${product.price}</span>
+                        </>
+                      ) : (
+                        `$${product.price}`
+                      )}
+                    </p>
+                  </div>
+
+                  <Link href={`/products/${product.id}`} className="block">
+                    <h3 className="mt-3 text-base font-semibold uppercase tracking-[0.08em] transition group-hover:text-[#8a5f3b]">
+                      {product.name}
+                    </h3>
+                  </Link>
+
+                  <p className="mt-3 line-clamp-2 min-h-[3.5rem] text-sm leading-7 text-[#7d746d]">
+                    {product.shortDescription}
+                  </p>
+
+                  <div className="mt-5 grid grid-cols-[1fr_auto] gap-3">
+                    <a
+                      href={getWhatsAppLink(product)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex h-11 items-center justify-center bg-[#1b1511] px-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-[#3a2f27]"
+                    >
+                      Buy
+                    </a>
+                    <Link
+                      href={`/products/${product.id}`}
+                      className="inline-flex h-11 items-center justify-center border border-black/10 px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511]"
+                    >
+                      View
+                    </Link>
+                  </div>
                 </div>
-                <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a8d82]">
-                  {product.category}
-                </p>
-                <h3 className="mt-2 text-sm font-semibold uppercase tracking-[0.12em]">
-                  {product.name}
-                </h3>
-                <p className="mt-2 text-sm text-[#9a8d82]">
-                  {product.compareAtPrice ? (
-                    <>
-                      <span className="mr-2 line-through">${product.compareAtPrice}</span>
-                      <span>${product.price}</span>
-                    </>
-                  ) : (
-                    `$${product.price}`
-                  )}
-                </p>
-              </Link>
+              </article>
             ))}
           </div>
         ) : (

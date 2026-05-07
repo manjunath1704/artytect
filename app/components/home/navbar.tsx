@@ -10,7 +10,7 @@ const navItems = [
   { label: "About", href: "/#about" },
   { label: "Gallery", href: "/#gallery" },
   { label: "Shop", href: "/products" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const Navbar = ({ forceSolid = false }: { forceSolid?: boolean }) => {
@@ -39,8 +39,8 @@ const Navbar = ({ forceSolid = false }: { forceSolid?: boolean }) => {
       ].join(" ")}
     >
       <div className="site-container flex h-20 items-center justify-between">
-        <Link href="/" className="font-display text-2xl font-bold tracking-[0.22em] text-inherit sm:text-3xl">
-          ArtyTect
+        <Link href="/" className="font-display text-2xl tracking-[0.22em] text-inherit sm:text-3xl">
+          ARTYTECT
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

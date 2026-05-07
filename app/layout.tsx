@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import "@fontsource/lato/400.css";
 import "@fontsource/lato/700.css";
 import "@fontsource/dm-serif-display/400.css";
+import WhatsAppFloatingButton from "./components/whatsapp-floating-button";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="font-sans antialiased">
         {children}
+        <WhatsAppFloatingButton />
       </body>
     </html>
   );
