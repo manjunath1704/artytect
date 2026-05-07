@@ -52,7 +52,7 @@ const Hero = () => {
             Earthy handcrafted ceramics
           </p> */}
 
-          <h1 className="mt-6 max-w-4xl text-4xl font-display sm:leading-[0.94] sm:tracking-[-0.05em] text-[#f8f2e8] sm:text-6xl">
+          <h1 className="mt-6 max-w-4xl text-4xl font-display sm:leading-[1.2] sm:tracking-[-0.05em] text-[#f8f2e8] sm:text-6xl">
             Quiet clay, warm light, and pieces that settle beautifully into daily life.
           </h1>
 

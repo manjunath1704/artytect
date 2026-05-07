@@ -141,13 +141,13 @@ export default function GalleryApp() {
   };
 
   return (
-    <section id="gallery" className="bg-[#fcfdfa] py-20">
+    <section id="gallery" className="bg-[#fcfdfa] py-16 md:py-20">
       <div className="site-container">
-        <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <h2 className="max-w-2xl text-4xl font-display tracking-[-0.05em] text-[#1b1511] sm:text-5xl lg:text-6xl">
+        <div className="mb-10 flex flex-col gap-4 md:mb-12 md:flex-row md:items-end md:justify-between">
+          <h2 className="max-w-2xl text-4xl font-display leading-[0.98] tracking-[-0.04em] text-[#1b1511] sm:text-5xl lg:text-6xl">
             Gallery
           </h2>
-          <p className="max-w-xl text-base leading-8 text-[#665b4f] sm:text-lg">
+          <p className="max-w-xl text-sm leading-7 text-[#665b4f] sm:text-base md:text-lg md:leading-8">
             A closer look at the forms, glazes, and quiet surface details across the
             collection.
           </p>
@@ -162,18 +162,22 @@ export default function GalleryApp() {
             title: img.caption,
           }))}
           columns={(containerWidth) => {
-            if (containerWidth < 640) return 1;
+            if (containerWidth < 480) return 1;
             if (containerWidth < 900) return 2;
             if (containerWidth < 1200) return 3;
             return 4;
           }}
-          spacing={(containerWidth) => (containerWidth < 640 ? 14 : 20)}
+          spacing={(containerWidth) => {
+            if (containerWidth < 480) return 12;
+            if (containerWidth < 900) return 14;
+            return 20;
+          }}
           padding={0}
           sizes={{
             size: "25vw",
             sizes: [
-              { viewport: "(max-width: 639px)", size: "calc(100vw - 48px)" },
-              { viewport: "(max-width: 899px)", size: "calc((100vw - 64px) / 2)" },
+              { viewport: "(max-width: 479px)", size: "calc(100vw - 48px)" },
+              { viewport: "(max-width: 899px)", size: "calc((100vw - 62px) / 2)" },
               { viewport: "(max-width: 1199px)", size: "calc((100vw - 80px) / 3)" },
             ],
           }}

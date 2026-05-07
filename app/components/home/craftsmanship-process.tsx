@@ -104,11 +104,11 @@ export default function CraftsmanshipProcess() {
   return (
     <section
       ref={sectionRef}
-      className="w-full bg-[#fcfdfa] py-24 text-[#1b1511] md:py-32"
+      className="w-full bg-[#fcfdfa] py-16 text-[#1b1511] md:py-32"
     >
       <div className="site-container">
         <motion.div
-          className="mb-14 max-w-3xl md:mb-20"
+          className="mb-10 max-w-3xl md:mb-20"
           initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
           whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
@@ -117,13 +117,13 @@ export default function CraftsmanshipProcess() {
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-[#8a7765]">
             The Process
           </p>
-          <h2 className="text-4xl font-display tracking-[-0.05em] sm:text-5xl lg:text-6xl">
+          <h2 className="text-4xl font-display leading-[0.98] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
             Crafting timeless ceramics with soul
           </h2>
         </motion.div>
 
         <div className="grid gap-12 md:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] md:items-start md:gap-16 lg:gap-24">
-          <div className="md:sticky md:top-24 md:h-[calc(100svh-8rem)] md:self-start">
+          <div className="hidden md:sticky md:top-24 md:block md:h-[calc(100svh-8rem)] md:self-start">
             <div className="relative aspect-[4/5] overflow-hidden bg-[#e8dfd2] md:h-full md:aspect-auto">
               {steps.map((step, index) => (
                 <motion.div
@@ -155,14 +155,14 @@ export default function CraftsmanshipProcess() {
             </div>
           </div>
 
-          <div className="relative py-2 md:pb-[42svh] md:pt-10">
-            <div className="absolute bottom-0 left-[15px] top-0 w-px bg-[#d8cec1] md:bottom-[42svh]" />
+          <div className="relative py-0 md:pb-[42svh] md:pt-10">
+            <div className="absolute bottom-0 left-[15px] top-0 hidden w-px bg-[#d8cec1] md:block md:bottom-[42svh]" />
             <motion.div
-              className="absolute bottom-0 left-[15px] top-0 w-px origin-top bg-[#1b1511] md:bottom-[42svh]"
+              className="absolute bottom-0 left-[15px] top-0 hidden w-px origin-top bg-[#1b1511] md:block md:bottom-[42svh]"
               style={{ scaleY: lineScale }}
             />
 
-            <div ref={stepsRef} className="flex flex-col gap-16 md:gap-24">
+            <div ref={stepsRef} className="flex flex-col gap-5 md:gap-24">
               {steps.map((step, index) => (
                 <ProcessItem
                   key={step.title}
@@ -228,9 +228,27 @@ function ProcessItem({
   const dotScale = useTransform(progress, inputRange, dotScaleOutput);
 
   return (
-    <motion.article ref={stepRef} className="relative pl-16" style={{ opacity, y }}>
+    <motion.article
+      ref={stepRef}
+      className="relative overflow-hidden border border-[#e5dbcf] bg-white md:overflow-visible md:border-0 md:bg-transparent md:pl-16"
+      style={{ opacity, y }}
+    >
+      <div className="relative aspect-[1.18/1] bg-[#e8dfd2] md:hidden">
+        <Image
+          src={step.image}
+          alt={step.title}
+          fill
+          sizes="calc(100vw - 48px)"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(27,21,17,0.02),rgba(27,21,17,0.22))]" />
+        <div className="absolute bottom-4 left-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-white">
+          0{index + 1} / 0{steps.length}
+        </div>
+      </div>
+
       <motion.div
-        className="absolute left-[9px] top-2 h-3.5 w-3.5 border border-[#1b1511] bg-[#fcfdfa]"
+        className="absolute left-[9px] top-2 hidden h-3.5 w-3.5 border border-[#1b1511] bg-[#fcfdfa] md:block"
         style={{ scale: dotScale }}
         animate={{
           backgroundColor: isActive ? "#1b1511" : "#fcfdfa",
@@ -238,15 +256,17 @@ function ProcessItem({
         transition={{ duration: 0.28, ease: "easeOut" }}
       />
 
-      <span className="mb-4 block text-xs font-semibold uppercase tracking-[0.28em] text-[#8a7765]">
-        Step 0{index + 1}
-      </span>
-      <h3 className="mb-3 text-3xl font-display tracking-[-0.035em] text-[#1b1511] sm:text-4xl">
-        {step.title}
-      </h3>
-      <p className="max-w-xl text-base leading-8 text-[#665b4f] sm:text-lg">
-        {step.desc}
-      </p>
+      <div className="p-5 md:p-0">
+        <span className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8a7765] md:mb-4 md:text-xs md:tracking-[0.28em]">
+          Step 0{index + 1}
+        </span>
+        <h3 className="mb-2 text-3xl font-display tracking-[-0.035em] text-[#1b1511] sm:text-4xl md:mb-3">
+          {step.title}
+        </h3>
+        <p className="max-w-xl text-sm leading-7 text-[#665b4f] sm:text-base md:text-lg md:leading-8">
+          {step.desc}
+        </p>
+      </div>
     </motion.article>
   );
 }
