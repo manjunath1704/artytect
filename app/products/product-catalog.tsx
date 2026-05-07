@@ -251,7 +251,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
             {visibleProducts.map((product) => (
               <article
                 key={product.id}
-                className="group overflow-hidden border border-black/10 bg-white transition duration-300 hover:-translate-y-1 hover:border-[#cdb9a8] hover:shadow-[0_24px_70px_rgba(27,21,17,0.10)]"
+                className="group overflow-hidden border border-black/10 bg-white"
               >
                 <Link href={`/products/${product.id}`} className="block">
                   <div className="relative aspect-[0.94/1] overflow-hidden bg-[#f7f5f3]">
@@ -279,12 +279,12 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                       {product.compareAtPrice ? (
                         <>
                           <span className="mr-2 text-[#9a8d82] line-through">
-                            ${product.compareAtPrice}
+                          ₹{product.compareAtPrice}
                           </span>
-                          <span>${product.price}</span>
+                          <span>₹{product.price}</span>
                         </>
                       ) : (
-                        `$${product.price}`
+                        `₹${product.price}`
                       )}
                     </p>
                   </div>
