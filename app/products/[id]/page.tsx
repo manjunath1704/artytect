@@ -1,73 +1,89 @@
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
-const products = [
-  {
-    id: "clay-vase",
-    name: "Handcrafted Clay Vase",
-    price: "₹2,400",
-    image: "/images/p1.jpg",
-    description:
-      "A minimal handcrafted vase with earthy tones and raw texture.",
-  },
-  {
-    id: "ceramic-plate",
-    name: "Ceramic Dinner Plate",
-    price: "₹1,200",
-    image: "/images/p2.jpg",
-    description:
-      "Elegant ceramic plate designed for everyday dining.",
-  },
-  {
-    id: "textured-mug",
-    name: "Textured Mug",
-    price: "₹800",
-    image: "/images/p3.jpg",
-    description:
-      "Rustic mug with hand-textured surface.",
-  },
-];
+import Footer from "@/app/components/home/footer";
+import Navbar from "@/app/components/home/navbar";
+import { getProduct, getRelatedProducts, products } from "@/lib/products";
+import ProductDetailView from "./product-detail-view";
 
-export default async function ProductPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+type ProductPageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+export function generateStaticParams() {
+  return products.map((product) => ({
+    id: product.id,
+  }));
+}
+
+export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
-  const product = products.find((p) => p.id === id);
+  const product = getProduct(id);
 
-  if (!product) return notFound();
+  if (!product) {
+    notFound();
+  }
+
+  const relatedProducts = getRelatedProducts(product.id);
 
   return (
-    <section className="w-full px-6 md:px-16 py-16 bg-white text-black">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
+    <>
+      <Navbar forceSolid />
+      <main className="bg-white pt-20 text-[#171717]">
+        <ProductDetailView product={product} />
 
-        {/* IMAGE */}
-        <div className="w-full h-[500px]">
-          <Image
-            src={product.image}
-            alt={product.name}
-            width={600}
-            height={600}
-            className="w-full h-full object-cover"
-          />
-        </div>
+        <section className="py-16 md:py-24">
+          <div className="site-container">
+            <h2 className="text-xl font-semibold uppercase tracking-[0.08em]">
+              Related products
+            </h2>
 
-        {/* CONTENT */}
-        <div className="flex flex-col gap-6">
-          <h1 className="text-4xl font-serif">
-            {product.name}
-          </h1>
-
-          <span className="text-xl text-neutral-700">
-            {product.price}
-          </span>
-
-          <p className="text-neutral-600 leading-relaxed">
-            {product.description}
-          </p>
-        </div>
-      </div>
-    </section>
+            <div className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+              {relatedProducts.map((relatedProduct) => (
+                <Link
+                  key={relatedProduct.id}
+                  href={`/products/${relatedProduct.id}`}
+                  className="group block text-center"
+                >
+                  <div className="relative aspect-square overflow-hidden bg-[#f7f5f3]">
+                    {relatedProduct.badge ? (
+                      <span className="absolute right-4 top-4 z-10 bg-[#f8e8e1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]">
+                        {relatedProduct.badge}
+                      </span>
+                    ) : null}
+                    <Image
+                      src={relatedProduct.images[0]}
+                      alt={relatedProduct.name}
+                      fill
+                      sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
+                      className="object-cover transition duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  <h3 className="mt-5 text-sm font-semibold uppercase tracking-[0.12em]">
+                    {relatedProduct.name}
+                  </h3>
+                  <p className="mt-3 text-sm text-[#9a8d82]">
+                    {relatedProduct.compareAtPrice ? (
+                      <>
+                        <span className="mr-2 line-through">
+                          ${relatedProduct.compareAtPrice}
+                        </span>
+                        <span>${relatedProduct.price}</span>
+                      </>
+                    ) : (
+                      `$${relatedProduct.price}`
+                    )}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
   );
 }
