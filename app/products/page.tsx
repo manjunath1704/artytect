@@ -1,9 +1,9 @@
 import Image from "next/image";
-import Link from "next/link";
 
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
 import { products } from "@/lib/products";
+import ProductCatalog from "./product-catalog";
 
 export default function ProductsPage() {
   return (
@@ -38,47 +38,7 @@ export default function ProductsPage() {
           </div>
         </section>
 
-        <section className="py-14 md:py-20">
-          <div className="site-container">
-            <div className="mb-10 flex flex-wrap items-center justify-between gap-4 border-b border-black/10 pb-5">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.24em]">
-                All products
-              </h2>
-              <p className="text-xs uppercase tracking-[0.18em] text-[#8a817a]">
-                {products.length} pieces
-              </p>
-            </div>
-
-            <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-              {products.map((product) => (
-                <Link
-                  key={product.id}
-                  href={`/products/${product.id}`}
-                  className="group block text-center"
-                >
-                  <div className="relative aspect-[1.03/1] overflow-hidden bg-[#f7f5f3]">
-                    {product.badge ? (
-                      <span className="absolute right-4 top-4 z-10 bg-[#f8e8e1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]">
-                        {product.badge}
-                      </span>
-                    ) : null}
-                    <Image
-                      src={product.images[0]}
-                      alt={product.name}
-                      fill
-                      sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
-                      className="object-cover transition duration-700 group-hover:scale-105"
-                    />
-                  </div>
-                  <h3 className="mt-5 text-sm font-semibold uppercase tracking-[0.12em]">
-                    {product.name}
-                  </h3>
-                  <p className="mt-2 text-sm text-[#9a8d82]">${product.price}</p>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
+        <ProductCatalog products={products} />
       </main>
       <Footer />
     </>
