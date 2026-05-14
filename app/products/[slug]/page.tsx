@@ -36,22 +36,35 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <main className="bg-white pt-20 text-[#171717]">
         <ProductDetailView product={product} />
 
-        <section className="py-16 md:py-24">
+        <section className="bg-[#f4eee7] py-16 md:py-24">
           <div className="site-container">
-            <h2 className="text-xl font-semibold uppercase tracking-[0.08em]">
-              Related products
-            </h2>
+            <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#9a6b4e]">
+                  More from the studio
+                </p>
+                <h2 className="mt-3 text-4xl font-display uppercase leading-none tracking-normal">
+                  Related products
+                </h2>
+              </div>
+              <Link
+                href="/products"
+                className="text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:text-[#8a5f3b]"
+              >
+                View catalog
+              </Link>
+            </div>
 
-            <div className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {relatedProducts.map((relatedProduct) => (
                 <Link
                   key={relatedProduct.id}
                   href={`/products/${relatedProduct.id}`}
-                  className="group block text-center"
+                  className="group block overflow-hidden border border-[#d8cec1] bg-[#fffdf9] shadow-[0_18px_50px_rgba(27,21,17,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(27,21,17,0.1)]"
                 >
-                  <div className="relative aspect-square overflow-hidden bg-[#f7f5f3]">
+                  <div className="relative aspect-[0.95/1] overflow-hidden bg-[#eee6dc]">
                     {relatedProduct.badge ? (
-                      <span className="absolute right-4 top-4 z-10 bg-[#f8e8e1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]">
+                      <span className="absolute right-4 top-4 z-10 border border-white/45 bg-[#1b1511]/75 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
                         {relatedProduct.badge}
                       </span>
                     ) : null}
@@ -63,21 +76,30 @@ export default async function ProductPage({ params }: ProductPageProps) {
                       className="object-cover transition duration-700 group-hover:scale-105"
                     />
                   </div>
-                  <h3 className="mt-5 text-sm font-semibold uppercase tracking-[0.12em]">
-                    {relatedProduct.name}
-                  </h3>
-                  <p className="mt-3 text-sm text-[#9a8d82]">
-                    {relatedProduct.compareAtPrice ? (
-                      <>
-                        <span className="mr-2 line-through">
-                          {formatPrice(relatedProduct.compareAtPrice)}
+                  <div className="p-5">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a6b4e]">
+                      {relatedProduct.category}
+                    </p>
+                    <h3 className="mt-3 text-sm font-semibold uppercase tracking-[0.12em] transition group-hover:text-[#8a5f3b]">
+                      {relatedProduct.name}
+                    </h3>
+                    <p className="mt-3 text-sm text-[#8a7765]">
+                      {relatedProduct.compareAtPrice ? (
+                        <>
+                          <span className="mr-2 line-through">
+                            {formatPrice(relatedProduct.compareAtPrice)}
+                          </span>
+                          <span className="font-semibold text-[#1b1511]">
+                            {formatPrice(relatedProduct.price)}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="font-semibold text-[#1b1511]">
+                          {formatPrice(relatedProduct.price)}
                         </span>
-                        <span>{formatPrice(relatedProduct.price)}</span>
-                      </>
-                    ) : (
-                      formatPrice(relatedProduct.price)
-                    )}
-                  </p>
+                      )}
+                    </p>
+                  </div>
                 </Link>
               ))}
             </div>

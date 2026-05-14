@@ -2,7 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Search, SlidersHorizontal, X } from "lucide-react";
+import {
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+  Ruler,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 
 import WhatsAppButton from "@/components/whatsapp-button";
@@ -232,16 +241,16 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
         </div>
 
         {visibleProducts.length ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
             {visibleProducts.map((product) => (
               <article
                 key={product.id}
-                className="group overflow-hidden border border-black/10 bg-white"
+                className="group overflow-hidden border border-[#ded3c8] bg-[#fffdf9] shadow-[0_18px_50px_rgba(27,21,17,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(27,21,17,0.13)]"
               >
                 <Link href={`/products/${product.id}`} className="block">
-                  <div className="relative aspect-[0.94/1] overflow-hidden bg-[#f7f5f3]">
+                  <div className="relative aspect-[0.92/1] overflow-hidden bg-[#eee6dc]">
                     {product.badge ? (
-                      <span className="absolute right-4 top-4 z-10 bg-[#f8e8e1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]">
+                      <span className="absolute right-4 top-4 z-10 border border-white/45 bg-[#1b1511]/75 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
                         {product.badge}
                       </span>
                     ) : null}
@@ -250,21 +259,36 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                       alt={product.name}
                       fill
                       sizes="(min-width: 1024px) 23vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
-                      className="object-cover"
+                      className="object-cover transition duration-700 group-hover:scale-105"
                     />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(27,21,17,0.04),rgba(27,21,17,0.08)_45%,rgba(27,21,17,0.52))] opacity-80 transition group-hover:opacity-100" />
+                    <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3 text-white">
+                      <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#ead7c3]">
+                          {product.category}
+                        </p>
+                        <h3 className="mt-2 text-2xl font-display uppercase leading-none tracking-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)]">
+                          {product.name}
+                        </h3>
+                      </div>
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-white/30 bg-white/15 backdrop-blur transition group-hover:bg-white group-hover:text-[#1b1511]">
+                        <ArrowUpRight className="h-4 w-4" />
+                      </span>
+                    </div>
                   </div>
                 </Link>
 
                 <div className="p-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a8d82]">
-                      {product.category}
-                    </p>
-                    <p className="text-sm font-semibold text-[#1b1511]">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a6b4e]">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Handmade
+                    </div>
+                    <p className="text-right text-sm font-semibold text-[#1b1511]">
                       {product.compareAtPrice ? (
                         <>
                           <span className="mr-2 text-[#9a8d82] line-through">
-                          {formatPrice(product.compareAtPrice)}
+                            {formatPrice(product.compareAtPrice)}
                           </span>
                           <span>{formatPrice(product.price)}</span>
                         </>
@@ -274,15 +298,14 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                     </p>
                   </div>
 
-                  <Link href={`/products/${product.id}`} className="block">
-                    <h3 className="mt-3 text-base font-semibold uppercase tracking-[0.08em] transition group-hover:text-[#8a5f3b]">
-                      {product.name}
-                    </h3>
-                  </Link>
-
                   <p className="mt-3 line-clamp-2 min-h-[3.5rem] text-sm leading-7 text-[#7d746d]">
                     {product.shortDescription}
                   </p>
+
+                  <div className="mt-4 flex items-center gap-2 border-y border-[#eadfd4] py-3 text-xs text-[#6f6259]">
+                    <Ruler className="h-3.5 w-3.5 text-[#9a6b4e]" />
+                    <span className="line-clamp-1">{product.dimensions}</span>
+                  </div>
 
                   <div className="mt-5 grid grid-cols-[1fr_auto] gap-3">
                     <WhatsAppButton
@@ -293,7 +316,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                     </WhatsAppButton>
                     <Link
                       href={`/products/${product.id}`}
-                      className="inline-flex h-11 items-center justify-center border border-black/10 px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511]"
+                      className="inline-flex h-11 items-center justify-center border border-[#ded3c8] bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511]"
                     >
                       View
                     </Link>
@@ -304,7 +327,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
           </div>
         ) : (
           <div className="border border-dashed border-black/20 bg-[#fcfaf7] px-6 py-14 text-center">
-            <h3 className="text-2xl font-display tracking-[-0.035em]">
+            <h3 className="text-2xl font-display tracking-normal">
               No products found
             </h3>
             <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#7d746d]">

@@ -109,15 +109,20 @@ const FeaturedCollections = () => {
   }, []);
 
   return (
-    <section id="collections" className="py-20">
+    <section id="collections" className="bg-[#fbf8f4] py-20 md:py-24">
       <div className="site-container">
-        <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
-          <h2 className="max-w-2xl text-4xl font-display tracking-[-0.05em] text-[#1b1511] sm:text-5xl lg:text-6xl">
-            Categories
-          </h2>
-          <p className="max-w-2xl text-base leading-8 text-[#665b4f] sm:text-lg">
-            Explore a concise selection of mugs, bowls, vases, and decor pieces designed
-            with a restrained, earthy palette and a premium finish.
+        <div className="grid gap-6 border-b border-[#d8cabd] pb-8 md:grid-cols-[0.8fr_1fr] md:items-end">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9a6b4e]">
+              Featured collections
+            </p>
+            <h2 className="mt-3 max-w-2xl text-4xl font-display uppercase leading-none tracking-normal text-[#1b1511] sm:text-5xl lg:text-6xl">
+              Find your everyday form
+            </h2>
+          </div>
+          <p className="max-w-2xl text-sm leading-7 text-[#665b4f] md:justify-self-end">
+            Explore bowls, mugs, vases, planters, plates, and deep serving forms
+            selected for a quiet home, tactile tables, and daily rituals.
           </p>
         </div>
 
@@ -141,7 +146,7 @@ const FeaturedCollections = () => {
               {collections.map((collection, index) => (
                 <CarouselItem
                   key={`${collection.title}-${index}`}
-                  className="basis-[88%] sm:basis-1/2 lg:basis-1/4 xl:basis-1/4"
+                  className="basis-[88%] sm:basis-1/2 lg:basis-1/3 xl:basis-1/3"
                 >
                   <CategoryCard
                     title={collection.title}

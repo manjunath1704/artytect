@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Minus, Plus } from "lucide-react";
+import { Check, Minus, PackageCheck, Plus, Ruler, ShieldCheck, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import WhatsAppButton from "@/components/whatsapp-button";
@@ -88,11 +88,27 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
   return (
     <>
-      <section className="py-12 md:py-16 lg:py-20">
+      <section className="bg-[#fbf8f4] py-12 md:py-16 lg:py-20">
         <div className="site-container">
-          <div className="grid gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16 xl:gap-20">
-            <div className="grid gap-4 sm:grid-cols-[112px_1fr]">
-              <div className="order-2 grid grid-cols-4 gap-3 sm:order-1 sm:grid-cols-1">
+          <div className="grid gap-12 lg:grid-cols-[1.12fr_0.88fr] lg:gap-16 xl:gap-20">
+            <div className="grid gap-4 lg:sticky lg:top-28 lg:self-start">
+              <div className="relative aspect-[1.02/1] overflow-hidden bg-[#eee6dc] shadow-[0_24px_70px_rgba(27,21,17,0.08)]">
+                {product.badge ? (
+                  <span className="absolute right-5 top-5 z-10 border border-white/45 bg-[#1b1511]/75 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-white backdrop-blur">
+                    {product.badge}
+                  </span>
+                ) : null}
+                <Image
+                  src={selectedImage}
+                  alt={product.name}
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 52vw, calc(100vw - 48px)"
+                  className="object-cover"
+                />
+              </div>
+
+              <div className="grid grid-cols-4 gap-3">
                 {product.images.map((image, index) => {
                   const isSelected = selectedImage === image;
 
@@ -101,10 +117,10 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                       key={image}
                       type="button"
                       className={[
-                        "relative aspect-square overflow-hidden bg-[#f7f5f3] transition",
+                        "relative aspect-square overflow-hidden border bg-[#f7f2ec] transition",
                         isSelected
-                          ? "ring-1 ring-[#171717]"
-                          : "opacity-70 hover:opacity-100",
+                          ? "border-[#1b1511] opacity-100"
+                          : "border-transparent opacity-70 hover:opacity-100",
                       ].join(" ")}
                       aria-label={`Show ${product.name} view ${index + 1}`}
                       aria-pressed={isSelected}
@@ -121,132 +137,113 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                   );
                 })}
               </div>
-
-              <div className="relative order-1 aspect-[1.06/1] overflow-hidden bg-[#f7f5f3] sm:order-2">
-                {product.badge ? (
-                  <span className="absolute right-0 top-6 z-10 bg-[#f8e8e1] px-4 py-1 text-[10px] font-semibold uppercase tracking-[0.24em]">
-                    {product.badge}
-                  </span>
-                ) : null}
-                <Image
-                  src={selectedImage}
-                  alt={product.name}
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 48vw, calc(100vw - 48px)"
-                  className="object-cover"
-                />
-              </div>
             </div>
 
-            <div className="lg:pt-2">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9a8d82]">
-                {product.category}
-              </p>
-              <h1 className="mt-3 text-4xl font-semibold uppercase tracking-[0.03em] sm:text-5xl">
-                {product.name}
-              </h1>
-              <p className="mt-4 text-lg text-[#9a8d82]">
-                {product.compareAtPrice ? (
-                  <>
-                    <span className="mr-3 line-through">
-                      {formatPrice(product.compareAtPrice)}
+            <div>
+              <div className="border border-[#ded3c8] bg-[#fffdf9] p-6 shadow-[0_24px_70px_rgba(27,21,17,0.08)] md:p-8">
+                <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9a6b4e]">
+                  <Sparkles className="h-4 w-4" />
+                  {product.category}
+                </p>
+                <h1 className="mt-4 text-4xl font-display uppercase leading-none tracking-normal sm:text-5xl">
+                  {product.name}
+                </h1>
+                <p className="mt-5 text-xl text-[#9a8d82]">
+                  {product.compareAtPrice ? (
+                    <>
+                      <span className="mr-3 line-through">
+                        {formatPrice(product.compareAtPrice)}
+                      </span>
+                      <span className="font-semibold text-[#1b1511]">
+                        {formatPrice(product.price)}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="font-semibold text-[#1b1511]">
+                      {formatPrice(product.price)}
                     </span>
-                    <span className="text-[#1b1511]">{formatPrice(product.price)}</span>
-                  </>
-                ) : (
-                  formatPrice(product.price)
-                )}
-              </p>
+                  )}
+                </p>
 
-              <p className="mt-10 max-w-lg text-sm leading-7 text-[#9a8d82]">
-                {product.shortDescription}
-              </p>
+                <p className="mt-8 text-sm leading-8 text-[#6f6259]">
+                  {product.shortDescription}
+                </p>
 
-              <dl className="mt-7 space-y-2 text-xs leading-5 text-[#9a8d82]">
-                <div className="flex gap-1">
-                  <dt>SKU:</dt>
-                  <dd className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
-                    {product.sku}
-                  </dd>
-                </div>
-                <div className="flex gap-1">
-                  <dt>Category:</dt>
-                  <dd className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
-                    {product.category}
-                  </dd>
-                </div>
-                <div className="flex gap-1">
-                  <dt>Dimensions:</dt>
-                  <dd className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
-                    {product.dimensions}
-                  </dd>
-                </div>
-                <div className="flex gap-1">
-                  <dt>Materials:</dt>
-                  <dd className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
-                    {product.materials}
-                  </dd>
-                </div>
-                <div className="flex gap-1">
-                  <dt>Tags:</dt>
-                  <dd className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
-                    {product.tags.join(", ")}
-                  </dd>
-                </div>
-              </dl>
+                <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                  {[
+                    { label: "Dimensions", value: product.dimensions, icon: Ruler },
+                    { label: "Materials", value: product.materials, icon: PackageCheck },
+                    { label: "SKU", value: product.sku, icon: ShieldCheck },
+                    { label: "Tags", value: product.tags.join(", "), icon: Check },
+                  ].map((item) => {
+                    const Icon = item.icon;
 
-              <div className="mt-12 flex flex-col gap-4 sm:flex-row sm:items-end">
-                <div>
+                    return (
+                      <div key={item.label} className="border border-[#eadfd4] bg-[#fbf8f4] p-4">
+                        <Icon className="h-4 w-4 text-[#9a6b4e]" />
+                        <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7765]">
+                          {item.label}
+                        </p>
+                        <p className="mt-2 text-sm leading-6 text-[#1b1511]">
+                          {item.value}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-8 border-t border-[#eadfd4] pt-6">
                   <label
                     htmlFor="product-quantity"
-                    className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a8d82]"
+                    className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]"
                   >
                     Quantity
                   </label>
-                  <div className="grid h-14 w-full grid-cols-[48px_56px_48px] border border-black/10 bg-white sm:w-[152px]">
-                    <button
-                      type="button"
-                      className="flex items-center justify-center text-[#7d746d] transition hover:bg-[#f7f5f3] hover:text-[#171717] disabled:cursor-not-allowed disabled:opacity-35"
-                      aria-label="Decrease quantity"
-                      disabled={quantity === 1}
-                      onClick={() => setQuantity((value) => Math.max(1, value - 1))}
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                    <div className="grid h-14 w-full grid-cols-[48px_56px_48px] border border-[#ded3c8] bg-white sm:w-[152px]">
+                      <button
+                        type="button"
+                        className="flex items-center justify-center text-[#7d746d] transition hover:bg-[#f7f2ec] hover:text-[#171717] disabled:cursor-not-allowed disabled:opacity-35"
+                        aria-label="Decrease quantity"
+                        disabled={quantity === 1}
+                        onClick={() => setQuantity((value) => Math.max(1, value - 1))}
+                      >
+                        <Minus className="h-3.5 w-3.5" />
+                      </button>
+                      <output
+                        id="product-quantity"
+                        className="flex items-center justify-center border-x border-[#ded3c8] text-sm font-semibold tabular-nums text-[#171717]"
+                        aria-live="polite"
+                      >
+                        {quantity}
+                      </output>
+                      <button
+                        type="button"
+                        className="flex items-center justify-center text-[#7d746d] transition hover:bg-[#f7f2ec] hover:text-[#171717]"
+                        aria-label="Increase quantity"
+                        onClick={() => setQuantity((value) => value + 1)}
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+
+                    <WhatsAppButton
+                      message={whatsappMessage}
+                      className="h-14 flex-1 px-10"
                     >
-                      <Minus className="h-3.5 w-3.5" />
-                    </button>
-                    <output
-                      id="product-quantity"
-                      className="flex items-center justify-center border-x border-black/10 text-sm font-semibold tabular-nums text-[#171717]"
-                      aria-live="polite"
-                    >
-                      {quantity}
-                    </output>
-                    <button
-                      type="button"
-                      className="flex items-center justify-center text-[#7d746d] transition hover:bg-[#f7f5f3] hover:text-[#171717]"
-                      aria-label="Increase quantity"
-                      onClick={() => setQuantity((value) => value + 1)}
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                    </button>
+                      Order via WhatsApp
+                    </WhatsAppButton>
                   </div>
                 </div>
-
-                <WhatsAppButton
-                  message={whatsappMessage}
-                  className="h-14 px-10 sm:min-w-56"
-                >
-                  Order via WhatsApp
-                </WhatsAppButton>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="border-t border-black/10 py-12">
+      <section className="border-y border-[#ded3c8] bg-white py-12">
         <div className="site-container">
-          <div className="flex flex-wrap gap-8 border-b border-black/10 text-[11px] font-semibold uppercase tracking-[0.24em]">
+          <div className="flex flex-wrap gap-8 border-b border-[#ded3c8] text-[11px] font-semibold uppercase tracking-[0.24em]">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
 
@@ -268,7 +265,9 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
               );
             })}
           </div>
-          <div className="mt-7">{tabContent}</div>
+          <div className="mt-7 border border-[#eadfd4] bg-[#fbf8f4] p-6 md:p-8">
+            {tabContent}
+          </div>
         </div>
       </section>
 

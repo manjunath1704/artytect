@@ -29,40 +29,39 @@ const CategoryCard = ({
       transition={{ type: "spring", stiffness: 260, damping: 22 }}
       aria-label={`Shop ${title}`}
     >
-      <article className="h-full">
+      <article className="h-full overflow-hidden border border-[#d8cabd] bg-[#fffdf9] shadow-[0_18px_50px_rgba(27,21,17,0.06)] transition duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_26px_70px_rgba(27,21,17,0.12)]">
         <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.65),transparent_36%)]" />
-          <div className="absolute inset-x-6 bottom-4 h-8 bg-black/10 blur-2xl" />
-
-          <div className="relative aspect-[4/3] overflow-hidden bg-white">
+          <div className="relative aspect-[0.96/1] overflow-hidden bg-[#eee6dc]">
             <Image
-              src={thumbnailSrc}
+              
+              src={hoverThumbnailSrc}
               alt={title}
               fill
-              className="object-contain transition-opacity duration-500 ease-out group-hover:opacity-0"
+              className="object-cover transition duration-700 ease-out group-hover:scale-105 group-hover:opacity-0"
               sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 88vw"
             />
             <Image
-              src={hoverThumbnailSrc}
+              src={thumbnailSrc}
               alt={`${title} hover preview`}
               fill
-              className="object-cover opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+              className="object-cover opacity-0 transition duration-700 ease-out group-hover:scale-105 group-hover:opacity-100"
               sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 88vw"
             />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(27,21,17,0.02),rgba(27,21,17,0.1)_45%,rgba(27,21,17,0.62))]" />
+            <span className="absolute right-4 top-4 border border-white/35 bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
+              0{index}
+            </span>
+            <div className="absolute inset-x-4 bottom-4 text-white">
+              <h3 className="text-3xl font-display uppercase leading-none tracking-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)]">
+                {title}
+              </h3>
+            </div>
           </div>
         </div>
 
-        <div className="space-y-3 px-1 pt-5">
-          <div className="flex items-center justify-between gap-4">
-            <h3 className="text-2xl font-display tracking-[-0.03em] text-[#1b1511]">
-              {title}
-            </h3>
-            <span className="text-xs uppercase tracking-[0.3em] text-[#8a7765]">
-              0{index}
-            </span>
-          </div>
+        <div className="space-y-4 p-5">
           <p className="text-sm leading-7 text-[#665b4f]">{description}</p>
-          <span className="inline-flex items-center text-sm font-semibold text-[#1b1511] underline-offset-4 transition group-hover:underline">
+          <span className="inline-flex border-b border-[#1b1511] pb-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition group-hover:text-[#8a5f3b]">
             Shop {title.toLowerCase()}
           </span>
         </div>
