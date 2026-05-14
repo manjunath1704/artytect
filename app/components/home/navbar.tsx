@@ -7,10 +7,8 @@ import { Menu, X } from "lucide-react";
 
 const navItems = [
   { label: "Home", href: "/" },
-  // { label: "Collections", href: "/#collections" },
-  // { label: "About", href: "/#about" },
-  // { label: "Gallery", href: "/#gallery" },
-  { label: "Shop", href: "/products" },
+  { label: "Categories", href: "/categories" },
+  { label: "Products", href: "/products" },
   { label: "Classes", href: "/classes" },
   { label: "Contact", href: "/contact" },
 ];
@@ -56,6 +54,10 @@ const Navbar = ({
   const isActiveItem = (href: string) => {
     if (href === "/") {
       return pathname === "/" && !activeHash;
+    }
+
+    if (href === "/categories") {
+      return pathname.startsWith("/categories");
     }
 
     if (href === "/#collections") {

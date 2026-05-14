@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowUpRight } from "lucide-react";
 
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
@@ -132,166 +133,225 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <>
-      <Navbar transparentTone="dark" />
-      <main className="bg-[#f7f2ed] text-[#1b1511]">
-        <section className="pb-16 pt-32 md:pb-24 md:pt-36">
-          <div className="site-container">
-            <div className="grid gap-10 md:grid-cols-[0.72fr_1fr] md:items-end md:gap-16">
-              <div>
+      <Navbar />
+      <main className="bg-[#f5f0eb] text-[#1b1511]">
+
+        {/* ── Hero ─────────────────────────────────────────────────── */}
+        <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#1f1a16] text-white">
+          <Image
+            src={category.heroSrc}
+            alt={category.title}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(27,21,17,0.88),rgba(27,21,17,0.52),rgba(27,21,17,0.24))]" />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#f5f0eb] to-transparent" />
+
+          <div className="site-container relative flex min-h-[calc(100vh-5rem)] items-end pb-12 pt-20 md:pb-16">
+            <div className="grid w-full gap-10 lg:grid-cols-[1fr_340px] lg:items-end">
+              <div className="max-w-3xl">
                 <Link
-                  href="/#collections"
-                  className=" inline-flex text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8a7765] transition hover:text-[#1b1511]"
+                  href="/categories"
+                  className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.34em] text-[#e9d8c4] transition-opacity hover:opacity-70"
                 >
-                  Catalog
+                  ← Back to collections
                 </Link>
-                <h1 className="text-6xl font-display uppercase tracking-[-0.07em] sm:text-7xl lg:text-8xl">
+                <h1 className="mt-5 text-4xl font-display uppercase leading-[1] tracking-normal sm:text-7xl lg:text-8xl">
                   {category.title}
                 </h1>
-                <p className="mt-7 max-w-sm text-xs font-semibold uppercase leading-6 tracking-[0.08em] text-[#4f453c]">
+                <p className="mt-7 max-w-xl text-sm leading-7 text-[#f4e9dc] md:text-base md:leading-8">
                   {category.description}
                 </p>
               </div>
 
-              <div className="relative aspect-[1.12/1] overflow-hidden bg-[#e9e0d7]">
-                <Image
-                  src={category.heroSrc}
-                  alt={category.title}
-                  fill
-                  priority
-                  sizes="(min-width: 768px) 58vw, calc(100vw - 48px)"
-                  className="object-cover"
-                />
+              <div className="border border-white/18 bg-[#1a1410]/60 p-5 backdrop-blur-md">
+                <div className="grid grid-cols-2 gap-4 text-center">
+                  <div>
+                    <p className="text-3xl font-display">{products.length}</p>
+                    <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#e6d3c1]">
+                      Pieces
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-3xl font-display">WA</p>
+                    <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#e6d3c1]">
+                      Order
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-5 border-t border-white/15 pt-4 text-xs leading-6 text-[#ead7c3]">
+                  <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#e9d8c4]">
+                    Handcrafted collection
+                  </p>
+                  <p>
+                    Each piece is shaped by hand with calm lines and tactile finishes
+                    for your daily rituals.
+                  </p>
+                </div>
+                <Link
+                  href="#products"
+                  className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 bg-white px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition hover:bg-[#ead7c3]"
+                >
+                  Browse collection
+                  <ArrowUpRight className="h-4 w-4" />
+                </Link>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="pb-20">
+        {/* ── Product grid ─────────────────────────────────────────── */}
+        <section id="products" className="py-14 md:py-20">
           <div className="site-container">
-            <div className="mb-8 flex flex-wrap items-center justify-between gap-5 border-y border-[#d8cec1] py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#5e5348]">
-              <div className="flex flex-wrap items-center gap-4">
+
+            {/* Toolbar */}
+            <div className="mb-10 flex flex-wrap items-center justify-between gap-4 border-b border-[#d9cfc6] pb-5">
+              <div className="flex flex-wrap items-center gap-6 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7a6e65]">
                 <span>Filter</span>
+                <span className="h-3 w-px bg-[#c4b5a8]" />
                 <span>Artist</span>
+                <span className="h-3 w-px bg-[#c4b5a8]" />
                 <span>Color</span>
               </div>
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-wrap items-center gap-6 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7a6e65]">
                 <span>{products.length} pieces</span>
+                <span className="h-3 w-px bg-[#c4b5a8]" />
                 <span>Sort by default</span>
               </div>
             </div>
 
             {products.length ? (
-            <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-              {products.map((product) => (
-                <article
-                  key={product.id}
-                  className="group overflow-hidden border border-[#d8cec1] bg-[#fcfaf7]"
-                >
-                  <Link href={`/products/${product.id}`} className="block">
-                    <div className="relative aspect-[1.15/1] overflow-hidden bg-[#e8dfd2]">
-                      {product.badge ? (
-                        <span className="absolute right-4 top-4 z-10 bg-[#f8e8e1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]">
-                          {product.badge}
-                        </span>
-                      ) : null}
-                      <Image
-                        src={product.images[0]}
-                        alt={product.name}
-                        fill
-                        sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
-                        className="object-cover"
-                      />
-                    </div>
-                  </Link>
+              <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+                {products.map((product) => (
+                  <article key={product.id} className="group">
 
-                  <div className="p-5 text-left">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7765]">
-                        {product.category}
-                      </p>
-                      <p className="text-sm font-semibold text-[#1b1511]">
-                        {product.compareAtPrice ? (
-                          <>
-                            <span className="mr-2 text-[#8a7765] line-through">
-                              {formatPrice(product.compareAtPrice)}
-                            </span>
-                            <span>{formatPrice(product.price)}</span>
-                          </>
-                        ) : (
-                          formatPrice(product.price)
-                        )}
-                      </p>
-                    </div>
-
+                    {/* Image */}
                     <Link href={`/products/${product.id}`} className="block">
-                      <h2 className="mt-3 text-base font-semibold uppercase tracking-[0.08em] text-[#1b1511] transition group-hover:text-[#8a5f3b]">
-                        {product.name}
-                      </h2>
+                      <div className="relative aspect-[4/3] overflow-hidden bg-[#e4d9d0]">
+                        {product.badge ? (
+                          <span className="absolute left-0 top-0 z-10 border-b border-r border-[#d9cfc6] bg-[#f5f0eb] px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.24em] text-[#9a6b4e]">
+                            {product.badge}
+                          </span>
+                        ) : null}
+                        <Image
+                          src={product.images[0]}
+                          alt={product.name}
+                          fill
+                          sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
+                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                        />
+                        {/* Hover overlay */}
+                        <div className="absolute inset-0 bg-[#1b1511] opacity-0 transition-opacity duration-500 group-hover:opacity-8" />
+                      </div>
                     </Link>
-                    <p className="mt-3 line-clamp-2 min-h-[3.5rem] text-sm leading-7 text-[#5e5348]">
-                      {product.shortDescription}
-                    </p>
 
-                    <div className="mt-5 grid grid-cols-[1fr_auto] gap-3">
-                      <WhatsAppButton
-                        message={getProductOrderMessage(product)}
-                        className="h-11 px-4"
-                      >
-                        Order Now
-                      </WhatsAppButton>
-                      <Link
-                        href={`/products/${product.id}`}
-                        className="inline-flex h-11 items-center justify-center border border-[#d8cec1] px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511]"
-                      >
-                        View
+                    {/* Content */}
+                    <div className="border-x border-b border-[#d9cfc6] bg-[#faf6f2] px-4 py-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a6b4e]">
+                          {product.category}
+                        </p>
+                        <p className="text-sm font-semibold text-[#1b1511]">
+                          {product.compareAtPrice ? (
+                            <>
+                              <span className="mr-2 text-[#9a8d82] line-through">
+                                {formatPrice(product.compareAtPrice)}
+                              </span>
+                              <span>{formatPrice(product.price)}</span>
+                            </>
+                          ) : (
+                            formatPrice(product.price)
+                          )}
+                        </p>
+                      </div>
+
+                      <Link href={`/products/${product.id}`} className="block">
+                        <h2 className="mt-2 text-sm font-semibold uppercase tracking-[0.1em] text-[#1b1511] transition-opacity duration-200 group-hover:opacity-60">
+                          {product.name}
+                        </h2>
                       </Link>
+
+                      <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#7a6e65]">
+                        {product.shortDescription}
+                      </p>
+
+                      <div className="mt-4 grid grid-cols-[1fr_auto] gap-2 border-t border-[#d9cfc6] pt-4">
+                        <WhatsAppButton
+                          message={getProductOrderMessage(product)}
+                          className="h-10 px-4 text-[10px]"
+                        >
+                          Order Now
+                        </WhatsAppButton>
+                        <Link
+                          href={`/products/${product.id}`}
+                          className="inline-flex h-10 items-center justify-center border border-[#d9cfc6] bg-transparent px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition-colors duration-200 hover:border-[#1b1511] hover:bg-[#1b1511] hover:text-white"
+                        >
+                          <ArrowUpRight className="h-3.5 w-3.5" />
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
-            </div>
+
+                  </article>
+                ))}
+              </div>
             ) : (
-            <div className="border border-dashed border-[#d8cec1] bg-[#fcfaf7] px-6 py-14 text-center">
-              <h2 className="text-2xl font-display tracking-[-0.035em]">
-                No products in this category yet
-              </h2>
-              <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#5e5348]">
-                Explore the complete product catalog while new pieces are added here.
-              </p>
-              <Link
-                href="/products"
-                className="mt-6 inline-flex border border-[#1b1511] px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:bg-[#1b1511] hover:text-white"
-              >
-                View all products
-              </Link>
-            </div>
+              /* Empty state */
+              <div className="border border-[#d9cfc6] bg-[#faf6f2] px-8 py-16 text-center">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[#9a6b4e]">
+                  Coming soon
+                </p>
+                <h2 className="mt-4 font-display text-3xl uppercase leading-none tracking-[-0.03em] text-[#1b1511] md:text-4xl">
+                  No pieces in this collection yet
+                </h2>
+                <p className="mx-auto mt-4 max-w-sm text-sm leading-7 text-[#7a6e65]">
+                  Explore the complete product catalog while new pieces are added here.
+                </p>
+                <Link
+                  href="/products"
+                  className="mt-8 inline-flex items-center gap-2 border border-[#1b1511] px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#1b1511] transition-colors duration-200 hover:bg-[#1b1511] hover:text-white"
+                >
+                  View all products
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             )}
+
           </div>
         </section>
 
-        <section className="pb-20 pt-10">
-          <div className="site-container">
-            <div className="border-t border-[#d8cec1] pt-14">
-              <h2 className="text-3xl font-display uppercase tracking-[-0.05em] md:text-5xl">
-                Subscribe our newsletter get 10% off your first order
-              </h2>
-              <form className="mt-10 flex max-w-3xl items-center border-b border-[#1b1511]">
+        {/* ── Newsletter ───────────────────────────────────────────── */}
+        <section className="border-t border-[#d9cfc6]">
+          <div className="site-container py-16 md:py-20">
+            <div className="grid gap-10 md:grid-cols-[1fr_1fr] md:items-end">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[#9a6b4e]">
+                  Newsletter
+                </p>
+                <h2 className="mt-4 font-display text-3xl uppercase leading-none tracking-[-0.03em] text-[#1b1511] md:text-4xl lg:text-5xl">
+                  Get 10% off your first order
+                </h2>
+              </div>
+
+              <form className="flex items-center border-b border-[#1b1511]">
                 <input
                   type="email"
                   aria-label="Email address"
                   placeholder="Enter your email address"
-                  className="min-w-0 flex-1 bg-transparent py-4 text-sm outline-none placeholder:text-[#7b7065]"
+                  className="min-w-0 flex-1 bg-transparent py-4 text-sm outline-none placeholder:text-[#9a8d82]"
                 />
                 <button
                   type="submit"
-                  className="px-4 py-4 text-xs font-semibold uppercase tracking-[0.16em]"
+                  className="shrink-0 px-4 py-4 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#1b1511] transition-opacity hover:opacity-50"
                 >
-                  Submit
+                  Subscribe
                 </button>
               </form>
             </div>
           </div>
         </section>
+
       </main>
       <Footer />
     </>
