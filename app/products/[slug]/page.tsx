@@ -32,8 +32,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <>
-      <Navbar forceSolid />
-      <main className="bg-white pt-20 text-[#171717]">
+      <Navbar transparentTone="dark" />
+      <main className="bg-white text-[#171717]">
         <ProductDetailView product={product} />
 
         <section className="bg-[#f4eee7] py-16 md:py-24">

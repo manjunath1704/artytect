@@ -33,8 +33,8 @@ export default async function ClassPage({ params }: ClassPageProps) {
 
   return (
     <>
-      <Navbar forceSolid />
-      <main className="bg-[#fbf8f4] pt-20 text-[#171717]">
+      <Navbar />
+      <main className="bg-[#fbf8f4] text-[#171717]">
         <section className="relative overflow-hidden border-b border-[#ded2c6] bg-[#211914] text-white">
           <div className="absolute inset-0">
             <Image

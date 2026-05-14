@@ -10,8 +10,8 @@ import ProductCatalog from "./product-catalog";
 export default function ProductsPage() {
   return (
     <>
-      <Navbar forceSolid />
-      <main className="bg-white pt-20 text-[#171717]">
+      <Navbar />
+      <main className="bg-white text-[#171717]">
         <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#211914] text-white">
           <Image
             src="/images/gallery/pexels-readymade-3847457.jpg"

@@ -132,9 +132,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <>
-      <Navbar forceSolid />
-      <main className="bg-[#f7f2ed] pt-20 text-[#1b1511]">
-        <section className="py-16 md:py-24">
+      <Navbar transparentTone="dark" />
+      <main className="bg-[#f7f2ed] text-[#1b1511]">
+        <section className="pb-16 pt-32 md:pb-24 md:pt-36">
           <div className="site-container">
             <div className="grid gap-10 md:grid-cols-[0.72fr_1fr] md:items-end md:gap-16">
               <div>

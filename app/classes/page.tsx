@@ -10,8 +10,8 @@ import { potteryClasses } from "@/lib/classes";
 export default function ClassesPage() {
   return (
     <>
-      <Navbar forceSolid />
-      <main className="bg-[#fbf8f4] pt-20 text-[#171717]">
+      <Navbar />
+      <main className="bg-[#fbf8f4] text-[#171717]">
         <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#201914] text-white">
           <Image
             src="/images/gallery/pexels-rdne-8903259.jpg"

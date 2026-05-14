@@ -88,7 +88,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
   return (
     <>
-      <section className="bg-[#fbf8f4] py-12 md:py-16 lg:py-20">
+      <section className="bg-[#fbf8f4] pb-12 pt-28 md:pb-16 md:pt-32 lg:pb-20">
         <div className="site-container">
           <div className="grid gap-12 lg:grid-cols-[1.12fr_0.88fr] lg:gap-16 xl:gap-20">
             <div className="grid gap-4 lg:sticky lg:top-28 lg:self-start">

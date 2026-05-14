@@ -28,9 +28,9 @@ const contactMethods = [
 export default function ContactPage() {
   return (
     <>
-      <Navbar forceSolid />
-      <main className="bg-[#fcfdfa] pt-20 text-[#1b1511]">
-        <section className="border-b border-black/10 py-16 md:py-24">
+      <Navbar transparentTone="dark" />
+      <main className="bg-[#fcfdfa] text-[#1b1511]">
+        <section className="border-b border-black/10 pb-16 pt-32 md:pb-24 md:pt-36">
           <div className="site-container grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-end lg:gap-16">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.36em] text-[#8a7765]">

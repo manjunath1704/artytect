@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 
 type CategoryCardProps = {
@@ -23,46 +24,63 @@ const CategoryCard = ({
   return (
     <motion.a
       href={href}
-      className="group block h-full"
-      // whileHover={{ y: -8, scale: 1.01 }}
+      className="group block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a6b4e]/40 focus-visible:ring-offset-4 focus-visible:ring-offset-[#f6efe6]"
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.25 }}
       whileTap={{ scale: 0.99 }}
-      transition={{ type: "spring", stiffness: 260, damping: 22 }}
+      transition={{ type: "spring", stiffness: 240, damping: 24, delay: index * 0.04 }}
       aria-label={`Shop ${title}`}
     >
-      <article className="h-full overflow-hidden border border-[#d8cabd] bg-[#fffdf9]  transition duration-300">
-        <div className="relative overflow-hidden">
-          <div className="relative aspect-[0.96/1] overflow-hidden bg-[#eee6dc]">
-            <Image
-              
-              src={hoverThumbnailSrc}
-              alt={title}
-              fill
-              className="object-cover transition duration-700 ease-out group-hover:scale-105 group-hover:opacity-0"
-              sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 88vw"
-            />
+      <article className="relative h-full overflow-hidden border border-[#e1d1c3] bg-[#fffaf3]">
+        <div className="relative overflow-hidden p-3 pb-0">
+          <div className="relative aspect-[0.92/1] overflow-hidden bg-[#eee6dc]">
             <Image
               src={thumbnailSrc}
-              alt={`${title} hover preview`}
+              alt={title}
               fill
-              className="object-cover opacity-0 transition duration-700 ease-out group-hover:scale-105 group-hover:opacity-100"
+              className="object-cover transition-opacity duration-500 ease-out group-hover:opacity-0"
               sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 88vw"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(27,21,17,0.02),rgba(27,21,17,0.1)_45%,rgba(27,21,17,0.62))]" />
-            <span className="absolute right-4 top-4 border border-white/35 bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
+            <Image
+              src={hoverThumbnailSrc}
+              alt={`${title} alternate view`}
+              fill
+              className="object-cover opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+              sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 88vw"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(27,21,17,0.04),rgba(27,21,17,0.12)_38%,rgba(27,21,17,0.78))]" />
+            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(circle_at_20%_100%,rgba(185,130,94,0.32),transparent_58%)]" />
+            <span className="absolute left-4 top-4 border border-white/30 bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
               0{index}
             </span>
-            <div className="absolute inset-x-4 bottom-4 text-white">
-              <h3 className="text-3xl font-display uppercase leading-none tracking-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)]">
+            <span className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center border border-white/30 bg-white/15 text-white backdrop-blur-md">
+              <ArrowUpRight className="h-4 w-4" />
+            </span>
+            <div className="absolute inset-x-5 bottom-5 text-white">
+              <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f1d8c2]">
+                Explore collection
+              </p>
+              <h3 className="text-4xl font-display uppercase leading-none tracking-normal">
                 {title}
               </h3>
             </div>
           </div>
         </div>
 
-        <div className="space-y-4 p-5">
-          <p className="text-sm leading-7 text-[#665b4f]">{description}</p>
-          <span className="inline-flex border-b border-[#1b1511] pb-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition group-hover:text-[#8a5f3b]">
+        <div className="space-y-5 p-6">
+          <div className="flex items-center justify-between gap-4 border-b border-[#eadfd4] pb-4">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a6b4e]">
+              Handcrafted forms
+            </p>
+            <span className="h-px flex-1 bg-[#eadfd4]" />
+          </div>
+          <p className="min-h-[4.25rem] text-sm leading-7 text-[#665b4f]">
+            {description}
+          </p>
+          <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511]">
             Shop {title.toLowerCase()}
+            <ArrowUpRight className="h-3.5 w-3.5" />
           </span>
         </div>
       </article>
