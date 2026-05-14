@@ -1,6 +1,7 @@
 export type PotteryClass = {
   slug: string;
   title: string;
+  featured: boolean;
   price: number;
   duration: string;
   level: string;
@@ -15,6 +16,7 @@ export const potteryClasses: PotteryClass[] = [
   {
     slug: "wheel-throwing-basics",
     title: "Wheel Throwing Basics",
+    featured: true,
     price: 2999,
     duration: "4 Weeks",
     level: "Beginner",
@@ -29,6 +31,7 @@ export const potteryClasses: PotteryClass[] = [
   {
     slug: "handbuilding-tableware",
     title: "Handbuilding Tableware",
+    featured: true,
     price: 2499,
     duration: "3 Weeks",
     level: "All levels",
@@ -43,6 +46,7 @@ export const potteryClasses: PotteryClass[] = [
   {
     slug: "ceramic-surface-workshop",
     title: "Ceramic Surface Workshop",
+    featured: true,
     price: 1899,
     duration: "1 Day",
     level: "Intermediate",

@@ -1,6 +1,8 @@
 import Navbar from "./components/home/navbar";
 import Hero from "./components/home/hero";
 import FeaturedCollections from "./components/home/featured-collections";
+import FeaturedClassesSection from "./components/home/featured-classes";
+import FeaturedProductsSection from "./components/home/featured-products";
 import AboutSection from "./components/home/about";
 import TestimonialsSection from "./components/home/testimonials";
 import CraftsmanshipProcess from "./components/home/craftsmanship-process";
@@ -14,6 +16,8 @@ export default function Page() {
       <main>
         <Hero />
         <FeaturedCollections />
+        <FeaturedProductsSection />
+        <FeaturedClassesSection />
         <AboutSection/>
         <CraftsmanshipProcess/>
         <TestimonialsSection/>

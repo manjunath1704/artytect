@@ -1,6 +1,7 @@
 export type Product = {
   id: string;
   name: string;
+  featured: boolean;
   category: string;
   sku: string;
   price: number;
@@ -18,6 +19,7 @@ export const products: Product[] = [
   {
     id: "wood-fired-bowl",
     name: "Wood Fired Bowl",
+    featured: true,
     category: "Bowls",
     sku: "AT-001",
     price: 3500,
@@ -39,6 +41,7 @@ export const products: Product[] = [
   {
     id: "marine-plate",
     name: "Marine Plate",
+    featured: true,
     category: "Plates",
     sku: "AT-014",
     price: 2500,
@@ -55,6 +58,7 @@ export const products: Product[] = [
   {
     id: "textured-mug",
     name: "Textured Mug",
+    featured: true,
     category: "Mugs",
     sku: "AT-022",
     price: 899,
@@ -70,6 +74,7 @@ export const products: Product[] = [
   {
     id: "quiet-vase",
     name: "Quiet Vase",
+    featured: false,
     category: "Vases",
     sku: "AT-031",
     price: 1800,
@@ -85,6 +90,7 @@ export const products: Product[] = [
   {
     id: "studio-planter",
     name: "Studio Planter",
+    featured: true,
     category: "Planters",
     sku: "AT-045",
     price: 1400,
@@ -101,6 +107,7 @@ export const products: Product[] = [
   {
     id: "deep-serving-plate",
     name: "Deep Serving Plate",
+    featured: false,
     category: "Deep Plates",
     sku: "AT-052",
     price: 1200,

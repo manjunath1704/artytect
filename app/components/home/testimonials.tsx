@@ -46,18 +46,18 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   return (
-    <section className="w-full bg-[#1b1511] py-20 text-white md:py-24">
+    <section className="w-full bg-[#F1F2E5] py-20 text-[#1b1511] md:py-24">
       <div className="site-container">
-        <div className="mb-12 grid gap-6 md:grid-cols-[0.82fr_1fr] md:items-end">
+        <div className="mb-12 grid gap-6 border-b border-[#eadbd6] pb-8 md:grid-cols-[0.82fr_1fr] md:items-end">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#d8b99c]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9e6871]">
               Studio notes
             </p>
             <h2 className="mt-3 text-4xl font-display uppercase leading-none tracking-normal md:text-5xl">
               Loved in daily use
             </h2>
           </div>
-          <p className="max-w-xl text-sm leading-7 text-[#d9c8b8] md:justify-self-end">
+          <p className="max-w-xl text-sm leading-7 text-[#675f5b] md:justify-self-end">
             Notes from customers and students who brought Artytect pieces into
             their kitchens, shelves, and weekend studio practice.
           </p>
@@ -84,9 +84,9 @@ export default function TestimonialsSection() {
                 key={`${item.name}-${index}`}
                 className="basis-full pl-4 md:basis-1/2"
               >
-                <article className="grid h-full min-h-[260px] border border-white/14 bg-white/[0.06] p-6 backdrop-blur md:grid-cols-[112px_1fr] md:p-8">
+                <article className="grid h-full min-h-[260px] border border-[#eadbd6] bg-white p-6 shadow-[0_18px_45px_rgba(27,21,17,0.07)] transition-colors hover:border-[#d8c3bd] md:grid-cols-[112px_1fr] md:p-8">
                   <div>
-                    <div className="relative h-24 w-24 overflow-hidden bg-[#342820]">
+                    <div className="relative h-24 w-24 overflow-hidden bg-[#f0e6e1] ring-1 ring-[#eadbd6]">
                       <Image
                         src={item.image}
                         alt={item.name}
@@ -95,13 +95,13 @@ export default function TestimonialsSection() {
                         className="object-cover object-top"
                       />
                     </div>
-                    <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d8b99c]">
+                    <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9e6871]">
                       0{index + 1}
                     </p>
                   </div>
 
-                  <div className="mt-6 border-t border-white/14 pt-6 md:mt-0 md:border-l md:border-t-0 md:pl-7 md:pt-0">
-                    <p className="text-xl font-display leading-8 text-[#fff8f1]">
+                  <div className="mt-6 border-t border-[#eadbd6] pt-6 md:mt-0 md:border-l md:border-t-0 md:pl-7 md:pt-0">
+                    <p className="text-xl font-display leading-8 text-[#251f1b]">
                       <span aria-hidden="true">“</span>
                       {item.quote}
                       <span aria-hidden="true">”</span>
@@ -111,9 +111,9 @@ export default function TestimonialsSection() {
                         <h3 className="text-sm font-semibold uppercase tracking-[0.16em]">
                           {item.name}
                         </h3>
-                        <p className="mt-2 text-xs text-[#c8b7a8]">{item.role}</p>
+                        <p className="mt-2 text-xs text-[#766d68]">{item.role}</p>
                       </div>
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#d8b99c]">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9e6871]">
                         {item.piece}
                       </p>
                     </div>
@@ -124,8 +124,8 @@ export default function TestimonialsSection() {
           </CarouselContent>
 
           <div className="mt-10 flex items-center justify-end">
-            <CarouselPrevious className="static h-8 w-8 translate-y-0 rounded-none border-[#d8b99c] bg-transparent text-[#d8b99c] shadow-none hover:bg-[#d8b99c] hover:text-[#1b1511] disabled:opacity-40 sm:h-9 sm:w-9 [&_svg]:!h-4 [&_svg]:!w-4" />
-            <CarouselNext className="static h-8 w-8 translate-y-0 rounded-none border-l-0 border-[#d8b99c] bg-transparent text-[#d8b99c] shadow-none hover:bg-[#d8b99c] hover:text-[#1b1511] disabled:opacity-40 sm:h-9 sm:w-9 [&_svg]:!h-4 [&_svg]:!w-4" />
+            <CarouselPrevious className="static h-8 w-8 translate-y-0 rounded-none border-[#1b1511] bg-transparent text-[#1b1511] shadow-[0_16px_32px_rgba(27,21,17,0.10)] hover:bg-[#1b1511] hover:text-[#fff7f4] disabled:opacity-40 sm:h-9 sm:w-9 [&_svg]:!h-4 [&_svg]:!w-4" />
+            <CarouselNext className="static h-8 w-8 translate-y-0 rounded-none border-l-0 border-[#1b1511] bg-transparent text-[#1b1511] shadow-[0_16px_32px_rgba(27,21,17,0.10)] hover:bg-[#1b1511] hover:text-[#fff7f4] disabled:opacity-40 sm:h-9 sm:w-9 [&_svg]:!h-4 [&_svg]:!w-4" />
           </div>
         </Carousel>
       </div>
