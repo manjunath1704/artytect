@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Check, Clock, Users } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Check, Clock, Sparkles, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import Footer from "@/app/components/home/footer";
@@ -34,91 +34,186 @@ export default async function ClassPage({ params }: ClassPageProps) {
   return (
     <>
       <Navbar forceSolid />
-      <main className="bg-white pt-20 text-[#171717]">
+      <main className="bg-[#fbf8f4] pt-20 text-[#171717]">
+        <section className="relative overflow-hidden border-b border-[#ded2c6] bg-[#211914] text-white">
+          <div className="absolute inset-0">
+            <Image
+              src={classItem.image}
+              alt={classItem.title}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(27,21,17,0.88),rgba(27,21,17,0.58),rgba(27,21,17,0.22))]" />
+          </div>
+
+          <div className="site-container relative flex min-h-[580px] items-end py-12 md:py-16">
+            <div className="max-w-4xl">
+              <Link
+                href="/classes"
+                className="mb-8 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#ead7c3] transition hover:text-white"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Classes
+              </Link>
+              <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#ead7c3]">
+                <Sparkles className="h-4 w-4" />
+                {classItem.level}
+              </p>
+              <h1 className="mt-4 text-6xl font-display uppercase leading-[0.86] tracking-normal sm:text-7xl lg:text-8xl">
+                {classItem.title}
+              </h1>
+              <p className="mt-7 max-w-2xl text-sm leading-7 text-[#f2e3d5] md:text-base md:leading-8">
+                {classItem.shortDescription}
+              </p>
+            </div>
+          </div>
+        </section>
+
         <section className="py-12 md:py-16 lg:py-20">
           <div className="site-container">
-            <Link
-              href="/classes"
-              className="mb-8 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#7d746d] transition hover:text-[#1b1511]"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Classes
-            </Link>
-
-            <div className="grid gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16 xl:gap-20">
-              <div className="relative aspect-[1.08/1] overflow-hidden bg-[#f1ece6]">
-                <Image
-                  src={classItem.image}
-                  alt={classItem.title}
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 50vw, calc(100vw - 48px)"
-                  className="object-cover"
-                />
-              </div>
-
-              <div className="lg:sticky lg:top-28 lg:self-start">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9a8d82]">
-                  {classItem.level}
-                </p>
-                <h1 className="mt-3 text-4xl font-semibold uppercase tracking-[0.03em] sm:text-5xl">
-                  {classItem.title}
-                </h1>
-                <p className="mt-4 text-lg text-[#9a8d82]">
-                  {formatPrice(classItem.price)}
-                </p>
-
-                <div className="mt-7 flex flex-wrap gap-3 text-sm text-[#6f6259]">
-                  <span className="inline-flex items-center gap-2 border border-black/10 px-4 py-3">
-                    <Clock className="h-4 w-4" />
-                    {classItem.duration}
-                  </span>
-                  <span className="inline-flex items-center gap-2 border border-black/10 px-4 py-3">
-                    <Users className="h-4 w-4" />
-                    {classItem.capacity}
-                  </span>
+            <div className="grid gap-10 lg:grid-cols-[1fr_380px] lg:items-start xl:gap-16">
+              <div>
+                <div className="grid border-y border-[#d8cec1] text-center sm:grid-cols-3">
+                  <div className="border-b border-[#d8cec1] px-5 py-6 sm:border-b-0 sm:border-r">
+                    <Clock className="mx-auto h-5 w-5 text-[#9a6b4e]" />
+                    <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8a7765]">
+                      Duration
+                    </p>
+                    <p className="mt-2 text-sm font-semibold">{classItem.duration}</p>
+                  </div>
+                  <div className="border-b border-[#d8cec1] px-5 py-6 sm:border-b-0 sm:border-r">
+                    <Users className="mx-auto h-5 w-5 text-[#9a6b4e]" />
+                    <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8a7765]">
+                      Capacity
+                    </p>
+                    <p className="mt-2 text-sm font-semibold">{classItem.capacity}</p>
+                  </div>
+                  <div className="px-5 py-6">
+                    <p className="text-2xl font-display text-[#1b1511]">
+                      {formatPrice(classItem.price)}
+                    </p>
+                    <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8a7765]">
+                      Class fee
+                    </p>
+                  </div>
                 </div>
 
-                <p className="mt-9 max-w-xl text-sm leading-7 text-[#7d746d]">
-                  {classItem.description}
-                </p>
+                <div className="mt-12 grid gap-10 md:grid-cols-[0.72fr_1fr]">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#9a6b4e]">
+                      Class overview
+                    </p>
+                    <h2 className="mt-3 text-4xl font-display uppercase leading-none tracking-normal">
+                      What you will shape
+                    </h2>
+                  </div>
+                  <div className="space-y-7">
+                    <p className="text-sm leading-8 text-[#6f6259]">
+                      {classItem.description}
+                    </p>
+                    <p className="text-sm leading-8 text-[#6f6259]">
+                      Sessions are paced for hands-on practice, individual guidance,
+                      and enough quiet repetition to make the material feel familiar.
+                    </p>
+                  </div>
+                </div>
 
-                <div className="mt-8 border border-black/10 bg-[#fcfaf7] p-5">
+                <div className="mt-12 border border-[#d8cec1] bg-[#fffdf9] p-6 md:p-8">
                   <h2 className="text-xs font-semibold uppercase tracking-[0.2em]">
-                    Included
+                    Included in your seat
                   </h2>
-                  <ul className="mt-4 grid gap-3 text-sm text-[#6f6259]">
+                  <ul className="mt-6 grid gap-4 sm:grid-cols-2">
                     {classItem.includes.map((item) => (
-                      <li key={item} className="flex items-center gap-3">
-                        <Check className="h-4 w-4 text-[#8a5f3b]" />
+                      <li key={item} className="flex items-center gap-3 text-sm text-[#5f544b]">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#ead7c3] text-[#5b3826]">
+                          <Check className="h-4 w-4" />
+                        </span>
                         {item}
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <WhatsAppButton
-                  message={getClassBookingMessage(classItem)}
-                  className="mt-8 hidden h-14 w-full md:inline-flex"
-                >
-                  Book via WhatsApp
-                </WhatsAppButton>
+                <div className="mt-12 grid gap-4 sm:grid-cols-3">
+                  {["Arrive curious", "Practice slowly", "Finish fired"].map((step, index) => (
+                    <div key={step} className="border-t border-[#d8cec1] pt-5">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a6b4e]">
+                        Step 0{index + 1}
+                      </p>
+                      <p className="mt-3 text-lg font-display uppercase tracking-normal">
+                        {step}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
+
+              <aside className="lg:sticky lg:top-28">
+                <div className="overflow-hidden border border-[#d8cec1] bg-[#fffdf9] shadow-[0_24px_70px_rgba(27,21,17,0.1)]">
+                  <div className="relative aspect-[1.2/1] bg-[#e8ded3]">
+                    <Image
+                      src={classItem.image}
+                      alt={`${classItem.title} studio detail`}
+                      fill
+                      sizes="380px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a6b4e]">
+                      Reserve your seat
+                    </p>
+                    <h2 className="mt-3 text-3xl font-display uppercase leading-none tracking-normal">
+                      {classItem.title}
+                    </h2>
+                    <div className="mt-5 flex items-center justify-between border-y border-[#e2d6ca] py-4 text-sm">
+                      <span className="text-[#6f6259]">Class fee</span>
+                      <span className="font-semibold">{formatPrice(classItem.price)}</span>
+                    </div>
+                    <p className="mt-5 text-sm leading-7 text-[#6f6259]">
+                      Tap to start a WhatsApp booking with the class name, fee, and
+                      duration already filled in.
+                    </p>
+                    <WhatsAppButton
+                      message={getClassBookingMessage(classItem)}
+                      className="mt-6 hidden h-14 w-full md:inline-flex"
+                    >
+                      Book via WhatsApp
+                    </WhatsAppButton>
+                  </div>
+                </div>
+              </aside>
             </div>
           </div>
         </section>
 
-        <section className="border-t border-black/10 py-16 md:py-24">
+        <section className="border-t border-[#d8cec1] bg-[#f4eee7] py-16 md:py-24">
           <div className="site-container">
-            <h2 className="text-xl font-semibold uppercase tracking-[0.08em]">
-              More classes
-            </h2>
+            <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#9a6b4e]">
+                  Keep exploring
+                </p>
+                <h2 className="mt-3 text-4xl font-display uppercase leading-none tracking-normal">
+                  More classes
+                </h2>
+              </div>
+              <Link
+                href="/classes"
+                className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:text-[#8a5f3b]"
+              >
+                View all
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </div>
             <div className="mt-10 grid gap-6 md:grid-cols-2">
               {relatedClasses.map((relatedClass) => (
                 <Link
                   key={relatedClass.slug}
                   href={`/classes/${relatedClass.slug}`}
-                  className="group grid gap-5 border border-black/10 p-4 transition hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(27,21,17,0.08)] sm:grid-cols-[150px_1fr]"
+                  className="group grid gap-5 border border-[#d8cec1] bg-[#fffdf9] p-4 transition hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(27,21,17,0.08)] sm:grid-cols-[150px_1fr]"
                 >
                   <div className="relative aspect-square overflow-hidden bg-[#f1ece6]">
                     <Image
@@ -130,10 +225,10 @@ export default async function ClassPage({ params }: ClassPageProps) {
                     />
                   </div>
                   <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a8d82]">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a6b4e]">
                       {relatedClass.duration}
                     </p>
-                    <h3 className="mt-3 text-sm font-semibold uppercase tracking-[0.12em]">
+                    <h3 className="mt-3 text-sm font-semibold uppercase tracking-[0.12em] transition group-hover:text-[#8a5f3b]">
                       {relatedClass.title}
                     </h3>
                     <p className="mt-3 text-sm text-[#9a8d82]">
