@@ -34,7 +34,7 @@ const CategoryCard = ({
     >
       <article className="relative h-full overflow-hidden border border-[#e1d1c3] bg-[#fffaf3]">
         <div className="relative overflow-hidden p-3 pb-0">
-          <div className="relative aspect-[0.92/1] overflow-hidden bg-[#eee6dc]">
+          <div className="relative aspect-[4/3] overflow-hidden bg-[#eee6dc]">
             <Image
               src={thumbnailSrc}
               alt={title}
@@ -68,14 +68,14 @@ const CategoryCard = ({
           </div>
         </div>
 
-        <div className="space-y-5 p-6">
-          <div className="flex items-center justify-between gap-4 border-b border-[#eadfd4] pb-4">
+        <div className="space-y-3 p-4">
+          <div className="flex items-center justify-between gap-4 border-b border-[#eadfd4] pb-3">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a6b4e]">
               Handcrafted forms
             </p>
             <span className="h-px flex-1 bg-[#eadfd4]" />
           </div>
-          <p className="min-h-[4.25rem] text-sm leading-7 text-[#665b4f]">
+          <p className="line-clamp-2 text-sm leading-6 text-[#665b4f]">
             {description}
           </p>
           <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511]">

@@ -28,7 +28,7 @@ export default function ProductCard({
       )}
     >
       <Link href={`/products/${product.id}`} className="block">
-        <div className="relative aspect-[0.92/1] overflow-hidden bg-[#eee6dc]">
+        <div className="relative aspect-[4/3] overflow-hidden bg-[#eee6dc]">
           {product.badge ? (
             <span className="absolute right-4 top-4 z-10 border border-white/45 bg-[#1b1511]/75 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
               {product.badge}
@@ -58,7 +58,7 @@ export default function ProductCard({
         </div>
       </Link>
 
-      <div className="p-5">
+      <div className="p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a6b4e]">
             <Sparkles className="h-3.5 w-3.5" />
@@ -78,16 +78,16 @@ export default function ProductCard({
           </p>
         </div>
 
-        <p className="mt-3 line-clamp-2 min-h-[3.5rem] text-sm leading-7 text-[#7d746d]">
+        <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#7d746d]">
           {product.shortDescription}
         </p>
 
-        <div className="mt-4 flex items-center gap-2 border-y border-[#eadfd4] py-3 text-xs text-[#6f6259]">
+        <div className="mt-3 flex items-center gap-2 border-y border-[#eadfd4] py-2 text-xs text-[#6f6259]">
           <Ruler className="h-3.5 w-3.5 text-[#9a6b4e]" />
           <span className="line-clamp-1">{product.dimensions}</span>
         </div>
 
-        <div className="mt-5 grid grid-cols-[1fr_auto] gap-3">
+        <div className="mt-3 grid grid-cols-[1fr_auto] gap-3">
           <WhatsAppButton
             message={getProductOrderMessage(product)}
             className="h-11 px-4"

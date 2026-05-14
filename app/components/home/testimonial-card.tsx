@@ -21,7 +21,7 @@ export default function TestimonialCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.35 }}
       transition={{ duration: 0.55, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative flex h-full min-h-[390px] flex-col overflow-hidden border border-[#e3d2c3] bg-[#fffdf8] p-6 md:p-7"
+      className="group relative flex h-full flex-col overflow-hidden border border-[#e3d2c3] bg-[#fffdf8] p-5 md:p-6"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#b9825e,#d8b99c,#8f6f53)] opacity-80" />
       <Quote
@@ -29,8 +29,8 @@ export default function TestimonialCard({
         aria-hidden="true"
       />
 
-      <div className="flex items-center gap-4">
-        <div className="relative h-16 w-16 shrink-0 overflow-hidden bg-[#eadfd5] ring-1 ring-[#e1d2c5]">
+      <div className="flex items-center gap-3">
+        <div className="relative h-12 w-12 shrink-0 overflow-hidden bg-[#eadfd5] ring-1 ring-[#e1d2c5]">
           <Image
             src={testimonial.image}
             alt={`${testimonial.name} portrait`}
@@ -49,7 +49,7 @@ export default function TestimonialCard({
       </div>
 
       <div
-        className="mt-6 flex items-center gap-1 text-[#b9825e]"
+        className="mt-4 flex items-center gap-1 text-[#b9825e]"
         aria-label={`${testimonial.rating} out of 5 stars`}
       >
         {Array.from({ length: 5 }, (_, starIndex) => (
@@ -62,11 +62,11 @@ export default function TestimonialCard({
         ))}
       </div>
 
-      <p className="mt-5 flex-1 text-lg font-display leading-8 text-[#2b211b]">
+      <p className="mt-4 flex-1 text-base font-display leading-7 text-[#2b211b]">
         {testimonial.review}
       </p>
 
-      <div className="mt-7 border-t border-[#eadfd4] pt-5">
+      <div className="mt-5 border-t border-[#eadfd4] pt-4">
         <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a6b4e]">
           {testimonial.purchased}
         </p>

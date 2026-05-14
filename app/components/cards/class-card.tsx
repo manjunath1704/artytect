@@ -30,7 +30,7 @@ export default function ClassCard({
       )}
     >
       <Link href={`/classes/${classItem.slug}`} className="block">
-        <div className="relative aspect-[0.92/1] overflow-hidden bg-[#e8ded3]">
+        <div className="relative aspect-[4/3] overflow-hidden bg-[#e8ded3]">
           <Image
             src={classItem.image}
             alt={classItem.title}
@@ -53,31 +53,31 @@ export default function ClassCard({
         </div>
       </Link>
 
-      <div className="p-5">
-        <div className="grid grid-cols-3 border-y border-[#e2d6ca] py-4 text-center text-[#5d5148]">
+      <div className="p-4">
+        <div className="grid grid-cols-3 border-y border-[#e2d6ca] py-3 text-center text-[#5d5148]">
           <div className="border-r border-[#e2d6ca] px-2">
             <Clock className="mx-auto h-4 w-4 text-[#9a6b4e]" />
-            <p className="mt-2 text-xs">{classItem.duration}</p>
+            <p className="mt-1.5 text-xs">{classItem.duration}</p>
           </div>
           <div className="border-r border-[#e2d6ca] px-2">
             <Users className="mx-auto h-4 w-4 text-[#9a6b4e]" />
-            <p className="mt-2 text-xs">{classItem.capacity}</p>
+            <p className="mt-1.5 text-xs">{classItem.capacity}</p>
           </div>
           <div className="px-2">
             <p className="text-base font-semibold text-[#1b1511]">
               {formatPrice(classItem.price)}
             </p>
-            <p className="mt-1 text-[10px] uppercase tracking-[0.16em]">
+            <p className="mt-0.5 text-[10px] uppercase tracking-[0.16em]">
               Fee
             </p>
           </div>
         </div>
 
-        <p className="mt-4 min-h-[4.5rem] text-sm leading-7 text-[#7d746d]">
+        <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#7d746d]">
           {classItem.shortDescription}
         </p>
 
-        <div className="mt-5 grid grid-cols-[1fr_auto] gap-3">
+        <div className="mt-3 grid grid-cols-[1fr_auto] gap-3">
           <WhatsAppButton
             message={getClassBookingMessage(classItem)}
             className="h-11 px-4"
