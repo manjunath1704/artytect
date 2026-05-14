@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, Play, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { MasonryPhotoAlbum } from "react-photo-album";
 import Lightbox from "yet-another-react-lightbox";
+import Video from "yet-another-react-lightbox/plugins/video";
 import "react-photo-album/masonry.css";
 import "yet-another-react-lightbox/styles.css";
 
@@ -164,7 +165,69 @@ const processCards: ProcessCard[] = [
     title: "Finished clay pieces",
     caption: "Earthware forms gathered after firing, ready for daily rituals.",
   },
+  {
+    type: "video",
+    src: "/videos/hero-a.mp4",
+    poster: "/images/gallery/pexels-readymade-3847467.jpg",
+    title: "Clay work in progress",
+    caption: "Small studio gestures, quiet tools, and surfaces taking shape.",
+  },
+  {
+    type: "image",
+    src: images[12].src,
+    index: 12,
+    title: "Glazed pottery detail",
+    caption: "Layered glaze, mineral color, and the final language of the kiln.",
+  },
+  {
+    type: "image",
+    src: images[17].src,
+    index: 17,
+    title: "Earthware collection",
+    caption: "Finished pieces arranged for tactile tables and slow living.",
+  },
+  {
+    type: "image",
+    src: images[18].src,
+    index: 18,
+    title: "Ceramic finishing process",
+    caption: "Edges softened, surfaces refined, and each form made ready by hand.",
+  },
 ];
+
+const lightboxVideoSlides = [
+  {
+    type: "video" as const,
+    title: "Clay, water, pressure, and time",
+    poster: "/images/gallery/pexels-rdne-8903303.jpg",
+    width: 1920,
+    height: 1080,
+    sources: [
+      { src: "/videos/hero-video-b.mp4", type: "video/mp4" },
+      { src: "/videos/hero.mp4", type: "video/mp4" },
+    ],
+  },
+  ...processCards
+    .filter((item): item is Extract<ProcessCard, { type: "video" }> => item.type === "video")
+    .map((item) => ({
+      type: "video" as const,
+      title: item.title,
+      poster: item.poster,
+      width: 1920,
+      height: 1080,
+      sources: [{ src: item.src, type: "video/mp4" }],
+    })),
+];
+
+const lightboxSlides = [
+  ...lightboxVideoSlides,
+  ...images.map((img) => ({
+    src: img.src,
+    title: img.caption,
+  })),
+];
+
+const imageLightboxOffset = lightboxVideoSlides.length;
 
 export default function GalleryApp() {
   const [index, setIndex] = useState<number>(-1);
@@ -172,13 +235,13 @@ export default function GalleryApp() {
 
   const showPrevious = () => {
     setIndex((currentIndex) =>
-      currentIndex <= 0 ? images.length - 1 : currentIndex - 1
+      currentIndex <= 0 ? lightboxSlides.length - 1 : currentIndex - 1
     );
   };
 
   const showNext = () => {
     setIndex((currentIndex) =>
-      currentIndex >= images.length - 1 ? 0 : currentIndex + 1
+      currentIndex >= lightboxSlides.length - 1 ? 0 : currentIndex + 1
     );
   };
 
@@ -214,12 +277,15 @@ export default function GalleryApp() {
         </motion.div>
 
         <div className="grid gap-5 lg:grid-cols-[1.45fr_0.9fr]">
-          <motion.article
+          <motion.button
+            type="button"
+            onClick={() => setIndex(0)}
+            aria-label="Open featured pottery process video"
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.65, ease: "easeOut" }}
-            className="relative min-h-[420px] overflow-hidden border border-[#d8cabd] bg-[#17110d] lg:min-h-[640px]"
+            className="relative min-h-[420px] overflow-hidden border border-[#d8cabd] bg-[#17110d] text-left lg:min-h-[640px]"
           >
             <video
               autoPlay
@@ -250,9 +316,9 @@ export default function GalleryApp() {
                 fired piece.
               </p>
             </div>
-          </motion.article>
+          </motion.button>
 
-          <div className="grid gap-5">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
             {processCards.map((item, itemIndex) => (
               <motion.article
                 key={item.title}
@@ -260,26 +326,38 @@ export default function GalleryApp() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.25 }}
                 transition={{ duration: 0.6, delay: itemIndex * 0.08, ease: "easeOut" }}
-                className="relative min-h-[230px] overflow-hidden border border-[#d8cabd] bg-[#17110d]"
+                className="relative min-h-[230px] overflow-hidden border border-[#d8cabd] bg-[#17110d] xl:min-h-[250px]"
               >
                 {item.type === "video" ? (
-                  <video
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    poster={item.poster}
-                    className="absolute inset-0 h-full w-full object-cover"
-                    aria-hidden="true"
+                  <button
+                    type="button"
+                    className="absolute inset-0 text-left"
+                    onClick={() => {
+                      const videoIndex = lightboxVideoSlides.findIndex(
+                        (slide) => slide.title === item.title,
+                      );
+                      setIndex(videoIndex >= 0 ? videoIndex : 0);
+                    }}
+                    aria-label={`Open ${item.title} video`}
                   >
-                    <source src={item.src} type="video/mp4" />
-                  </video>
+                    <video
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      poster={item.poster}
+                      className="absolute inset-0 h-full w-full object-cover"
+                      aria-hidden="true"
+                    >
+                      <source src={item.src} type="video/mp4" />
+                    </video>
+                  </button>
                 ) : (
                   <button
                     type="button"
                     className="absolute inset-0 text-left"
-                    onClick={() => setIndex(item.index)}
+                    onClick={() => setIndex(imageLightboxOffset + item.index)}
                     aria-label={`Open ${item.title}`}
                   >
                     <Image
@@ -308,7 +386,7 @@ export default function GalleryApp() {
           </div>
         </div>
 
-        <div className="mt-14">
+        {/* <div className="mt-14">
           <MasonryPhotoAlbum
             photos={images.map((img) => ({
               src: img.src,
@@ -347,9 +425,9 @@ export default function GalleryApp() {
                   "h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-90",
               },
             }}
-            onClick={({ index }) => setIndex(index)}
+            onClick={({ index }) => setIndex(imageLightboxOffset + index)}
           />
-        </div>
+        </div> */}
       </div>
 
       <Lightbox
@@ -357,14 +435,19 @@ export default function GalleryApp() {
         index={index}
         close={() => setIndex(-1)}
         on={{ view: ({ index: currentIndex }) => setIndex(currentIndex) }}
+        plugins={[Video]}
+        video={{
+          controls: true,
+          autoPlay: true,
+          muted: false,
+          loop: true,
+          playsInline: true,
+        }}
         render={{
           buttonPrev: () => null,
           buttonNext: () => null,
         }}
-        slides={images.map((img) => ({
-          src: img.src,
-          title: img.caption,
-        }))}
+        slides={lightboxSlides}
       />
 
       {isLightboxOpen && (
