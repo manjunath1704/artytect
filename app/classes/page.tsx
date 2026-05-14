@@ -106,15 +106,15 @@ export default function ClassesPage() {
                         sizes="(min-width: 768px) 31vw, calc(100vw - 48px)"
                         className="object-cover transition duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#17110d]/78 via-[#17110d]/8 to-transparent" />
+                      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,17,13,0.18),rgba(23,17,13,0.2)_34%,rgba(23,17,13,0.9))]" />
                       <span className="absolute left-4 top-4 border border-white/35 bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
                         0{index + 1}
                       </span>
-                      <div className="absolute inset-x-4 bottom-4 text-white">
+                      <div className="absolute inset-x-4 bottom-4 bg-[#17110d]/62 p-4 text-white backdrop-blur-[2px]">
                         <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#ead7c3]">
                           {classItem.level}
                         </p>
-                        <h3 className="mt-2 text-3xl font-display uppercase leading-none tracking-normal">
+                        <h3 className="mt-2 text-3xl font-display uppercase leading-none tracking-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]">
                           {classItem.title}
                         </h3>
                       </div>
