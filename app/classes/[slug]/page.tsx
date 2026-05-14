@@ -61,7 +61,7 @@ export default async function ClassPage({ params }: ClassPageProps) {
                 <Sparkles className="h-4 w-4" />
                 {classItem.level}
               </p>
-              <h1 className="mt-4 text-6xl font-display uppercase leading-[0.86] tracking-normal sm:text-7xl lg:text-8xl">
+              <h1 className="mt-4 text-4xl font-display uppercase leading-[1] tracking-normal sm:text-7xl lg:text-8xl">
                 {classItem.title}
               </h1>
               <p className="mt-7 max-w-2xl text-sm leading-7 text-[#f2e3d5] md:text-base md:leading-8">

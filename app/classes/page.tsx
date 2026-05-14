@@ -32,7 +32,7 @@ export default function ClassesPage() {
                   <Sparkles className="h-4 w-4" />
                   Pottery classes
                 </p>
-                <h1 className="mt-5 text-6xl font-display uppercase leading-[0.86] tracking-normal sm:text-7xl lg:text-8xl">
+                <h1 className="mt-5 text-4xl font-display uppercase leading-[1] tracking-normal sm:text-7xl lg:text-8xl">
                   Make with clay, leave with ritual
                 </h1>
                 <p className="mt-7 max-w-xl text-sm leading-7 text-[#f4e9dc] md:text-base md:leading-8">
