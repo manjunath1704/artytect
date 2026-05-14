@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
+import WhatsAppButton from "@/components/whatsapp-button";
 import { prisma } from "@/lib/prisma";
+import { products as catalogProducts } from "@/lib/products";
+import { formatPrice, getProductOrderMessage } from "@/lib/whatsapp";
 
 type CategoryPageProps = {
   params: Promise<{
@@ -71,90 +74,6 @@ const fallbackCategories: CategoryCatalog[] = [
   },
 ];
 
-const productImagesBySlug: Record<string, string[]> = {
-  bowls: [
-    "/images/bowl-a.avif",
-    "/images/bowl-b.avif",
-    "/images/deep-a.avif",
-    "/images/deep-b.avif",
-    "/images/gallery/pexels-readymade-3847457.jpg",
-    "/images/gallery/pexels-readymade-3847438.jpg",
-  ],
-  vases: [
-    "/images/vase-a.avif",
-    "/images/vase-b.avif",
-    "/images/gallery/pexels-jessejames-16691991.jpg",
-    "/images/gallery/pexels-handanovijc-12859531.jpg",
-    "/images/gallery/pexels-picdrow-10995878.jpg",
-    "/images/gallery/pexels-karola-g-7588511.jpg",
-  ],
-  mugs: [
-    "/images/mug-a.avif",
-    "/images/mug-b.avif",
-    "/images/gallery/pexels-rdne-8903648.jpg",
-    "/images/gallery/pexels-ron-lach-10222718.jpg",
-    "/images/gallery/pexels-ivan-s-7119222.jpg",
-    "/images/gallery/pexels-mart-production-8217302.jpg",
-  ],
-  planters: [
-    "/images/planter-a.avif",
-    "/images/planter-b.avif",
-    "/images/gallery/pexels-karola-g-6920401.jpg",
-    "/images/gallery/pexels-karola-g-6805523.jpg",
-    "/images/gallery/pexels-makaroff-aleksandr-114409006-10401476.jpg",
-    "/images/gallery/pexels-ramon-clemente-1097299-6546576.jpg",
-  ],
-  plates: [
-    "/images/plate-a.avif",
-    "/images/plate-b.avif",
-    "/images/deep-a.avif",
-    "/images/deep-b.avif",
-    "/images/gallery/pexels-readymade-3847438.jpg",
-    "/images/gallery/pexels-stephanie-loewe-23778814-6842672.jpg",
-  ],
-  "deep-plates": [
-    "/images/deep-a.avif",
-    "/images/deep-b.avif",
-    "/images/plate-a.avif",
-    "/images/plate-b.avif",
-    "/images/gallery/pexels-readymade-3847467.jpg",
-    "/images/gallery/pexels-photogbasya-a-1171505293-29665160.jpg",
-  ],
-};
-
-const generalProductImages = [
-  "/images/bowl-a.avif",
-  "/images/vase-a.avif",
-  "/images/mug-a.avif",
-  "/images/plate-a.avif",
-  "/images/planter-a.avif",
-  "/images/deep-a.avif",
-];
-
-const productQualities = [
-  "Unique",
-  "Soft",
-  "Studio",
-  "Hand-thrown",
-  "Textured",
-  "Quiet",
-  "Raw edge",
-  "Layered",
-  "Matte",
-  "Everyday",
-  "Limited",
-  "Signature",
-];
-
-const artisans = [
-  "Leontina di Gioia",
-  "Karin Blanch Nielsen",
-  "Yuko Ando",
-  "Tybo",
-  "Emma Hardin",
-  "Feldspar",
-];
-
 async function getCategory(slug: string): Promise<CategoryCatalog | null> {
   const fallbackCategory = fallbackCategories.find((category) => category.slug === slug);
 
@@ -186,17 +105,19 @@ async function getCategory(slug: string): Promise<CategoryCatalog | null> {
   return fallbackCategory ?? null;
 }
 
-function getCategoryProducts(category: CategoryCatalog) {
-  const images = productImagesBySlug[category.slug] ?? generalProductImages;
-  const singularTitle = category.title.replace(/s$/i, "");
+function toSlug(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
-  return Array.from({ length: 12 }, (_, index) => ({
-    id: `${category.slug}-${index + 1}`,
-    name: `${productQualities[index]} ${singularTitle}`,
-    artisan: artisans[index % artisans.length],
-    price: `₹${(1295 + index * 365).toLocaleString("en-IN")}`,
-    image: images[index % images.length],
-  }));
+function getCategoryProducts(category: CategoryCatalog) {
+  return catalogProducts.filter(
+    (product) => toSlug(product.category) === category.slug,
+  );
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
@@ -259,38 +180,92 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               </div>
             </div>
 
+            {products.length ? (
             <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
               {products.map((product) => (
                 <article
                   key={product.id}
-                  className="group text-center"
+                  className="group overflow-hidden border border-[#d8cec1] bg-[#fcfaf7] shadow-[0_18px_50px_rgba(27,21,17,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(27,21,17,0.1)]"
                 >
-                  <div className="relative aspect-[1.15/1] overflow-hidden bg-[#e8dfd2]">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
-                      className="object-cover transition duration-700 ease-out group-hover:scale-105"
-                    />
+                  <Link href={`/products/${product.id}`} className="block">
+                    <div className="relative aspect-[1.15/1] overflow-hidden bg-[#e8dfd2]">
+                      {product.badge ? (
+                        <span className="absolute right-4 top-4 z-10 bg-[#f8e8e1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]">
+                          {product.badge}
+                        </span>
+                      ) : null}
+                      <Image
+                        src={product.images[0]}
+                        alt={product.name}
+                        fill
+                        sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
+                        className="object-cover transition duration-700 ease-out group-hover:scale-105"
+                      />
+                    </div>
+                  </Link>
+
+                  <div className="p-5 text-left">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7765]">
+                        {product.category}
+                      </p>
+                      <p className="text-sm font-semibold text-[#1b1511]">
+                        {product.compareAtPrice ? (
+                          <>
+                            <span className="mr-2 text-[#8a7765] line-through">
+                              {formatPrice(product.compareAtPrice)}
+                            </span>
+                            <span>{formatPrice(product.price)}</span>
+                          </>
+                        ) : (
+                          formatPrice(product.price)
+                        )}
+                      </p>
+                    </div>
+
+                    <Link href={`/products/${product.id}`} className="block">
+                      <h2 className="mt-3 text-base font-semibold uppercase tracking-[0.08em] text-[#1b1511] transition group-hover:text-[#8a5f3b]">
+                        {product.name}
+                      </h2>
+                    </Link>
+                    <p className="mt-3 line-clamp-2 min-h-[3.5rem] text-sm leading-7 text-[#5e5348]">
+                      {product.shortDescription}
+                    </p>
+
+                    <div className="mt-5 grid grid-cols-[1fr_auto] gap-3">
+                      <WhatsAppButton
+                        message={getProductOrderMessage(product)}
+                        className="h-11 px-4"
+                      >
+                        Order Now
+                      </WhatsAppButton>
+                      <Link
+                        href={`/products/${product.id}`}
+                        className="inline-flex h-11 items-center justify-center border border-[#d8cec1] px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511]"
+                      >
+                        View
+                      </Link>
+                    </div>
                   </div>
-                  <h2 className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-[#1b1511]">
-                    {product.name}
-                  </h2>
-                  <p className="mt-1 text-xs text-[#5e5348]">by {product.artisan}</p>
-                  <p className="mt-2 text-xs text-[#1b1511]">{product.price}</p>
                 </article>
               ))}
             </div>
-
-            <div className="mt-16 text-center">
-              <button
-                type="button"
-                className="border border-[#1b1511] px-8 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#1b1511] transition hover:bg-[#1b1511] hover:text-[#fcfdfa]"
+            ) : (
+            <div className="border border-dashed border-[#d8cec1] bg-[#fcfaf7] px-6 py-14 text-center">
+              <h2 className="text-2xl font-display tracking-[-0.035em]">
+                No products in this category yet
+              </h2>
+              <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#5e5348]">
+                Explore the complete product catalog while new pieces are added here.
+              </p>
+              <Link
+                href="/products"
+                className="mt-6 inline-flex border border-[#1b1511] px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:bg-[#1b1511] hover:text-white"
               >
-                Load more
-              </button>
+                View all products
+              </Link>
             </div>
+            )}
           </div>
         </section>
 

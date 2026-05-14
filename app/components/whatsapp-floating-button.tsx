@@ -1,10 +1,11 @@
-const whatsappNumber = "918310012623";
-const message = encodeURIComponent("Hello ArtyTect, I would like to know more.");
+import { getWhatsAppUrl } from "@/lib/whatsapp";
+
+const message = "Hello ArtyTect, I would like to know more.";
 
 export default function WhatsAppFloatingButton() {
   return (
     <a
-      href={`https://wa.me/${whatsappNumber}?text=${message}`}
+      href={getWhatsAppUrl(message)}
       target="_blank"
       rel="noreferrer"
       aria-label="Chat with ArtyTect on WhatsApp"

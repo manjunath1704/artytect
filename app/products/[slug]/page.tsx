@@ -5,23 +5,24 @@ import { notFound } from "next/navigation";
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
 import { getProduct, getRelatedProducts, products } from "@/lib/products";
+import { formatPrice } from "@/lib/whatsapp";
 import ProductDetailView from "./product-detail-view";
 
 type ProductPageProps = {
   params: Promise<{
-    id: string;
+    slug: string;
   }>;
 };
 
 export function generateStaticParams() {
   return products.map((product) => ({
-    id: product.id,
+    slug: product.id,
   }));
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { id } = await params;
-  const product = getProduct(id);
+  const { slug } = await params;
+  const product = getProduct(slug);
 
   if (!product) {
     notFound();
@@ -69,12 +70,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     {relatedProduct.compareAtPrice ? (
                       <>
                         <span className="mr-2 line-through">
-                          ${relatedProduct.compareAtPrice}
+                          {formatPrice(relatedProduct.compareAtPrice)}
                         </span>
-                        <span>${relatedProduct.price}</span>
+                        <span>{formatPrice(relatedProduct.price)}</span>
                       </>
                     ) : (
-                      `$${relatedProduct.price}`
+                      formatPrice(relatedProduct.price)
                     )}
                   </p>
                 </Link>

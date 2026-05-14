@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { Heart, Minus, Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import WhatsAppButton from "@/components/whatsapp-button";
 import type { Product } from "@/lib/products";
+import { formatPrice, getProductOrderMessage } from "@/lib/whatsapp";
 
 type ProductDetailViewProps = {
   product: Product;
@@ -22,6 +24,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
   const [selectedImage, setSelectedImage] = useState(product.images[0]);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<ProductTab>("description");
+  const whatsappMessage = useMemo(() => getProductOrderMessage(product), [product]);
 
   const tabContent = useMemo(() => {
     if (activeTab === "information") {
@@ -38,6 +41,18 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
               Care
             </dt>
             <dd className="mt-2">Dishwasher safe. Hand wash recommended for longevity.</dd>
+          </div>
+          <div>
+            <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
+              Dimensions
+            </dt>
+            <dd className="mt-2">{product.dimensions}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
+              Materials
+            </dt>
+            <dd className="mt-2">{product.materials}</dd>
           </div>
           <div>
             <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
@@ -131,7 +146,18 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
               <h1 className="mt-3 text-4xl font-semibold uppercase tracking-[0.03em] sm:text-5xl">
                 {product.name}
               </h1>
-              <p className="mt-4 text-lg text-[#9a8d82]">${product.price}</p>
+              <p className="mt-4 text-lg text-[#9a8d82]">
+                {product.compareAtPrice ? (
+                  <>
+                    <span className="mr-3 line-through">
+                      {formatPrice(product.compareAtPrice)}
+                    </span>
+                    <span className="text-[#1b1511]">{formatPrice(product.price)}</span>
+                  </>
+                ) : (
+                  formatPrice(product.price)
+                )}
+              </p>
 
               <p className="mt-10 max-w-lg text-sm leading-7 text-[#9a8d82]">
                 {product.shortDescription}
@@ -148,6 +174,18 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                   <dt>Category:</dt>
                   <dd className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
                     {product.category}
+                  </dd>
+                </div>
+                <div className="flex gap-1">
+                  <dt>Dimensions:</dt>
+                  <dd className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
+                    {product.dimensions}
+                  </dd>
+                </div>
+                <div className="flex gap-1">
+                  <dt>Materials:</dt>
+                  <dd className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
+                    {product.materials}
                   </dd>
                 </div>
                 <div className="flex gap-1">
@@ -194,21 +232,13 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  className="h-14 bg-[#f8e4dc] px-10 text-[11px] font-semibold uppercase tracking-[0.24em] transition hover:bg-[#efd2c7] sm:min-w-44"
+                <WhatsAppButton
+                  message={whatsappMessage}
+                  className="h-14 px-10 sm:min-w-56"
                 >
-                  Add to cart
-                </button>
+                  Order via WhatsApp
+                </WhatsAppButton>
               </div>
-
-              <button
-                type="button"
-                className="mt-7 inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#171717]"
-              >
-                <Heart className="h-4 w-4" />
-                Add to wishlist
-              </button>
             </div>
           </div>
         </div>
@@ -241,6 +271,12 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
           <div className="mt-7">{tabContent}</div>
         </div>
       </section>
+
+      <div className="fixed inset-x-4 bottom-4 z-[70] md:hidden">
+        <WhatsAppButton message={whatsappMessage} className="h-14 w-full">
+          Order via WhatsApp
+        </WhatsAppButton>
+      </div>
     </>
   );
 }

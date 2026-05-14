@@ -5,7 +5,9 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight, Search, SlidersHorizontal, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import WhatsAppButton from "@/components/whatsapp-button";
 import type { Product } from "@/lib/products";
+import { formatPrice, getProductOrderMessage } from "@/lib/whatsapp";
 
 type ProductCatalogProps = {
   products: Product[];
@@ -15,13 +17,12 @@ type PriceFilter = "all" | "under-150" | "150-250" | "over-250";
 type SortOption = "featured" | "price-asc" | "price-desc" | "name-asc";
 
 const pageSize = 15;
-const whatsappNumber = "918310012623";
 
 const priceOptions: { label: string; value: PriceFilter }[] = [
   { label: "All prices", value: "all" },
-  { label: "Under $150", value: "under-150" },
-  { label: "$150-$250", value: "150-250" },
-  { label: "Over $250", value: "over-250" },
+  { label: "Under ₹1,500", value: "under-150" },
+  { label: "₹1,500-₹2,500", value: "150-250" },
+  { label: "Over ₹2,500", value: "over-250" },
 ];
 
 const sortOptions: { label: string; value: SortOption }[] = [
@@ -63,9 +64,9 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
       const matchesCategory = category === "All" || product.category === category;
       const matchesPrice =
         priceFilter === "all" ||
-        (priceFilter === "under-150" && product.price < 150) ||
-        (priceFilter === "150-250" && product.price >= 150 && product.price <= 250) ||
-        (priceFilter === "over-250" && product.price > 250);
+        (priceFilter === "under-150" && product.price < 1500) ||
+        (priceFilter === "150-250" && product.price >= 1500 && product.price <= 2500) ||
+        (priceFilter === "over-250" && product.price > 2500);
 
       return matchesQuery && matchesCategory && matchesPrice;
     });
@@ -99,22 +100,6 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
     setPriceFilter("all");
     setSort("featured");
     setPage(1);
-  };
-
-  const getWhatsAppLink = (product: Product) => {
-    const message = encodeURIComponent(
-      [
-        "Hello ArtyTect, I would like to buy this product:",
-        "",
-        `Product: ${product.name}`,
-        `Category: ${product.category}`,
-        `SKU: ${product.sku}`,
-        `Price: $${product.price}`,
-        `Product page: /products/${product.id}`,
-      ].join("\n"),
-    );
-
-    return `https://wa.me/${whatsappNumber}?text=${message}`;
   };
 
   return (
@@ -279,12 +264,12 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                       {product.compareAtPrice ? (
                         <>
                           <span className="mr-2 text-[#9a8d82] line-through">
-                          ₹{product.compareAtPrice}
+                          {formatPrice(product.compareAtPrice)}
                           </span>
-                          <span>₹{product.price}</span>
+                          <span>{formatPrice(product.price)}</span>
                         </>
                       ) : (
-                        `₹${product.price}`
+                        formatPrice(product.price)
                       )}
                     </p>
                   </div>
@@ -300,14 +285,12 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                   </p>
 
                   <div className="mt-5 grid grid-cols-[1fr_auto] gap-3">
-                    <a
-                      href={getWhatsAppLink(product)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex h-11 items-center justify-center bg-[#1b1511] px-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-[#3a2f27]"
+                    <WhatsAppButton
+                      message={getProductOrderMessage(product)}
+                      className="h-11 px-4"
                     >
-                      Buy
-                    </a>
+                      Order Now
+                    </WhatsAppButton>
                     <Link
                       href={`/products/${product.id}`}
                       className="inline-flex h-11 items-center justify-center border border-black/10 px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511]"
