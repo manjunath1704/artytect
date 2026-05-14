@@ -23,7 +23,7 @@ export default function ProductCard({
   return (
     <article
       className={cn(
-        "group overflow-hidden border border-[#ded3c8] bg-[#fffdf9] shadow-[0_18px_50px_rgba(27,21,17,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(27,21,17,0.13)]",
+        "group overflow-hidden border border-[#ded3c8] bg-[#fffdf9]",
         className,
       )}
     >
@@ -39,7 +39,7 @@ export default function ProductCard({
             alt={product.name}
             fill
             sizes={imageSizes}
-            className="object-cover transition duration-700 group-hover:scale-105"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(27,21,17,0.04),rgba(27,21,17,0.08)_45%,rgba(27,21,17,0.52))] opacity-80 transition group-hover:opacity-100" />
           <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3 text-white">
@@ -47,7 +47,7 @@ export default function ProductCard({
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#ead7c3]">
                 {product.category}
               </p>
-              <h3 className="mt-2 text-2xl font-display uppercase leading-none tracking-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)]">
+              <h3 className="mt-2 text-2xl font-display uppercase leading-none tracking-normal">
                 {product.name}
               </h3>
             </div>

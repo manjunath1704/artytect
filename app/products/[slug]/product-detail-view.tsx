@@ -92,7 +92,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
         <div className="site-container">
           <div className="grid gap-12 lg:grid-cols-[1.12fr_0.88fr] lg:gap-16 xl:gap-20">
             <div className="grid gap-4 lg:sticky lg:top-28 lg:self-start">
-              <div className="relative aspect-[1.02/1] overflow-hidden bg-[#eee6dc] shadow-[0_24px_70px_rgba(27,21,17,0.08)]">
+              <div className="relative aspect-[1.02/1] overflow-hidden bg-[#eee6dc]">
                 {product.badge ? (
                   <span className="absolute right-5 top-5 z-10 border border-white/45 bg-[#1b1511]/75 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-white backdrop-blur">
                     {product.badge}
@@ -140,7 +140,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
             </div>
 
             <div>
-              <div className="border border-[#ded3c8] bg-[#fffdf9] p-6 shadow-[0_24px_70px_rgba(27,21,17,0.08)] md:p-8">
+              <div className="border border-[#ded3c8] bg-[#fffdf9] p-6 md:p-8">
                 <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9a6b4e]">
                   <Sparkles className="h-4 w-4" />
                   {product.category}

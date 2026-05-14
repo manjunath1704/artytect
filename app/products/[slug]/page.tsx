@@ -60,7 +60,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <Link
                   key={relatedProduct.id}
                   href={`/products/${relatedProduct.id}`}
-                  className="group block overflow-hidden border border-[#d8cec1] bg-[#fffdf9] shadow-[0_18px_50px_rgba(27,21,17,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(27,21,17,0.1)]"
+                  className="group block overflow-hidden border border-[#d8cec1] bg-[#fffdf9]"
                 >
                   <div className="relative aspect-[0.95/1] overflow-hidden bg-[#eee6dc]">
                     {relatedProduct.badge ? (
@@ -73,7 +73,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                       alt={relatedProduct.name}
                       fill
                       sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
-                      className="object-cover transition duration-700 group-hover:scale-105"
+                      className="object-cover"
                     />
                   </div>
                   <div className="p-5">

@@ -151,7 +151,7 @@ export default async function ClassPage({ params }: ClassPageProps) {
               </div>
 
               <aside className="lg:sticky lg:top-28">
-                <div className="overflow-hidden border border-[#d8cec1] bg-[#fffdf9] shadow-[0_24px_70px_rgba(27,21,17,0.1)]">
+                <div className="overflow-hidden border border-[#d8cec1] bg-[#fffdf9]">
                   <div className="relative aspect-[1.2/1] bg-[#e8ded3]">
                     <Image
                       src={classItem.image}
@@ -213,7 +213,7 @@ export default async function ClassPage({ params }: ClassPageProps) {
                 <Link
                   key={relatedClass.slug}
                   href={`/classes/${relatedClass.slug}`}
-                  className="group grid gap-5 border border-[#d8cec1] bg-[#fffdf9] p-4 transition hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(27,21,17,0.08)] sm:grid-cols-[150px_1fr]"
+                  className="group grid gap-5 border border-[#d8cec1] bg-[#fffdf9] p-4 sm:grid-cols-[150px_1fr]"
                 >
                   <div className="relative aspect-square overflow-hidden bg-[#f1ece6]">
                     <Image
@@ -221,7 +221,7 @@ export default async function ClassPage({ params }: ClassPageProps) {
                       alt={relatedClass.title}
                       fill
                       sizes="150px"
-                      className="object-cover transition duration-700 group-hover:scale-105"
+                      className="object-cover"
                     />
                   </div>
                   <div>

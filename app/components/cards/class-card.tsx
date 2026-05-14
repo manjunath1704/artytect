@@ -25,7 +25,7 @@ export default function ClassCard({
   return (
     <article
       className={cn(
-        "group overflow-hidden border border-[#d8cec1] bg-[#fffdf9] shadow-[0_18px_50px_rgba(27,21,17,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(27,21,17,0.14)]",
+        "group overflow-hidden border border-[#d8cec1] bg-[#fffdf9]",
         className,
       )}
     >
@@ -36,7 +36,7 @@ export default function ClassCard({
             alt={classItem.title}
             fill
             sizes={imageSizes}
-            className="object-cover transition duration-700 group-hover:scale-105"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,17,13,0.18),rgba(23,17,13,0.2)_34%,rgba(23,17,13,0.9))]" />
           <span className="absolute left-4 top-4 border border-white/35 bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
@@ -46,7 +46,7 @@ export default function ClassCard({
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#ead7c3]">
               {classItem.level}
             </p>
-            <h3 className="mt-2 text-3xl font-display uppercase leading-none tracking-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]">
+            <h3 className="mt-2 text-3xl font-display uppercase leading-none tracking-normal">
               {classItem.title}
             </h3>
           </div>

@@ -188,7 +188,7 @@ export default function GalleryApp() {
             },
             image: {
               className:
-                "h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105",
+                "h-full w-full object-cover",
             },
           }}
           onClick={({ index }) => setIndex(index)}

@@ -45,7 +45,7 @@ const FeaturedCollections = () => {
           {collections.map((collection, index) => (
             <article
               key={collection.title}
-              className="group  p-4  backdrop-blur-sm transition-transform duration-300 hover:-translate-y-2"
+              className="p-4 backdrop-blur-sm"
             >
               <div className="relative overflow-hidden bg-[#f3eadb] p-5">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.65),transparent_36%)]" />
@@ -53,7 +53,7 @@ const FeaturedCollections = () => {
 
                 <div className="relative flex aspect-[4/3] items-center justify-center">
                   <div
-                    className={`h-28 w-28 rounded-[46%_46%_40%_40%] bg-gradient-to-b ${collection.accent} shadow-[0_20px_32px_rgba(23,20,15,0.16)]`}
+                    className={`h-28 w-28 rounded-[46%_46%_40%_40%] bg-gradient-to-b ${collection.accent}`}
                   />
                   <div className="absolute inset-x-[24%] bottom-[18%] h-8 rounded-full bg-black/10 blur-lg" />
                   <div className="absolute left-[18%] top-[24%] h-9 w-9 rounded-full bg-white/35 blur-[2px]" />

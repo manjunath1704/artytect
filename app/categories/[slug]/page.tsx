@@ -185,7 +185,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               {products.map((product) => (
                 <article
                   key={product.id}
-                  className="group overflow-hidden border border-[#d8cec1] bg-[#fcfaf7] shadow-[0_18px_50px_rgba(27,21,17,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(27,21,17,0.1)]"
+                  className="group overflow-hidden border border-[#d8cec1] bg-[#fcfaf7]"
                 >
                   <Link href={`/products/${product.id}`} className="block">
                     <div className="relative aspect-[1.15/1] overflow-hidden bg-[#e8dfd2]">
@@ -199,7 +199,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                         alt={product.name}
                         fill
                         sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
-                        className="object-cover transition duration-700 ease-out group-hover:scale-105"
+                        className="object-cover"
                       />
                     </div>
                   </Link>
