@@ -1,11 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const footerLinks = [
   { label: "Home", href: "/" },
-  { label: "Collections", href: "/#collections" },
-  { label: "About", href: "/#about" },
-  { label: "Gallery", href: "/#gallery" },
-  { label: "Shop", href: "/products" },
+  { label: "Collections", href: "/categories" },
+  { label: "Products", href: "/products" },
+  { label: "Classes", href: "/classes" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -15,11 +15,13 @@ export default function Footer() {
       <div className="site-container">
         <div className="grid gap-10 border-b border-white/15 pb-10 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
           <div>
-            <Link
-              href="/"
-              className="font-display text-3xl font-bold tracking-[0.22em] text-white"
-            >
-              Haritham
+            <Link href="/" className="relative inline-block h-10 w-40 transition-opacity hover:opacity-80">
+              <Image
+                src="/logo/logo-light.svg"
+                alt="Haritham"
+                fill
+                className="object-contain object-left"
+              />
             </Link>
             <p className="mt-5 max-w-md text-base leading-7 text-white/65">
               Handcrafted ceramics shaped with calm forms, natural texture, and
@@ -47,10 +49,10 @@ export default function Footer() {
               Contact
             </h3>
             <a
-              href="mailto:hello@Haritham.com"
+              href="mailto:hello@haritham.com"
               className="text-sm text-white/75 transition hover:text-white"
             >
-              hello@Haritham.com
+              hello@haritham.com
             </a>
             <p className="text-sm text-white/75">Bengaluru, India</p>
           </div>

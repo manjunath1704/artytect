@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -28,6 +29,13 @@ const Navbar = ({
   const [activeHash, setActiveHash] = useState("");
   const showSolid = forceSolid || isScrolled;
   const transparentIsDark = transparentTone === "dark";
+
+  // Determine which logo to show
+  const logoSrc = showSolid 
+    ? "/logo/logo-brand.svg" 
+    : transparentIsDark 
+      ? "/logo/logo-brand.svg" 
+      : "/logo/logo-light.svg";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -92,8 +100,14 @@ const Navbar = ({
       ].join(" ")}
     >
       <div className="site-container flex h-20 items-center justify-between">
-        <Link href="/" className="font-display uppercase text-2xl tracking-[0.22em] text-inherit sm:text-3xl">
-          Haritham 
+        <Link href="/" className="relative h-8 w-32 transition-opacity hover:opacity-80 sm:h-14 sm:w-60">
+          <Image
+            src={logoSrc}
+            alt="Haritham"
+            fill
+            className="object-contain object-left"
+            priority
+          />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
