@@ -3,6 +3,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
+import ContactMap from "../components/contact-map";
 
 const contactMethods = [
   {
@@ -17,12 +18,12 @@ const contactMethods = [
     value: "+91 98765 43210",
     href: "tel:+919876543210",
   },
-  {
-    icon: MapPin,
-    label: "Studio",
-    value: "Bengaluru, India",
-    href: "https://maps.google.com/?q=Bengaluru%2C%20India",
-  },
+  // {
+  //   icon: MapPin,
+  //   label: "Studio",
+  //   value: "Bengaluru, India",
+  //   href: "https://maps.google.com/?q=Bengaluru%2C%20India",
+  // },
 ];
 
 export default function ContactPage() {
@@ -60,15 +61,8 @@ export default function ContactPage() {
 
         <section className="py-14 md:py-20">
           <div className="site-container grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
+            
             <aside>
-              {/* <h2 className="text-3xl font-display tracking-[-0.04em] md:text-4xl">
-                Contact us
-              </h2>
-              <p className="mt-4 max-w-sm text-sm leading-7 text-[#665b4f]">
-                For urgent order changes, email us with your order number in the
-                subject line.
-              </p> */}
-
               <div className=" grid gap-4">
                 {contactMethods.map((method) => {
                   const Icon = method.icon;
@@ -77,7 +71,7 @@ export default function ContactPage() {
                     <a
                       key={method.label}
                       href={method.href}
-                      className="group flex items-center gap-4 overflow-hidden rounded-2xl shadow-sm bg-white p-4 transition hover:border-[#1b1511]"
+                      className="group flex items-center gap-4 overflow-hidden rounded-[32px] shadow-sm bg-white p-4 transition hover:border-[#1b1511]"
                       target={method.label === "Studio" ? "_blank" : undefined}
                       rel={method.label === "Studio" ? "noreferrer" : undefined}
                     >
@@ -95,6 +89,7 @@ export default function ContactPage() {
                     </a>
                   );
                 })}
+                 <ContactMap/>
               </div>
             </aside>
 
@@ -179,6 +174,7 @@ export default function ContactPage() {
             </form>
           </div>
         </section>
+       
       </main>
       <Footer />
     </>
