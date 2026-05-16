@@ -81,14 +81,6 @@ const Hero = () => {
           animate="visible"
           className="flex max-w-5xl flex-col items-start"
         >
-          {/* <motion.p
-            variants={itemVariants}
-            className="inline-flex items-center gap-3 border border-white/20 bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.32em] text-[#f8e6d0] backdrop-blur-md"
-          >
-            <Sparkles className="h-4 w-4" />
-            Earthy handcrafted ceramics
-          </motion.p> */}
-
           <motion.h1
             variants={itemVariants}
             className="mt-7 max-w-5xl text-left text-[clamp(1rem,7vw,4rem)] font-display leading-[1.08] tracking-normal text-[#fff8ef] sm:leading-[1.04] lg:max-w-4xl"

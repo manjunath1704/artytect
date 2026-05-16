@@ -263,7 +263,7 @@ export default function GalleryApp() {
         >
           <div>
             <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9a6b4e]">
-              <Sparkles className="h-4 w-4" />
+             
               Crafted moments
             </p>
             <h2 className="mt-3 max-w-3xl text-4xl font-display uppercase leading-none tracking-normal text-[#1b1511] sm:text-5xl lg:text-6xl">

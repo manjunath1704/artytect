@@ -23,7 +23,7 @@ export default function ProductCard({
   return (
     <article
       className={cn(
-        "group overflow-hidden rounded-[32px] border border-[#ded3c8] bg-[#fffdf9] shadow-sm transition-shadow hover:shadow-md",
+        "group overflow-hidden rounded-[32px] border border-[#ded3c8] bg-[#fffdf9] shadow-sm transition-shadow",
         className,
       )}
     >

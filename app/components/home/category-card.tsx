@@ -32,7 +32,7 @@ const CategoryCard = ({
       transition={{ type: "spring", stiffness: 240, damping: 24, delay: index * 0.04 }}
       aria-label={`Shop ${title}`}
     >
-      <article className="relative h-full overflow-hidden rounded-[32px] border border-[#e1d1c3] bg-[#fffaf3] shadow-sm transition-shadow duration-300 hover:shadow-md">
+      <article className="relative h-full overflow-hidden rounded-[32px] border border-[#e1d1c3] bg-[#fffaf3] shadow-sm transition-shadow duration-300">
         <div className="relative overflow-hidden p-3 pb-0">
           <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-[#eee6dc]">
             <Image

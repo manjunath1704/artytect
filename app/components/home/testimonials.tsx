@@ -108,12 +108,12 @@ export default function TestimonialsSection() {
               ))}
             </div>
 
-            <div className="flex items-center">
+            <div className="flex gap-3 items-center">
                   <CarouselPrevious
                     className="static h-10 w-10 translate-y-0 rounded-l-full border-brand-text-primary bg-transparent text-brand-text-primary shadow-none hover:bg-brand-text-primary hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
                   />
                   <CarouselNext
-                    className="static h-10 w-10 translate-y-0 rounded-r-full border-l-0 border-brand-text-primary bg-transparent text-brand-text-primary shadow-none hover:bg-brand-text-primary hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
+                    className="static h-10 w-10 translate-y-0 rounded-r-full border-brand-text-primary bg-transparent text-brand-text-primary shadow-none hover:bg-brand-text-primary hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
                   />
                 </div>
           </div>

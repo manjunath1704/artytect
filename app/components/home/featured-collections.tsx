@@ -140,25 +140,7 @@ const FeaturedCollections = () => {
       <div className="absolute inset-x-0 top-0 h-px bg-[#d8cabd]" />
 
       <div className="site-container relative">
-        {/* <div className="grid gap-6 border-b border-[#d8cabd] pb-8 md:grid-cols-[0.78fr_1fr] md:items-end">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9a6b4e]">
-              Featured collections
-            </p>
-            <h2 className="mt-3 max-w-2xl text-4xl font-display uppercase leading-none tracking-normal text-[#1b1511] sm:text-5xl lg:text-7xl">
-              Find your everyday form
-            </h2>
-          </div>
-          <div className="max-w-2xl md:justify-self-end">
-            <p className="text-sm leading-7 text-[#665b4f]">
-              Explore bowls, mugs, vases, planters, plates, and deep serving
-              forms selected for a quiet home, tactile tables, and daily rituals.
-            </p>
-            <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#9a6b4e]">
-              Curated by clay, glaze, and daily ritual
-            </p>
-          </div>
-        </div> */}
+       
  <SectionHeader
           id="featured-products-title"
           eyebrow="Featured collections"
@@ -220,21 +202,12 @@ const FeaturedCollections = () => {
                   />
                 ))}
               </div>
-
-              {/* <div className="flex items-center">
-                <CarouselPrevious
-                  className="static h-10 w-10 translate-y-0 rounded-none border-[#1b1511] bg-transparent text-[#1b1511] shadow-none hover:bg-[#1b1511] hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
-                />
-                <CarouselNext
-                  className="static h-10 w-10 translate-y-0 rounded-none border-l-0 border-[#1b1511] bg-transparent text-[#1b1511] shadow-none hover:bg-[#1b1511] hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
-                />
-              </div> */}
-              <div className="flex items-center">
+              <div className="flex gap-2 items-center">
                   <CarouselPrevious
                     className="static h-10 w-10 translate-y-0 rounded-l-full border-brand-text-primary bg-transparent text-brand-text-primary shadow-none hover:bg-brand-text-primary hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
                   />
                   <CarouselNext
-                    className="static h-10 w-10 translate-y-0 rounded-r-full border-l-0 border-brand-text-primary bg-transparent text-brand-text-primary shadow-none hover:bg-brand-text-primary hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
+                    className="static h-10 w-10 translate-y-0 rounded-r-full  border-brand-text-primary bg-transparent text-brand-text-primary shadow-none hover:bg-brand-text-primary hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
                   />
                 </div>
             </div>

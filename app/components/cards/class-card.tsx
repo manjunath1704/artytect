@@ -25,7 +25,7 @@ export default function ClassCard({
   return (
     <article
       className={cn(
-        "group overflow-hidden rounded-[32px] border border-[#d8cec1] bg-[#fffdf9] shadow-sm transition-shadow duration-300 hover:shadow-md",
+        "group overflow-hidden rounded-[32px] border border-[#d8cec1] bg-[#fffdf9] shadow-sm transition-shadow duration-300",
         className,
       )}
     >

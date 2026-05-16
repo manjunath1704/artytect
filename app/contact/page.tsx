@@ -36,7 +36,7 @@ export default function ContactPage() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.36em] text-[#8a7765]">
                 Contact us
               </p>
-              <h1 className="mt-5 text-5xl font-display uppercase leading-none tracking-[-0.06em] sm:text-7xl lg:text-8xl">
+              <h1 className="mt-5 text-4xl font-display uppercase leading-[2] tracking-[0.06em] sm:5xl lg:text-6xl">
                 Let&apos;s shape something thoughtful
               </h1>
               <p className="mt-6 max-w-md text-sm leading-7 text-[#665b4f]">

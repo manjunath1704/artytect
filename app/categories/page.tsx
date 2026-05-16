@@ -143,10 +143,10 @@ export default function CategoriesPage() {
             >
               <div className="max-w-3xl">
                 <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.34em] text-[#ead7c3]">
-                  <Sparkles className="h-4 w-4" />
+                  
                   Collections
                 </p>
-                <h1 className="mt-5 text-4xl font-display uppercase leading-[1] tracking-normal sm:text-7xl lg:text-8xl">
+                <h1 className="mt-5 text-4xl font-display uppercase leading-[1] tracking-normal sm:5xl lg:text-6xl">
                   Explore our ceramic forms
                 </h1>
                 <p className="mt-7 max-w-xl text-sm leading-7 text-[#f4e9dc] md:text-base md:leading-8">
