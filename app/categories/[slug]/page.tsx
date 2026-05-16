@@ -2,13 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
-
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
 import WhatsAppButton from "@/components/whatsapp-button";
 import { prisma } from "@/lib/prisma";
 import { products as catalogProducts } from "@/lib/products";
 import { formatPrice, getProductOrderMessage } from "@/lib/whatsapp";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 type CategoryPageProps = {
   params: Promise<{

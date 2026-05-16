@@ -61,15 +61,15 @@ export default function ContactPage() {
         <section className="py-14 md:py-20">
           <div className="site-container grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
             <aside>
-              <h2 className="text-3xl font-display tracking-[-0.04em] md:text-4xl">
-                Studio details
+              {/* <h2 className="text-3xl font-display tracking-[-0.04em] md:text-4xl">
+                Contact us
               </h2>
               <p className="mt-4 max-w-sm text-sm leading-7 text-[#665b4f]">
                 For urgent order changes, email us with your order number in the
                 subject line.
-              </p>
+              </p> */}
 
-              <div className="mt-8 grid gap-4">
+              <div className=" grid gap-4">
                 {contactMethods.map((method) => {
                   const Icon = method.icon;
 
@@ -108,7 +108,7 @@ export default function ContactPage() {
                     type="text"
                     name="name"
                     required
-                    className="h-12 w-full rounded-full border border-black/10 bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
+                    className="h-12 w-full rounded-full shadow-sm bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
                     placeholder="Your name"
                   />
                 </label>
@@ -121,7 +121,7 @@ export default function ContactPage() {
                     type="email"
                     name="email"
                     required
-                    className="h-12 w-full rounded-full border border-black/10 bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
+                    className="h-12 w-full rounded-full shadow-sm bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
                     placeholder="you@example.com"
                   />
                 </label>
@@ -135,7 +135,7 @@ export default function ContactPage() {
                     name="mobile"
                     required
                     inputMode="tel"
-                    className="h-12 w-full rounded-full border border-black/10 bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
+                    className="h-12 w-full rounded-full shadow-sm bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
                     placeholder="+91 98765 43210"
                   />
                 </label>
@@ -146,7 +146,7 @@ export default function ContactPage() {
                   </span>
                   <select
                     name="topic"
-                    className="h-12 w-full rounded-full border border-black/10 bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
+                    className="h-12 w-full rounded-full shadow-sm bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
                     defaultValue="Custom order"
                   >
                     <option>Custom order</option>
@@ -165,7 +165,7 @@ export default function ContactPage() {
                   name="message"
                   required
                   rows={7}
-                  className="w-full resize-y rounded-2xl border border-black/10 bg-[#fcfdfa] px-4 py-3 text-sm leading-7 outline-none transition focus:border-[#1b1511]"
+                  className="w-full resize-y rounded-2xl shadow-sm bg-[#fcfdfa] px-4 py-3 text-sm leading-7 outline-none transition focus:border-[#1b1511]"
                   placeholder="Tell us what you are looking for."
                 />
               </label>

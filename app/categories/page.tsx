@@ -1,9 +1,8 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
@@ -114,8 +113,8 @@ export default function CategoriesPage() {
       isMounted = false;
     };
   }, []);
-  const { scrollY } = useScroll();
 
+  const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 500], [0, 120]);
   return (
     <>
@@ -217,7 +216,7 @@ export default function CategoriesPage() {
               ))}
             </div>
           ) : (
-            <div className="divide-y divide-[#d9cfc6]">
+            <div className="space-y-10">
               {categories.map((category, index) => {
                 const isEven = index % 2 === 0;
 
@@ -228,7 +227,7 @@ export default function CategoriesPage() {
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                    className="group"
+                    className="group rounded-[32px] shadow-sm overflow-hidden"
                   >
                     <Link
                       href={`/categories/${category.slug}`}
@@ -261,9 +260,7 @@ export default function CategoriesPage() {
                         <div className="absolute inset-0 bg-[#1b1511] opacity-0 transition-opacity duration-700 group-hover:opacity-5" />
 
                         {/* Index number — bottom left */}
-                        <span className="absolute bottom-0 left-0 rounded-tr-2xl border-r border-t border-white/15 bg-[#1b1511]/50 px-4 py-2 font-display text-2xl text-white/70 backdrop-blur-sm md:rounded-none">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
+                       
                       </div>
 
                       {/* Content — right on even, left on odd */}
