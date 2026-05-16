@@ -25,7 +25,7 @@ export default function ClassCard({
   return (
     <article
       className={cn(
-        "group overflow-hidden border border-[#d8cec1] bg-[#fffdf9]",
+        "group overflow-hidden rounded-[32px] border border-[#d8cec1] bg-[#fffdf9] shadow-sm transition-shadow duration-300 hover:shadow-md",
         className,
       )}
     >
@@ -36,13 +36,13 @@ export default function ClassCard({
             alt={classItem.title}
             fill
             sizes={imageSizes}
-            className="object-cover"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,17,13,0.18),rgba(23,17,13,0.2)_34%,rgba(23,17,13,0.9))]" />
-          <span className="absolute left-4 top-4 border border-white/35 bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
+          <span className="absolute left-4 top-4 rounded-full border border-white/35 bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
             {String(index).padStart(2, "0")}
           </span>
-          <div className="absolute inset-x-4 bottom-4 bg-[#17110d]/62 p-4 text-white backdrop-blur-[2px]">
+          <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-[#17110d]/62 p-4 text-white backdrop-blur-[2px]">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#ead7c3]">
               {classItem.level}
             </p>
@@ -54,7 +54,7 @@ export default function ClassCard({
       </Link>
 
       <div className="p-4">
-        <div className="grid grid-cols-3 border-y border-[#e2d6ca] py-3 text-center text-[#5d5148]">
+        <div className="grid grid-cols-3 rounded-2xl border border-[#e2d6ca] bg-[#faf7f4] py-3 text-center text-[#5d5148]">
           <div className="border-r border-[#e2d6ca] px-2">
             <Clock className="mx-auto h-4 w-4 text-[#9a6b4e]" />
             <p className="mt-1.5 text-xs">{classItem.duration}</p>
@@ -80,13 +80,13 @@ export default function ClassCard({
         <div className="mt-3 grid grid-cols-[1fr_auto] gap-3">
           <WhatsAppButton
             message={getClassBookingMessage(classItem)}
-            className="h-11 px-4"
+            className="h-11 rounded-full px-4"
           >
             Book Now
           </WhatsAppButton>
           <Link
             href={`/classes/${classItem.slug}`}
-            className="inline-flex h-11 items-center justify-center border border-[#d8cec1] px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511] hover:bg-white"
+            className="inline-flex h-11 items-center justify-center rounded-full border border-[#d8cec1] px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511] hover:bg-white"
           >
             View
           </Link>

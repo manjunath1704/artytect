@@ -32,9 +32,9 @@ const CategoryCard = ({
       transition={{ type: "spring", stiffness: 240, damping: 24, delay: index * 0.04 }}
       aria-label={`Shop ${title}`}
     >
-      <article className="relative h-full overflow-hidden border border-[#e1d1c3] bg-[#fffaf3]">
+      <article className="relative h-full overflow-hidden rounded-[32px] border border-[#e1d1c3] bg-[#fffaf3] shadow-sm transition-shadow duration-300 hover:shadow-md">
         <div className="relative overflow-hidden p-3 pb-0">
-          <div className="relative aspect-[4/3] overflow-hidden bg-[#eee6dc]">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-[#eee6dc]">
             <Image
               src={thumbnailSrc}
               alt={title}
@@ -51,10 +51,10 @@ const CategoryCard = ({
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(27,21,17,0.04),rgba(27,21,17,0.12)_38%,rgba(27,21,17,0.78))]" />
             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(circle_at_20%_100%,rgba(185,130,94,0.32),transparent_58%)]" />
-            <span className="absolute left-4 top-4 border border-white/30 bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
+            <span className="absolute left-4 top-4 rounded-full border border-white/30 bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
               0{index}
             </span>
-            <span className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center border border-white/30 bg-white/15 text-white backdrop-blur-md">
+            <span className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-white/15 text-white backdrop-blur-md">
               <ArrowUpRight className="h-4 w-4" />
             </span>
             <div className="absolute inset-x-5 bottom-5 text-white">

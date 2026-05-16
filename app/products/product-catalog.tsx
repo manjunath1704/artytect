@@ -122,7 +122,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
           </p>
         </div>
 
-        <div className="mb-10 border border-black/10 bg-[#fcfaf7] p-4 md:p-5">
+        <div className="mb-10 rounded-[32px] border border-black/10 bg-[#fcfaf7] p-4 shadow-sm md:p-5">
           <div className="grid gap-4 lg:grid-cols-[1fr_220px_220px_220px_auto] lg:items-end">
             <label className="block">
               <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a817a]">
@@ -137,7 +137,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                     updateFilters(() => setQuery(event.target.value))
                   }
                   placeholder="Search by product, tag, SKU"
-                  className="h-12 w-full border border-black/10 bg-white pl-11 pr-4 text-sm outline-none transition placeholder:text-[#a59b93] focus:border-[#1b1511]"
+                  className="h-12 w-full rounded-full border border-black/10 bg-white pl-11 pr-4 text-sm outline-none transition placeholder:text-[#a59b93] focus:border-[#1b1511]"
                 />
               </span>
             </label>
@@ -151,7 +151,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                 onChange={(event) =>
                   updateFilters(() => setCategory(event.target.value))
                 }
-                className="h-12 w-full border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#1b1511]"
+                className="h-12 w-full rounded-full border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#1b1511]"
               >
                 {categories.map((item) => (
                   <option key={item} value={item}>
@@ -170,7 +170,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                 onChange={(event) =>
                   updateFilters(() => setPriceFilter(event.target.value as PriceFilter))
                 }
-                className="h-12 w-full border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#1b1511]"
+                className="h-12 w-full rounded-full border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#1b1511]"
               >
                 {priceOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -189,7 +189,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                 onChange={(event) =>
                   updateFilters(() => setSort(event.target.value as SortOption))
                 }
-                className="h-12 w-full border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#1b1511]"
+                className="h-12 w-full rounded-full border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#1b1511]"
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -203,7 +203,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
               type="button"
               onClick={clearFilters}
               disabled={!hasActiveFilters}
-              className="inline-flex h-12 items-center justify-center gap-2 border border-black/10 bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:border-[#1b1511] disabled:cursor-not-allowed disabled:opacity-40"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:border-[#1b1511] disabled:cursor-not-allowed disabled:opacity-40"
             >
               <X className="h-4 w-4" />
               Clear
@@ -220,7 +220,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                   type="button"
                   onClick={() => updateFilters(() => setCategory(item))}
                   className={[
-                    "inline-flex h-9 items-center gap-2 border px-4 text-[10px] font-semibold uppercase tracking-[0.18em] transition",
+                    "inline-flex h-9 items-center gap-2 rounded-full border px-4 text-[10px] font-semibold uppercase tracking-[0.18em] transition",
                     isActive
                       ? "border-[#1b1511] bg-[#1b1511] text-white"
                       : "border-black/10 bg-white text-[#665b4f] hover:border-[#1b1511]",
@@ -244,7 +244,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
             ))}
           </div>
         ) : (
-          <div className="border border-dashed border-black/20 bg-[#fcfaf7] px-6 py-14 text-center">
+          <div className="rounded-[32px] border border-dashed border-black/20 bg-[#fcfaf7] px-6 py-14 text-center shadow-sm">
             <h3 className="text-2xl font-display tracking-normal">
               No products found
             </h3>
@@ -255,7 +255,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
             <button
               type="button"
               onClick={clearFilters}
-              className="mt-6 border border-[#1b1511] px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:bg-[#1b1511] hover:text-white"
+              className="mt-6 rounded-full border border-[#1b1511] px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:bg-[#1b1511] hover:text-white"
             >
               Reset catalog
             </button>
@@ -272,7 +272,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
               type="button"
               onClick={() => setPage((value) => Math.max(1, value - 1))}
               disabled={currentPage === 1}
-              className="inline-flex h-11 w-11 items-center justify-center border border-black/10 transition hover:border-[#1b1511] disabled:cursor-not-allowed disabled:opacity-35"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/10 transition hover:border-[#1b1511] disabled:cursor-not-allowed disabled:opacity-35"
               aria-label="Previous page"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -285,7 +285,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                   type="button"
                   onClick={() => setPage(pageNumber)}
                   className={[
-                    "h-11 w-11 border text-xs font-semibold transition",
+                    "h-11 w-11 rounded-full border text-xs font-semibold transition",
                     currentPage === pageNumber
                       ? "border-[#1b1511] bg-[#1b1511] text-white"
                       : "border-black/10 hover:border-[#1b1511]",
@@ -302,7 +302,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
               type="button"
               onClick={() => setPage((value) => Math.min(pageCount, value + 1))}
               disabled={currentPage === pageCount}
-              className="inline-flex h-11 w-11 items-center justify-center border border-black/10 transition hover:border-[#1b1511] disabled:cursor-not-allowed disabled:opacity-35"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/10 transition hover:border-[#1b1511] disabled:cursor-not-allowed disabled:opacity-35"
               aria-label="Next page"
             >
               <ChevronRight className="h-4 w-4" />

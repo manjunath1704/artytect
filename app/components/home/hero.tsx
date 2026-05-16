@@ -110,7 +110,7 @@ const Hero = () => {
           >
             <Button
               size="lg"
-              className="group h-14 rounded-none border border-[#f8f2e8]/20 bg-[#f8f2e8] px-7 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#17140f] shadow-[0_18px_48px_rgba(248,242,232,0.18)] transition hover:-translate-y-0.5 hover:bg-[#efe4d6] sm:px-8"
+              className="group h-14 rounded-full border border-[#f8f2e8]/20 bg-[#f8f2e8] px-7 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#17140f] shadow-[0_18px_48px_rgba(248,242,232,0.18)] transition hover:-translate-y-0.5 hover:bg-[#efe4d6] sm:px-8"
               asChild
             >
               <Link href="/#collections">
@@ -121,7 +121,7 @@ const Hero = () => {
             <Button
               size="lg"
               variant="outline"
-              className="group h-14 rounded-none border-white/25 bg-white/10 px-7 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f8f2e8] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/18 hover:text-[#f8f2e8] sm:px-8"
+              className="group h-14 rounded-full border-white/25 bg-white/10 px-7 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f8f2e8] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/18 hover:text-[#f8f2e8] sm:px-8"
               asChild
             >
               <Link href="/classes">
@@ -141,8 +141,8 @@ const Hero = () => {
         animate={prefersReducedMotion ? undefined : { y: [0, 8, 0] }}
         transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
       >
-        <span className="h-10 w-6 border border-white/35 p-1">
-          <span className="mx-auto block h-1.5 w-1.5 bg-current" />
+        <span className="h-10 w-6 rounded-full border border-white/35 p-1">
+          <span className="mx-auto block h-1.5 w-1.5 rounded-full bg-current" />
         </span>
         <ChevronDown className="h-4 w-4" />
       </motion.a>

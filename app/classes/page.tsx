@@ -40,7 +40,7 @@ export default function ClassesPage() {
                 </p>
               </div>
 
-              <div className="border border-white/18 bg-[#17110d]/55 p-5 backdrop-blur-md">
+              <div className="overflow-hidden rounded-[32px] border border-white/18 bg-[#17110d]/55 p-5 backdrop-blur-md">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
                     <p className="text-2xl font-display">{potteryClasses.length}</p>
@@ -63,7 +63,7 @@ export default function ClassesPage() {
                 </div>
                 <Link
                   href="#classes"
-                  className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 bg-white px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition hover:bg-[#ead7c3]"
+                  className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-white px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition hover:bg-[#ead7c3]"
                 >
                   View classes
                   <ArrowUpRight className="h-4 w-4" />

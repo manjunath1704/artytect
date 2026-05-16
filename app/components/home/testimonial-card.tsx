@@ -21,16 +21,16 @@ export default function TestimonialCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.35 }}
       transition={{ duration: 0.55, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative flex h-full flex-col overflow-hidden border border-[#e3d2c3] bg-[#fffdf8] p-5 md:p-6"
+      className="group relative flex h-full flex-col overflow-hidden rounded-[32px] border border-[#e3d2c3] bg-[#fffdf8] p-5 shadow-sm transition-shadow duration-300 hover:shadow-md md:p-6"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#b9825e,#d8b99c,#8f6f53)] opacity-80" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 rounded-t-[32px] bg-[linear-gradient(90deg,#b9825e,#d8b99c,#8f6f53)] opacity-80" />
       <Quote
         className="absolute right-6 top-7 h-10 w-10 text-[#d8b99c]/35 transition group-hover:text-[#b9825e]/45"
         aria-hidden="true"
       />
 
       <div className="flex items-center gap-3">
-        <div className="relative h-12 w-12 shrink-0 overflow-hidden bg-[#eadfd5] ring-1 ring-[#e1d2c5]">
+        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-[#eadfd5] ring-1 ring-[#e1d2c5]">
           <Image
             src={testimonial.image}
             alt={`${testimonial.name} portrait`}

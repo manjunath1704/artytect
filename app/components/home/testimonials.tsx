@@ -96,7 +96,7 @@ export default function TestimonialsSection() {
                   key={index}
                   type="button"
                   className={[
-                    "h-2.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a6b4e]/40",
+                    "h-2.5 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a6b4e]/40",
                     selectedIndex === index
                       ? "w-9 bg-[#1b1511]"
                       : "w-2.5 bg-[#cdbbae] hover:bg-[#9a6b4e]",
@@ -109,9 +109,13 @@ export default function TestimonialsSection() {
             </div>
 
             <div className="flex items-center">
-              <CarouselPrevious className="static h-10 w-10 translate-y-0 rounded-none border-[#1b1511] bg-transparent text-[#1b1511] shadow-none hover:bg-[#1b1511] hover:text-[#fffaf3] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4" />
-              <CarouselNext className="static h-10 w-10 translate-y-0 rounded-none border-l-0 border-[#1b1511] bg-transparent text-[#1b1511] shadow-none hover:bg-[#1b1511] hover:text-[#fffaf3] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4" />
-            </div>
+                  <CarouselPrevious
+                    className="static h-10 w-10 translate-y-0 rounded-l-full border-brand-text-primary bg-transparent text-brand-text-primary shadow-none hover:bg-brand-text-primary hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
+                  />
+                  <CarouselNext
+                    className="static h-10 w-10 translate-y-0 rounded-r-full border-l-0 border-brand-text-primary bg-transparent text-brand-text-primary shadow-none hover:bg-brand-text-primary hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
+                  />
+                </div>
           </div>
         </Carousel>
       </div>

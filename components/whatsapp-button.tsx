@@ -36,7 +36,7 @@ export default function WhatsAppButton({
       disabled={isOpening}
       aria-label={typeof children === "string" ? children : "Open WhatsApp"}
       className={cn(
-        "h-12 rounded-none bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0",
+        "h-12 rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0",
         iconOnly && "w-12 px-0",
         className,
       )}

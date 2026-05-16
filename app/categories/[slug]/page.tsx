@@ -166,7 +166,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 </p>
               </div>
 
-              <div className="border border-white/18 bg-[#1a1410]/60 p-5 backdrop-blur-md">
+              <div className="overflow-hidden rounded-[32px] border border-white/18 bg-[#1a1410]/60 p-5 backdrop-blur-md">
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
                     <p className="text-3xl font-display">{products.length}</p>
@@ -192,7 +192,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 </div>
                 <Link
                   href="#products"
-                  className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 bg-white px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition hover:bg-[#ead7c3]"
+                  className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-white px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition hover:bg-[#ead7c3]"
                 >
                   Browse collection
                   <ArrowUpRight className="h-4 w-4" />
@@ -225,13 +225,13 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             {products.length ? (
               <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
                 {products.map((product) => (
-                  <article key={product.id} className="group">
+                  <article key={product.id} className="group overflow-hidden rounded-2xl shadow-sm transition-shadow duration-300 hover:shadow-md">
 
                     {/* Image */}
                     <Link href={`/products/${product.id}`} className="block">
                       <div className="relative aspect-[4/3] overflow-hidden bg-[#e4d9d0]">
                         {product.badge ? (
-                          <span className="absolute left-0 top-0 z-10 border-b border-r border-[#d9cfc6] bg-[#f5f0eb] px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.24em] text-[#9a6b4e]">
+                          <span className="absolute left-0 top-0 z-10 rounded-br-lg border-b border-r border-[#d9cfc6] bg-[#f5f0eb] px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.24em] text-[#9a6b4e]">
                             {product.badge}
                           </span>
                         ) : null}
@@ -240,7 +240,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                           alt={product.name}
                           fill
                           sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
-                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                         />
                         {/* Hover overlay */}
                         <div className="absolute inset-0 bg-[#1b1511] opacity-0 transition-opacity duration-500 group-hover:opacity-8" />
@@ -248,7 +248,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                     </Link>
 
                     {/* Content */}
-                    <div className="border-x border-b border-[#d9cfc6] bg-[#faf6f2] px-4 py-4">
+                    <div className="border border-t-0 border-[#d9cfc6] bg-[#faf6f2] px-4 py-4">
                       <div className="flex items-start justify-between gap-3">
                         <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a6b4e]">
                           {product.category}
@@ -280,13 +280,13 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                       <div className="mt-4 grid grid-cols-[1fr_auto] gap-2 border-t border-[#d9cfc6] pt-4">
                         <WhatsAppButton
                           message={getProductOrderMessage(product)}
-                          className="h-10 px-4 text-[10px]"
+                          className="h-10 rounded-xl px-4 text-[10px]"
                         >
                           Order Now
                         </WhatsAppButton>
                         <Link
                           href={`/products/${product.id}`}
-                          className="inline-flex h-10 items-center justify-center border border-[#d9cfc6] bg-transparent px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition-colors duration-200 hover:border-[#1b1511] hover:bg-[#1b1511] hover:text-white"
+                          className="inline-flex h-10 items-center justify-center rounded-xl border border-[#d9cfc6] bg-transparent px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition-colors duration-200 hover:border-[#1b1511] hover:bg-[#1b1511] hover:text-white"
                         >
                           <ArrowUpRight className="h-3.5 w-3.5" />
                         </Link>
@@ -298,7 +298,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               </div>
             ) : (
               /* Empty state */
-              <div className="border border-[#d9cfc6] bg-[#faf6f2] px-8 py-16 text-center">
+              <div className="rounded-[32px] border border-[#d9cfc6] bg-[#faf6f2] px-8 py-16 text-center shadow-sm">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[#9a6b4e]">
                   Coming soon
                 </p>
@@ -310,7 +310,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 </p>
                 <Link
                   href="/products"
-                  className="mt-8 inline-flex items-center gap-2 border border-[#1b1511] px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#1b1511] transition-colors duration-200 hover:bg-[#1b1511] hover:text-white"
+                  className="mt-8 inline-flex items-center gap-2 rounded-full border border-[#1b1511] px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#1b1511] transition-colors duration-200 hover:bg-[#1b1511] hover:text-white"
                 >
                   View all products
                   <ArrowUpRight className="h-3.5 w-3.5" />
@@ -321,36 +321,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </div>
         </section>
 
-        {/* ── Newsletter ───────────────────────────────────────────── */}
-        <section className="border-t border-[#d9cfc6]">
-          <div className="site-container py-16 md:py-20">
-            <div className="grid gap-10 md:grid-cols-[1fr_1fr] md:items-end">
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[#9a6b4e]">
-                  Newsletter
-                </p>
-                <h2 className="mt-4 font-display text-3xl uppercase leading-none tracking-[-0.03em] text-[#1b1511] md:text-4xl lg:text-5xl">
-                  Get 10% off your first order
-                </h2>
-              </div>
-
-              <form className="flex items-center border-b border-[#1b1511]">
-                <input
-                  type="email"
-                  aria-label="Email address"
-                  placeholder="Enter your email address"
-                  className="min-w-0 flex-1 bg-transparent py-4 text-sm outline-none placeholder:text-[#9a8d82]"
-                />
-                <button
-                  type="submit"
-                  className="shrink-0 px-4 py-4 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#1b1511] transition-opacity hover:opacity-50"
-                >
-                  Subscribe
-                </button>
-              </form>
-            </div>
-          </div>
-        </section>
+     
 
       </main>
       <Footer />

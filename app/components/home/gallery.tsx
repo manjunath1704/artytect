@@ -285,7 +285,7 @@ export default function GalleryApp() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.65, ease: "easeOut" }}
-            className="relative min-h-[420px] overflow-hidden border border-[#d8cabd] bg-[#17110d] text-left lg:min-h-[640px]"
+            className="relative min-h-[420px] overflow-hidden rounded-[32px] border border-[#d8cabd] bg-[#17110d] text-left shadow-sm transition-shadow duration-300 hover:shadow-md lg:min-h-[640px]"
           >
             <video
               autoPlay
@@ -301,7 +301,7 @@ export default function GalleryApp() {
               <source src="/videos/hero.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,17,13,0.12),rgba(23,17,13,0.18)_42%,rgba(23,17,13,0.72))]" />
-            <div className="absolute left-5 top-5 flex h-12 w-12 items-center justify-center border border-white/35 bg-white/12 text-white backdrop-blur-md">
+            <div className="absolute left-5 top-5 flex h-12 w-12 items-center justify-center rounded-full border border-white/35 bg-white/12 text-white backdrop-blur-md">
               <Play className="h-4 w-4" fill="currentColor" />
             </div>
             <div className="absolute inset-x-5 bottom-5 text-white md:inset-x-7 md:bottom-7">
@@ -326,7 +326,7 @@ export default function GalleryApp() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.25 }}
                 transition={{ duration: 0.6, delay: itemIndex * 0.08, ease: "easeOut" }}
-                className="relative min-h-[230px] overflow-hidden border border-[#d8cabd] bg-[#17110d] xl:min-h-[250px]"
+                className="relative min-h-[230px] overflow-hidden rounded-[32px] border border-[#d8cabd] bg-[#17110d] shadow-sm transition-shadow duration-300 hover:shadow-md xl:min-h-[250px]"
               >
                 {item.type === "video" ? (
                   <button

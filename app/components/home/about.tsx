@@ -10,13 +10,13 @@ export default function AboutSection() {
       <div className="site-container grid items-center gap-12 md:grid-cols-2">
         
         {/* LEFT - IMAGE */}
-        <div className="relative h-[500px] w-full overflow-hidden">
+        <div className="relative h-[500px] w-full overflow-hidden rounded-4xl">
           <Image
             src="/images/author.jpg" // replace with your image
             alt="Pottery Artist"
             fill
             sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover"
+            className="object-cover rounded-3xl"
           />
         </div>
 
@@ -44,7 +44,7 @@ export default function AboutSection() {
           </p>
 
           <div className="pt-4">
-            <Button className="bg-black text-white hover:bg-neutral-800 px-8 py-6 text-sm tracking-wide uppercase rounded-none">
+            <Button className="group inline-flex h-12 items-center justify-center gap-3 rounded-full border border-[#1b1511] bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.12)] transition hover:-translate-y-0.5 hover:bg-transparent hover:text-[#1b1511] sm:px-6">
               Explore Collection
             </Button>
           </div>

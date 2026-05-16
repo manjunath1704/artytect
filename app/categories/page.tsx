@@ -156,14 +156,14 @@ export default function CategoriesPage() {
                 </p>
                 <Link
                   href="#collections"
-                  className="mt-8 inline-flex h-12 items-center justify-center gap-2 bg-white px-6 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition hover:bg-[#ead7c3]"
+                  className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition hover:bg-[#ead7c3]"
                 >
                   Browse collections
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </div>
 
-              <div className="border border-white/18 bg-[#17110d]/55 p-5 backdrop-blur-md">
+              <div className="overflow-hidden rounded-[32px] border border-white/18 bg-[#17110d]/55 p-5 backdrop-blur-md">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
                     <p className="text-2xl font-display">{categories.length}</p>
@@ -233,8 +233,8 @@ export default function CategoriesPage() {
                       {/* Image — left on even, right on odd */}
                       <div
                         className={[
-                          "relative aspect-[4/3] overflow-hidden bg-[#e4d9d0]",
-                          "md:aspect-auto md:min-h-[600px]",
+                          "relative aspect-[4/3] overflow-hidden rounded-[32px] bg-[#e4d9d0]",
+                          "md:aspect-auto md:min-h-[600px] md:rounded-none",
                           isEven ? "md:order-1" : "md:order-2",
                         ].join(" ")}
                       >
@@ -257,7 +257,7 @@ export default function CategoriesPage() {
                         <div className="absolute inset-0 bg-[#1b1511] opacity-0 transition-opacity duration-700 group-hover:opacity-5" />
 
                         {/* Index number — bottom left */}
-                        <span className="absolute bottom-0 left-0 border-r border-t border-white/15 bg-[#1b1511]/50 px-4 py-2 font-display text-2xl text-white/70 backdrop-blur-sm">
+                        <span className="absolute bottom-0 left-0 rounded-tr-2xl border-r border-t border-white/15 bg-[#1b1511]/50 px-4 py-2 font-display text-2xl text-white/70 backdrop-blur-sm md:rounded-none">
                           {String(index + 1).padStart(2, "0")}
                         </span>
                       </div>
@@ -265,7 +265,7 @@ export default function CategoriesPage() {
                       {/* Content — right on even, left on odd */}
                       <div
                         className={[
-                          "flex items-center bg-[#faf6f2] px-6 py-16 sm:px-8 md:px-12 lg:px-16",
+                          "flex items-center rounded-[32px] bg-[#faf6f2] px-6 py-16 sm:px-8 md:rounded-none md:px-12 lg:px-16",
                           isEven ? "md:order-2" : "md:order-1",
                         ].join(" ")}
                       >

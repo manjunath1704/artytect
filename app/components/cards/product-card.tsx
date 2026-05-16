@@ -23,14 +23,14 @@ export default function ProductCard({
   return (
     <article
       className={cn(
-        "group overflow-hidden border border-[#ded3c8] bg-[#fffdf9]",
+        "group overflow-hidden rounded-[32px] border border-[#ded3c8] bg-[#fffdf9] shadow-sm transition-shadow hover:shadow-md",
         className,
       )}
     >
       <Link href={`/products/${product.id}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-[#eee6dc]">
           {product.badge ? (
-            <span className="absolute right-4 top-4 z-10 border border-white/45 bg-[#1b1511]/75 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
+            <span className="absolute right-4 top-4 z-10 rounded-full border border-white/45 bg-[#1b1511]/75 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
               {product.badge}
             </span>
           ) : null}
@@ -39,7 +39,7 @@ export default function ProductCard({
             alt={product.name}
             fill
             sizes={imageSizes}
-            className="object-cover"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(27,21,17,0.04),rgba(27,21,17,0.08)_45%,rgba(27,21,17,0.52))] opacity-80 transition group-hover:opacity-100" />
           <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3 text-white">
@@ -51,7 +51,7 @@ export default function ProductCard({
                 {product.name}
               </h3>
             </div>
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-white/30 bg-white/15 backdrop-blur transition group-hover:bg-white group-hover:text-[#1b1511]">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/15 backdrop-blur transition group-hover:bg-white group-hover:text-[#1b1511]">
               <ArrowUpRight className="h-4 w-4" />
             </span>
           </div>
@@ -82,7 +82,7 @@ export default function ProductCard({
           {product.shortDescription}
         </p>
 
-        <div className="mt-3 flex items-center gap-2 border-y border-[#eadfd4] py-2 text-xs text-[#6f6259]">
+        <div className="mt-3 flex items-center gap-2 rounded-2xl border border-[#eadfd4] bg-[#faf6f2] px-3 py-2 text-xs text-[#6f6259]">
           <Ruler className="h-3.5 w-3.5 text-[#9a6b4e]" />
           <span className="line-clamp-1">{product.dimensions}</span>
         </div>
@@ -90,13 +90,13 @@ export default function ProductCard({
         <div className="mt-3 grid grid-cols-[1fr_auto] gap-3">
           <WhatsAppButton
             message={getProductOrderMessage(product)}
-            className="h-11 px-4"
+            className="h-11 rounded-full px-4"
           >
             Order Now
           </WhatsAppButton>
           <Link
             href={`/products/${product.id}`}
-            className="inline-flex h-11 items-center justify-center border border-[#ded3c8] bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511]"
+            className="inline-flex h-11 items-center justify-center rounded-full border border-[#ded3c8] bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511]"
           >
             View
           </Link>

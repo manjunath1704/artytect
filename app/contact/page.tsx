@@ -45,7 +45,7 @@ export default function ContactPage() {
               </p>
             </div>
 
-            <div className="relative aspect-[1.35/1] overflow-hidden bg-[#e8dfd2]">
+            <div className="relative aspect-[1.35/1] overflow-hidden rounded-[32px] bg-[#e8dfd2]">
               <Image
                 src="/images/gallery/pexels-mart-production-8217302.jpg"
                 alt="Ceramic studio table with handmade pieces"
@@ -77,11 +77,11 @@ export default function ContactPage() {
                     <a
                       key={method.label}
                       href={method.href}
-                      className="group flex items-center gap-4 border border-[#e1d7cb] bg-white p-4 transition hover:border-[#1b1511]"
+                      className="group flex items-center gap-4 overflow-hidden rounded-2xl border border-[#e1d7cb] bg-white p-4 transition hover:border-[#1b1511]"
                       target={method.label === "Studio" ? "_blank" : undefined}
                       rel={method.label === "Studio" ? "noreferrer" : undefined}
                     >
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center bg-[#f4eadf] text-[#1b1511]">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f4eadf] text-[#1b1511]">
                         <Icon className="h-5 w-5" />
                       </span>
                       <span>
@@ -98,7 +98,7 @@ export default function ContactPage() {
               </div>
             </aside>
 
-            <form className="border border-[#e1d7cb] bg-white p-5 md:p-8">
+            <form className="overflow-hidden rounded-[32px] border border-[#e1d7cb] bg-white p-5 md:p-8">
               <div className="grid gap-5 md:grid-cols-2">
                 <label className="block">
                   <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]">
@@ -108,7 +108,7 @@ export default function ContactPage() {
                     type="text"
                     name="name"
                     required
-                    className="h-12 w-full border border-black/10 bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
+                    className="h-12 w-full rounded-full border border-black/10 bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
                     placeholder="Your name"
                   />
                 </label>
@@ -121,7 +121,7 @@ export default function ContactPage() {
                     type="email"
                     name="email"
                     required
-                    className="h-12 w-full border border-black/10 bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
+                    className="h-12 w-full rounded-full border border-black/10 bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
                     placeholder="you@example.com"
                   />
                 </label>
@@ -135,7 +135,7 @@ export default function ContactPage() {
                     name="mobile"
                     required
                     inputMode="tel"
-                    className="h-12 w-full border border-black/10 bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
+                    className="h-12 w-full rounded-full border border-black/10 bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
                     placeholder="+91 98765 43210"
                   />
                 </label>
@@ -146,7 +146,7 @@ export default function ContactPage() {
                   </span>
                   <select
                     name="topic"
-                    className="h-12 w-full border border-black/10 bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
+                    className="h-12 w-full rounded-full border border-black/10 bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
                     defaultValue="Custom order"
                   >
                     <option>Custom order</option>
@@ -165,14 +165,14 @@ export default function ContactPage() {
                   name="message"
                   required
                   rows={7}
-                  className="w-full resize-y border border-black/10 bg-[#fcfdfa] px-4 py-3 text-sm leading-7 outline-none transition focus:border-[#1b1511]"
+                  className="w-full resize-y rounded-2xl border border-black/10 bg-[#fcfdfa] px-4 py-3 text-sm leading-7 outline-none transition focus:border-[#1b1511]"
                   placeholder="Tell us what you are looking for."
                 />
               </label>
 
               <button
                 type="submit"
-                className="mt-6 h-12 bg-[#1b1511] px-8 text-[11px] font-semibold uppercase tracking-[0.24em] text-white transition hover:bg-[#3a2f27]"
+                className="mt-6 h-12 rounded-full bg-[#1b1511] px-8 text-[11px] font-semibold uppercase tracking-[0.24em] text-white transition hover:bg-[#3a2f27]"
               >
                 Send inquiry
               </button>

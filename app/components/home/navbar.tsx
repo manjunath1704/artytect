@@ -133,7 +133,7 @@ const Navbar = ({
         <button
           type="button"
           className={[
-            "inline-flex h-11 w-11 items-center justify-center border transition md:hidden",
+            "inline-flex h-11 w-11 items-center justify-center rounded-full border transition md:hidden",
             showSolid
               ? "border-black/10 bg-black/5 text-black hover:bg-black/10"
               : transparentIsDark
@@ -164,7 +164,7 @@ const Navbar = ({
         <div className="site-container">
           <div
             className={[
-              "origin-top overflow-hidden border px-4 py-4 shadow-[0_18px_60px_rgba(23,20,15,0.18)] backdrop-blur-xl transition-all duration-300 ease-out",
+              "origin-top overflow-hidden rounded-[28px] border px-4 py-4 shadow-[0_18px_60px_rgba(23,20,15,0.18)] backdrop-blur-xl transition-all duration-300 ease-out",
               showSolid
                 ? "border-black/10 bg-white/95 text-black"
                 : transparentIsDark
@@ -183,7 +183,7 @@ const Navbar = ({
                     href={item.href}
                     aria-current={isActive ? "page" : undefined}
                     className={[
-                      "px-3 py-3 text-sm font-medium tracking-[0.08em] transition",
+                      "rounded-full px-3 py-3 text-sm font-medium tracking-[0.08em] transition",
                       showSolid
                         ? isActive
                           ? "bg-black text-white"

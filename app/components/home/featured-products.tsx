@@ -100,7 +100,7 @@ export default function FeaturedProductsSection({
                       key={index}
                       type="button"
                       className={[
-                        "h-2.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-text-accent/40",
+                        "h-2.5 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-text-accent/40",
                         selectedIndex === index
                           ? "w-9 bg-brand-text-primary"
                           : "w-2.5 bg-[#cdbbae] hover:bg-brand-text-accent",
@@ -114,10 +114,10 @@ export default function FeaturedProductsSection({
 
                 <div className="flex items-center">
                   <CarouselPrevious
-                    className="static h-10 w-10 translate-y-0 rounded-none border-brand-text-primary bg-transparent text-brand-text-primary shadow-none hover:bg-brand-text-primary hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
+                    className="static h-10 w-10 translate-y-0 rounded-l-full border-brand-text-primary bg-transparent text-brand-text-primary shadow-none hover:bg-brand-text-primary hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
                   />
                   <CarouselNext
-                    className="static h-10 w-10 translate-y-0 rounded-none border-l-0 border-brand-text-primary bg-transparent text-brand-text-primary shadow-none hover:bg-brand-text-primary hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
+                    className="static h-10 w-10 translate-y-0 rounded-r-full border-l-0 border-brand-text-primary bg-transparent text-brand-text-primary shadow-none hover:bg-brand-text-primary hover:text-[#fcfdfa] disabled:opacity-40 [&_svg]:!h-4 [&_svg]:!w-4"
                   />
                 </div>
               </div>
