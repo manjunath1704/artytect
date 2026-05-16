@@ -79,48 +79,37 @@ const Hero = () => {
           variants={contentVariants}
           initial="hidden"
           animate="visible"
-          className="flex max-w-5xl flex-col items-start"
+          className="flex  flex-col items-center"
         >
           <motion.h1
             variants={itemVariants}
-            className="mt-7 max-w-5xl text-left text-[clamp(1rem,7vw,4rem)] font-display leading-[1.08] tracking-normal text-[#fff8ef] sm:leading-[1.04] lg:max-w-4xl"
+            className="uppercase mt-7 text-6xl md:text-8xl font-display leading-[1.08] tracking-normal text-[#ffffff] sm:leading-[1.04] text-center"
           >
-            Quiet clay, warm light, and pieces that settle beautifully into daily life.
+         Slow living, <br />sculpted.
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
-            className="mt-6 max-w-2xl text-left text-[clamp(1rem,2.6vw,1.25rem)] leading-8 text-[#f4e4d0]"
+            className="mt-6 font-semibold text-[clamp(1rem,2.6vw,1.25rem)] leading-8 text-[#ffffff]"
           >
-            Thoughtfully made pottery with soft shapes, natural tones, and a calm
-            presence that lets the material speak for itself.
+           Earthy pottery shaped for everyday rituals.
           </motion.p>
 
           <motion.div
             variants={itemVariants}
-            className="mt-9 flex w-full flex-col gap-3 sm:w-auto sm:flex-row"
+            className="mt-9 flex w-full flex-col gap-3 w-auto sm:flex-row"
           >
             <Button
               size="lg"
-              className="group h-14 rounded-full border border-[#f8f2e8]/20 bg-[#f8f2e8] px-7 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#17140f] shadow-[0_18px_48px_rgba(248,242,232,0.18)] transition hover:-translate-y-0.5 hover:bg-[#efe4d6] sm:px-8"
+              className="group h-14 rounded-full border border-[#f8f2e8]/20 bg-[#ffffff] px-7 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#17140f] shadow-[0_18px_48px_rgba(248,242,232,0.18)] transition hover:-translate-y-0.5 hover:bg-[#efe4d6] sm:px-8"
               asChild
             >
-              <Link href="/#collections">
-                Explore Collections
+              <Link href="/products">
+                Shop now
                 <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
               </Link>
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="group h-14 rounded-full border-white/25 bg-white/10 px-7 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f8f2e8] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/18 hover:text-[#f8f2e8] sm:px-8"
-              asChild
-            >
-              <Link href="/classes">
-                Book Pottery Classes
-                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-              </Link>
-            </Button>
+           
           </motion.div>
 
         </motion.div>
