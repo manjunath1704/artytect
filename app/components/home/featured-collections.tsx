@@ -177,8 +177,8 @@ const FeaturedCollections = () => {
                     description={collection.description}
                     href={collection.href}
                     index={index + 1}
-                    thumbnailSrc={collection.thumbnailSrc}
-                    hoverThumbnailSrc={collection.hoverThumbnailSrc}
+                    thumbnailSrc={collection.hoverThumbnailSrc}
+                    hoverThumbnailSrc={collection.thumbnailSrc}
                   />
                 </CarouselItem>
               ))}

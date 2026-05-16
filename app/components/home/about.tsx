@@ -10,13 +10,13 @@ export default function AboutSection() {
       <div className="site-container grid items-center gap-12 md:grid-cols-2">
         
         {/* LEFT - IMAGE */}
-        <div className="relative h-[500px] w-full overflow-hidden rounded-4xl">
+        <div className="relative h-[500px] w-full overflow-hidden rounded-[32px] shadow-sm">
           <Image
             src="/images/author.jpg" // replace with your image
             alt="Pottery Artist"
             fill
             sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover rounded-3xl"
+            className="object-cover"
           />
         </div>
 

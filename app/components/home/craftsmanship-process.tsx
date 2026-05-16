@@ -108,7 +108,7 @@ export default function CraftsmanshipProcess() {
     >
       <div className="site-container">
         <motion.div
-          className="mb-10 max-w-3xl md:mb-20"
+          className="mb-10 md:mb-20 text-center"
           initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
           whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
@@ -124,7 +124,7 @@ export default function CraftsmanshipProcess() {
 
         <div className="grid gap-12 md:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] md:items-start md:gap-16 lg:gap-24">
           <div className="hidden md:sticky md:top-24 md:block md:h-[calc(100svh-8rem)] md:self-start">
-            <div className="relative aspect-[4/5] overflow-hidden bg-[#e8dfd2] md:h-full md:aspect-auto rounded-3xl">
+            <div className="relative aspect-[4/5] overflow-hidden bg-[#e8dfd2] md:h-full md:aspect-auto rounded-[32px] shadow-sm">
               {steps.map((step, index) => (
                 <motion.div
                   key={step.title}
@@ -144,7 +144,7 @@ export default function CraftsmanshipProcess() {
                     fill
                     sizes="(min-width: 768px) 45vw, calc(100vw - 48px)"
                     priority={index === 0}
-                    className="object-cover rounded-3xl"
+                    className="object-cover"
                   />
                 </motion.div>
               ))}

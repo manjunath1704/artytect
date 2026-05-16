@@ -29,13 +29,13 @@ export default function ProductCard({
     >
       <Link href={`/products/${product.id}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-[#eee6dc]">
-          {product.badge ? (
+          {/* {product.badge ? (
             <span className="absolute right-4 top-4 z-10 rounded-full border border-white/45 bg-[#1b1511]/75 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
               {product.badge}
             </span>
-          ) : null}
+          ) : null} */}
           <Image
-            src={product.images[0]}
+            src={product.images[1]}
             alt={product.name}
             fill
             sizes={imageSizes}
@@ -51,9 +51,9 @@ export default function ProductCard({
                 {product.name}
               </h3>
             </div>
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/15 backdrop-blur transition group-hover:bg-white group-hover:text-[#1b1511]">
+            {/* <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/15 backdrop-blur transition group-hover:bg-white group-hover:text-[#1b1511]">
               <ArrowUpRight className="h-4 w-4" />
-            </span>
+            </span> */}
           </div>
         </div>
       </Link>
