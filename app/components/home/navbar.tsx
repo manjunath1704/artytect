@@ -100,7 +100,7 @@ const Navbar = ({
       ].join(" ")}
     >
       <div className="site-container flex h-20 items-center justify-between">
-        <Link href="/" className="relative h-8 w-32 transition-opacity hover:opacity-80 sm:h-14 sm:w-60">
+        <Link href="/" className="relative h-12 w-60 transition-opacity hover:opacity-80 sm:h-14 sm:w-60">
           <Image
             src={logoSrc}
             alt="Haritham"

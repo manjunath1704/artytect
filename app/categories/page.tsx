@@ -132,7 +132,7 @@ export default function CategoriesPage() {
             className="object-cover"
           />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(24,18,14,0.84),rgba(24,18,14,0.5),rgba(24,18,14,0.2))]" />
-          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#f5f0eb] to-transparent" />
+          {/* <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#f5f0eb] to-transparent" /> */}
 
           <div className="site-container relative flex min-h-[calc(100vh-5rem)] items-end pb-12 pt-20 md:pb-16">
             <motion.div
