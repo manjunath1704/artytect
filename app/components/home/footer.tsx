@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const footerLinks = [
   { label: "Home", href: "/" },
-  { label: "Collections", href: "/categories" },
+  { label: "Categories", href: "/categories" },
   { label: "Products", href: "/products" },
   { label: "Classes", href: "/classes" },
   { label: "Contact", href: "/contact" },
@@ -15,14 +15,24 @@ export default function Footer() {
       <div className="site-container">
         <div className="grid gap-10 border-b border-white/15 pb-10 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
           <div>
-            <Link href="/" className="relative inline-block h-10 w-40 transition-opacity hover:opacity-80">
+            {/* <Link href="/" className="relative inline-block h-10 w-40 transition-opacity hover:opacity-80">
               <Image
                 src="/logo/logo-light.svg"
                 alt="Haritham"
                 fill
                 className="object-contain object-left"
               />
-            </Link>
+            </Link> */}
+             <Link href="/" className="relative inline-block h-12 w-60 transition-opacity hover:opacity-80 sm:h-14 sm:w-60">
+          <Image
+            src="/logo/logo-light.svg"
+            alt="Haritham"
+            fill
+            className="object-contain object-left"
+            
+          />
+        </Link>
+
             <p className="mt-5 max-w-md text-base leading-7 text-white/65">
               Handcrafted ceramics shaped with calm forms, natural texture, and
               a quiet respect for everyday rituals.

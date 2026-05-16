@@ -14,7 +14,7 @@ export default function ClassesPage() {
       <main className="bg-[#fbf8f4] text-[#171717]">
         <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#201914] text-white">
           <Image
-            src="/images/gallery/pexels-rdne-8903259.jpg"
+            src="/images/classes.jpg"
             alt="Hands shaping clay in a pottery class"
             fill
             priority
