@@ -31,8 +31,8 @@ export default function ContactPage() {
     <>
       <Navbar transparentTone="dark" />
       <main className="relative overflow-hidden bg-[#f4efe6] text-[#1b1511]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_10%,rgba(185,130,94,0.16),transparent_30%),radial-gradient(circle_at_88%_18%,rgba(154,107,78,0.1),transparent_32%)]" />
-      <div className="absolute inset-0 opacity-[0.05] [background-image:repeating-linear-gradient(0deg,rgba(27,21,17,0.28)_0px,rgba(27,21,17,0.28)_1px,transparent_1px,transparent_5px)]" />
+      {/* <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_10%,rgba(185,130,94,0.16),transparent_30%),radial-gradient(circle_at_88%_18%,rgba(154,107,78,0.1),transparent_32%)]" />
+      <div className="absolute inset-0 opacity-[0.05] [background-image:repeating-linear-gradient(0deg,rgba(27,21,17,0.28)_0px,rgba(27,21,17,0.28)_1px,transparent_1px,transparent_5px)]" /> */}
 
         <section className="border-b border-black/10 pb-16 pt-32 md:pb-24 md:pt-36">
           <div className="site-container grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-end lg:gap-16">
