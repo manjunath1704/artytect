@@ -235,7 +235,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
         </div>
 
         {visibleProducts.length ? (
-          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-7 grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
             {visibleProducts.map((product) => (
               <ProductCard
                 key={product.id}

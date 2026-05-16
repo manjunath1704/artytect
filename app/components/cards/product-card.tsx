@@ -29,11 +29,7 @@ export default function ProductCard({
     >
       <Link href={`/products/${product.id}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-[#eee6dc]">
-          {/* {product.badge ? (
-            <span className="absolute right-4 top-4 z-10 rounded-full border border-white/45 bg-[#1b1511]/75 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
-              {product.badge}
-            </span>
-          ) : null} */}
+         
           <Image
             src={product.images[1]}
             alt={product.name}
@@ -47,13 +43,11 @@ export default function ProductCard({
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#ead7c3]">
                 {product.category}
               </p>
-              <h3 className="mt-2 text-2xl font-display uppercase leading-none tracking-normal">
+              <h3 className="mt-2 text-lg md:text-xl lg:text-2xl font-display uppercase leading-none tracking-normal">
                 {product.name}
               </h3>
             </div>
-            {/* <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/15 backdrop-blur transition group-hover:bg-white group-hover:text-[#1b1511]">
-              <ArrowUpRight className="h-4 w-4" />
-            </span> */}
+            
           </div>
         </div>
       </Link>
@@ -61,7 +55,7 @@ export default function ProductCard({
       <div className="p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a6b4e]">
-            {/* <Sparkles className="h-3.5 w-3.5" /> */}
+          
             Handmade
           </div>
           <p className="text-right text-sm font-semibold text-[#1b1511]">
@@ -78,11 +72,11 @@ export default function ProductCard({
           </p>
         </div>
 
-        <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#7d746d]">
+        <p className="mt-2 line-clamp-2 text-xs sm:text-sm sm:leading-6 text-[#7d746d]">
           {product.shortDescription}
         </p>
 
-        <div className="mt-3 flex items-center gap-2 rounded-2xl shadow-md bg-[#faf6f2] px-3 py-2 text-xs text-[#6f6259]">
+        <div className="hidden lg:flex mt-3 items-center gap-2 rounded-2xl shadow-md bg-[#faf6f2] px-3 py-2 text-xs text-[#6f6259]">
           <Ruler className="h-3.5 w-3.5 text-[#9a6b4e]" />
           <span className="line-clamp-1">{product.dimensions}</span>
         </div>
@@ -96,7 +90,7 @@ export default function ProductCard({
           </WhatsAppButton>
           <Link
             href={`/products/${product.id}`}
-            className="inline-flex h-11 items-center justify-center rounded-full border border-[#ded3c8] bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511]"
+            className="lg:inline-flex h-11 hidden  items-center justify-center rounded-full border border-[#ded3c8] bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511]"
           >
             View
           </Link>
