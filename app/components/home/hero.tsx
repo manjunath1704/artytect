@@ -97,7 +97,7 @@ const Hero = () => {
 
           <motion.div
             variants={itemVariants}
-            className=""
+            
           >
             <Button
               size="lg"
