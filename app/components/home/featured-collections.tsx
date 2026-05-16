@@ -12,7 +12,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import CategoryCard from "./category-card";
-
+import SectionHeader from "./section-header";
+import ViewMoreLink from "./view-more-link";
 const fallbackCollections = [
   {
     title: "Bowls",
@@ -139,7 +140,7 @@ const FeaturedCollections = () => {
       <div className="absolute inset-x-0 top-0 h-px bg-[#d8cabd]" />
 
       <div className="site-container relative">
-        <div className="grid gap-6 border-b border-[#d8cabd] pb-8 md:grid-cols-[0.78fr_1fr] md:items-end">
+        {/* <div className="grid gap-6 border-b border-[#d8cabd] pb-8 md:grid-cols-[0.78fr_1fr] md:items-end">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9a6b4e]">
               Featured collections
@@ -157,8 +158,15 @@ const FeaturedCollections = () => {
               Curated by clay, glaze, and daily ritual
             </p>
           </div>
-        </div>
-
+        </div> */}
+ <SectionHeader
+          id="featured-products-title"
+          eyebrow="Featured collections"
+          title=" Find your everyday form"
+          description=" Explore bowls, mugs, vases, planters, plates, and deep serving
+              forms selected for a quiet home, tactile tables, and daily rituals."
+          action={<ViewMoreLink href="/categories">View all categories</ViewMoreLink>}
+        />
         <div className="mt-12 md:mt-14">
           <Carousel
             setApi={setApi}

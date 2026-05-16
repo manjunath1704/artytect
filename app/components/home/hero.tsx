@@ -91,7 +91,7 @@ const Hero = () => {
 
           <motion.h1
             variants={itemVariants}
-            className="mt-7 max-w-5xl text-left text-[clamp(1.40rem,9vw,4.50rem)] font-display leading-[1.08] tracking-normal text-[#fff8ef] sm:leading-[1.04] lg:max-w-4xl"
+            className="mt-7 max-w-5xl text-left text-[clamp(1.40rem,9vw,4.30rem)] font-display leading-[1.08] tracking-normal text-[#fff8ef] sm:leading-[1.04] lg:max-w-4xl"
           >
             Quiet clay, warm light, and pieces that settle beautifully into daily life.
           </motion.h1>

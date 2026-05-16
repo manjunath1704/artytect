@@ -194,7 +194,7 @@ export default function CategoriesPage() {
         </section>
 
         {/* ── Categories — Alternating Split Sections ──────────────── */}
-        <div id="collections" className="site-container">
+        <div id="collections" className="site-container my-10 rounded-[32px]">
           {isLoading ? (
             /* Loading skeleton */
             <div className="divide-y divide-[#d9cfc6]">
