@@ -122,7 +122,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
           </p>
         </div>
 
-        <div className="mb-10 rounded-[32px] border border-black/10 bg-[#fcfaf7] p-4 shadow-sm md:p-5">
+        <div className="mb-10 rounded-[32px] shadow-sm bg-[#fcfaf7] p-4 shadow-sm md:p-5">
           <div className="grid gap-4 lg:grid-cols-[1fr_220px_220px_220px_auto] lg:items-end">
             <label className="block">
               <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a817a]">

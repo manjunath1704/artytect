@@ -147,7 +147,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             className="object-cover"
           />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(27,21,17,0.88),rgba(27,21,17,0.52),rgba(27,21,17,0.24))]" />
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#f5f0eb] to-transparent" />
+          {/* <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#f5f0eb] to-transparent" /> */}
 
           <div className="site-container relative flex min-h-[calc(100vh-5rem)] items-end pb-12 pt-20 md:pb-16">
             <div className="grid w-full gap-10 lg:grid-cols-[1fr_340px] lg:items-end">
@@ -156,9 +156,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                   href="/categories"
                   className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.34em] text-[#e9d8c4] transition-opacity hover:opacity-70"
                 >
-                  ← Back to collections
+                  ← Back to categories
                 </Link>
-                <h1 className="mt-5 text-4xl font-display uppercase leading-[1] tracking-normal sm:text-7xl lg:text-8xl">
+                <h1 className="mt-5 text-4xl font-display uppercase leading-[1] tracking-normal sm:text-5xl lg:text-6xl">
                   {category.title}
                 </h1>
                 <p className="mt-7 max-w-xl text-sm leading-7 text-[#f4e9dc] md:text-base md:leading-8">
@@ -166,7 +166,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 </p>
               </div>
 
-              <div className="overflow-hidden rounded-[32px] border border-white/18 bg-[#1a1410]/60 p-5 backdrop-blur-md">
+              <div className="overflow-hidden rounded-[32px] shadow-sm bg-[#1a1410]/60 p-5 backdrop-blur-md">
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
                     <p className="text-3xl font-display">{products.length}</p>

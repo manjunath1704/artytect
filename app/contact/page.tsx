@@ -77,7 +77,7 @@ export default function ContactPage() {
                     <a
                       key={method.label}
                       href={method.href}
-                      className="group flex items-center gap-4 overflow-hidden rounded-2xl border border-[#e1d7cb] bg-white p-4 transition hover:border-[#1b1511]"
+                      className="group flex items-center gap-4 overflow-hidden rounded-2xl shadow-sm bg-white p-4 transition hover:border-[#1b1511]"
                       target={method.label === "Studio" ? "_blank" : undefined}
                       rel={method.label === "Studio" ? "noreferrer" : undefined}
                     >
@@ -98,7 +98,7 @@ export default function ContactPage() {
               </div>
             </aside>
 
-            <form className="overflow-hidden rounded-[32px] border border-[#e1d7cb] bg-white p-5 md:p-8">
+            <form className="overflow-hidden rounded-[32px] shadow-sm bg-white p-5 md:p-8">
               <div className="grid gap-5 md:grid-cols-2">
                 <label className="block">
                   <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]">

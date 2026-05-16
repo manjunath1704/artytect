@@ -21,7 +21,7 @@ export default function TestimonialCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.35 }}
       transition={{ duration: 0.55, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative flex h-full flex-col overflow-hidden rounded-[32px] border border-[#e3d2c3] bg-[#fffdf8] p-5 shadow-sm transition-shadow duration-300 md:p-6"
+      className="group relative flex h-full flex-col overflow-hidden rounded-[32px] shadow-sm bg-[#fffdf8] p-5 shadow-sm transition-shadow duration-300 md:p-6"
     >
       {/* <div className="pointer-events-none absolute inset-x-0 top-0 h-1 rounded-t-[32px] bg-[linear-gradient(90deg,#b9825e,#d8b99c,#8f6f53)] opacity-80" /> */}
       <Quote

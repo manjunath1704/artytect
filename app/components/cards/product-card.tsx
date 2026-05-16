@@ -23,7 +23,7 @@ export default function ProductCard({
   return (
     <article
       className={cn(
-        "group overflow-hidden rounded-[32px] border border-[#ded3c8] bg-[#fffdf9] shadow-sm transition-shadow",
+        "group overflow-hidden rounded-[32px] shadow-sm bg-[#fffdf9] shadow-sm transition-shadow",
         className,
       )}
     >
@@ -61,7 +61,7 @@ export default function ProductCard({
       <div className="p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a6b4e]">
-            <Sparkles className="h-3.5 w-3.5" />
+            {/* <Sparkles className="h-3.5 w-3.5" /> */}
             Handmade
           </div>
           <p className="text-right text-sm font-semibold text-[#1b1511]">
@@ -82,7 +82,7 @@ export default function ProductCard({
           {product.shortDescription}
         </p>
 
-        <div className="mt-3 flex items-center gap-2 rounded-2xl border border-[#eadfd4] bg-[#faf6f2] px-3 py-2 text-xs text-[#6f6259]">
+        <div className="mt-3 flex items-center gap-2 rounded-2xl shadow-md bg-[#faf6f2] px-3 py-2 text-xs text-[#6f6259]">
           <Ruler className="h-3.5 w-3.5 text-[#9a6b4e]" />
           <span className="line-clamp-1">{product.dimensions}</span>
         </div>

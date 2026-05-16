@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { ArrowUpRight, Sparkles } from "lucide-react";
-
+import { motion, useScroll, useTransform } from "framer-motion";
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
 
@@ -115,7 +114,9 @@ export default function CategoriesPage() {
       isMounted = false;
     };
   }, []);
+  const { scrollY } = useScroll();
 
+  const y = useTransform(scrollY, [0, 500], [0, 120]);
   return (
     <>
       <Navbar  />
@@ -123,14 +124,19 @@ export default function CategoriesPage() {
 
         {/* ── Hero ─────────────────────────────────────────────────── */}
         <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#211914] text-white">
-          <Image
-            src="/images/gallery/pexels-karola-g-6805523.jpg"
-            alt="Handmade ceramic collections"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
+                    <motion.div
+            style={{ y }}
+            className="absolute inset-0 scale-110"
+          >
+            <Image
+              src="/images/gallery/pexels-karola-g-6805523.jpg"
+              alt="Hands shaping clay in a pottery class"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          </motion.div>
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(24,18,14,0.84),rgba(24,18,14,0.5),rgba(24,18,14,0.2))]" />
           <div className="site-container relative flex min-h-[calc(100vh-5rem)] items-end pb-12 pt-20 md:pb-16">
             <motion.div
@@ -161,7 +167,7 @@ export default function CategoriesPage() {
                 </Link>
               </div>
 
-              <div className="overflow-hidden rounded-[32px] border border-white/18 bg-[#17110d]/55 p-5 backdrop-blur-md">
+              <div className="overflow-hidden rounded-[32px] shadow-sm bg-[#17110d]/55 p-5 backdrop-blur-md">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
                     <p className="text-2xl font-display">{categories.length}</p>

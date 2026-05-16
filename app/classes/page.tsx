@@ -1,26 +1,35 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles } from "lucide-react";
-
+import { motion, useScroll, useTransform } from "framer-motion";
 import ClassCard from "@/app/components/cards/class-card";
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
 import { potteryClasses } from "@/lib/classes";
 
 export default function ClassesPage() {
+  const { scrollY } = useScroll();
+
+  const y = useTransform(scrollY, [0, 500], [0, 120]);
   return (
     <>
       <Navbar />
       <main className="bg-[#fbf8f4] text-[#171717]">
         <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#201914] text-white">
-          <Image
-            src="/images/classes.jpg"
-            alt="Hands shaping clay in a pottery class"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
+          <motion.div
+  style={{ y }}
+  className="absolute inset-0 scale-110"
+>
+  <Image
+    src="/images/classes.jpg"
+    alt="Hands shaping clay in a pottery class"
+    fill
+    priority
+    sizes="100vw"
+    className="object-cover"
+  />
+</motion.div>
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(24,18,14,0.82),rgba(24,18,14,0.45),rgba(24,18,14,0.18))]" />
           {/* <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#fbf8f4] to-transparent" /> */}
 
@@ -39,7 +48,7 @@ export default function ClassesPage() {
                 </p>
               </div>
 
-              <div className="overflow-hidden rounded-[32px] border border-white/18 bg-[#17110d]/55 p-5 backdrop-blur-md">
+              <div className="overflow-hidden rounded-[32px] shadow-sm bg-[#17110d]/55 p-5 backdrop-blur-md">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
                     <p className="text-2xl font-display">{potteryClasses.length}</p>

@@ -25,7 +25,7 @@ export default function ClassCard({
   return (
     <article
       className={cn(
-        "group overflow-hidden rounded-[32px] border border-[#d8cec1] bg-[#fffdf9] shadow-sm transition-shadow duration-300",
+        "group overflow-hidden rounded-[32px] shadow-sm bg-[#fffdf9] shadow-sm transition-shadow duration-300",
         className,
       )}
     >
@@ -54,7 +54,7 @@ export default function ClassCard({
       </Link>
 
       <div className="p-4">
-        <div className="grid grid-cols-3 rounded-2xl border border-[#e2d6ca] bg-[#faf7f4] py-3 text-center text-[#5d5148]">
+        <div className="grid grid-cols-3 rounded-2xl shadow-md bg-[#faf7f4] py-3 text-center text-[#5d5148]">
           <div className="border-r border-[#e2d6ca] px-2">
             <Clock className="mx-auto h-4 w-4 text-[#9a6b4e]" />
             <p className="mt-1.5 text-xs">{classItem.duration}</p>

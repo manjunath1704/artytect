@@ -1,26 +1,34 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles } from "lucide-react";
-
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
 import { products } from "@/lib/products";
 import ProductCatalog from "./product-catalog";
-
+import { motion, useScroll, useTransform } from "framer-motion";
 export default function ProductsPage() {
+  const { scrollY } = useScroll();
+
+  const y = useTransform(scrollY, [0, 500], [0, 120]);
   return (
     <>
       <Navbar />
       <main className="bg-white text-[#171717]">
         <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#211914] text-white">
-          <Image
-            src="/images/gallery/pexels-readymade-3847457.jpg"
-            alt="Handmade ceramic tableware arranged on a studio table"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
+          <motion.div
+            style={{ y }}
+            className="absolute inset-0 scale-110"
+          >
+            <Image
+              src="/images/gallery/pexels-readymade-3847457.jpg"
+              alt="Hands shaping clay in a pottery class"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          </motion.div>
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(24,18,14,0.84),rgba(24,18,14,0.5),rgba(24,18,14,0.2))]" />
           {/* <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-white to-transparent" /> */}
 
@@ -46,7 +54,7 @@ export default function ProductsPage() {
                 </Link>
               </div>
 
-              <div className="overflow-hidden rounded-[32px] border border-white/18 bg-[#17110d]/55 p-5 backdrop-blur-md">
+              <div className="overflow-hidden rounded-[32px] shadow-sm bg-[#17110d]/55 p-5 backdrop-blur-md">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
                     <p className="text-2xl font-display">{products.length}</p>
