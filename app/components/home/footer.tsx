@@ -19,7 +19,7 @@ export default function Footer() {
               href="/"
               className="font-display text-3xl font-bold tracking-[0.22em] text-white"
             >
-              ArtyTect
+              Haritham
             </Link>
             <p className="mt-5 max-w-md text-base leading-7 text-white/65">
               Handcrafted ceramics shaped with calm forms, natural texture, and
@@ -47,17 +47,17 @@ export default function Footer() {
               Contact
             </h3>
             <a
-              href="mailto:hello@artytect.com"
+              href="mailto:hello@Haritham.com"
               className="text-sm text-white/75 transition hover:text-white"
             >
-              hello@artytect.com
+              hello@Haritham.com
             </a>
             <p className="text-sm text-white/75">Bengaluru, India</p>
           </div>
         </div>
 
         <div className="flex flex-col gap-3 pt-6 text-sm text-white/45 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} ArtyTect. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Haritham. All rights reserved.</p>
           <p>Earthware for quiet daily living.</p>
         </div>
       </div>

@@ -306,41 +306,7 @@ export default function CategoriesPage() {
           )}
         </div>
 
-        {/* ── Newsletter ───────────────────────────────────────────── */}
-        <section className="border-t border-[#d9cfc6]">
-          <div className="site-container py-20 md:py-28">
-            <div className="grid gap-12 md:grid-cols-[1fr_1fr] md:items-end md:gap-16">
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.36em] text-[#9a6b4e]">
-                  Newsletter
-                </p>
-                <h2 className="mt-6 font-display text-[clamp(2rem,5vw,4rem)] uppercase leading-[0.95] tracking-[-0.03em] text-[#1b1511]">
-                  Get 10% off your first order
-                </h2>
-                <p className="mt-6 max-w-md text-sm leading-7 text-[#6b5f55]">
-                  Subscribe to receive studio updates, new collection launches, and exclusive offers.
-                </p>
-              </div>
-
-              <form className="flex items-center border-b border-[#1b1511] pb-1">
-                <input
-                  type="email"
-                  aria-label="Email address"
-                  placeholder="Enter your email address"
-                  className="min-w-0 flex-1 bg-transparent py-4 text-sm outline-none placeholder:text-[#9a8d82]"
-                />
-                <button
-                  type="submit"
-                  className="group shrink-0 px-4 py-4 text-[10px] font-semibold uppercase tracking-[0.28em] text-[#1b1511] transition-opacity hover:opacity-50"
-                >
-                  Subscribe
-                  <span className="ml-2 inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-                </button>
-              </form>
-            </div>
-          </div>
-        </section>
-
+       
       </main>
       <Footer />
     </>

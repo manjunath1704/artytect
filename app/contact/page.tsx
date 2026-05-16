@@ -8,8 +8,8 @@ const contactMethods = [
   {
     icon: Mail,
     label: "Email",
-    value: "hello@artytect.com",
-    href: "mailto:hello@artytect.com",
+    value: "hello@Haritham.com",
+    href: "mailto:hello@Haritham.com",
   },
   {
     icon: Phone,

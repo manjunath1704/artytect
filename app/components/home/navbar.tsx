@@ -92,8 +92,8 @@ const Navbar = ({
       ].join(" ")}
     >
       <div className="site-container flex h-20 items-center justify-between">
-        <Link href="/" className="font-display text-2xl tracking-[0.22em] text-inherit sm:text-3xl">
-          ARTYTECT
+        <Link href="/" className="font-display uppercase text-2xl tracking-[0.22em] text-inherit sm:text-3xl">
+          Haritham 
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

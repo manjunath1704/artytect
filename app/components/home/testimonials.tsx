@@ -58,7 +58,7 @@ export default function TestimonialsSection() {
             id="testimonials-title"
             eyebrow="Community stories"
             title="Stories From Our Pottery Community"
-            description="Notes from collectors, students, and home stylists who brought Artytect pieces into their rituals, shelves, and studio practice."
+            description="Notes from collectors, students, and home stylists who brought Haritham pieces into their rituals, shelves, and studio practice."
           />
         </motion.div>
 

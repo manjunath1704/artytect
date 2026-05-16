@@ -1,6 +1,6 @@
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 
-const message = "Hello ArtyTect, I would like to know more.";
+const message = "Hello Haritham, I would like to know more.";
 
 export default function WhatsAppFloatingButton() {
   return (
@@ -8,7 +8,7 @@ export default function WhatsAppFloatingButton() {
       href={getWhatsAppUrl(message)}
       target="_blank"
       rel="noreferrer"
-      aria-label="Chat with ArtyTect on WhatsApp"
+      aria-label="Chat with Haritham on WhatsApp"
       className="fixed bottom-5 right-5 z-[80] flex h-14 w-14 items-center justify-center rounded-full bg-[#25d366] text-white shadow-[0_16px_40px_rgba(0,0,0,0.22)] transition hover:scale-105 hover:bg-[#1ebe5d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#25d366]"
     >
       <svg
