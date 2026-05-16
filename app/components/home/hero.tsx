@@ -79,25 +79,25 @@ const Hero = () => {
           variants={contentVariants}
           initial="hidden"
           animate="visible"
-          className="flex  flex-col items-center"
+          className="flex  flex-col items-center gap-4"
         >
           <motion.h1
             variants={itemVariants}
-            className="uppercase mt-7 text-6xl md:text-8xl font-display leading-[1.08] tracking-normal text-[#ffffff] sm:leading-[1.04] text-center"
+            className="uppercase  text-6xl md:text-8xl font-display leading-[1.08] tracking-normal text-[#ffffff] sm:leading-[1.04] text-center"
           >
          Slow living, <br />sculpted.
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
-            className="mt-6 font-semibold text-[clamp(1rem,2.6vw,1.25rem)] leading-8 text-[#ffffff]"
+            className=" font-semibold text-[clamp(1rem,2.6vw,1.25rem)] leading-8 text-[#ffffff]"
           >
            Earthy pottery shaped for everyday rituals.
           </motion.p>
 
           <motion.div
             variants={itemVariants}
-            className="mt-9 flex w-full flex-col gap-3 w-auto sm:flex-row"
+            className=""
           >
             <Button
               size="lg"
