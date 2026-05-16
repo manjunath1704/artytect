@@ -92,12 +92,12 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
         <div className="site-container">
           <div className="grid gap-12 lg:grid-cols-[1.12fr_0.88fr] lg:gap-16 xl:gap-20">
             <div className="grid gap-4 lg:sticky lg:top-28 lg:self-start">
-              <div className="relative aspect-[1.02/1] overflow-hidden bg-[#eee6dc]">
-                {product.badge ? (
+              <div className="relative aspect-[1.02/1] overflow-hidden bg-[#eee6dc] rounded-[32px] ">
+                {/* {product.badge ? (
                   <span className="absolute right-5 top-5 z-10 border border-white/45 bg-[#1b1511]/75 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-white backdrop-blur">
                     {product.badge}
                   </span>
-                ) : null}
+                ) : null} */}
                 <Image
                   src={selectedImage}
                   alt={product.name}
@@ -117,9 +117,9 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                       key={image}
                       type="button"
                       className={[
-                        "relative aspect-square overflow-hidden border bg-[#f7f2ec] transition",
+                        "relative aspect-square overflow-hidden shadow-sm bg-[#f7f2ec] transition rounded-[32px]",
                         isSelected
-                          ? "border-[#1b1511] opacity-100"
+                          ? "border-4 border-[#9D6745]/60 opacity-100 shadow-lg "
                           : "border-transparent opacity-70 hover:opacity-100",
                       ].join(" ")}
                       aria-label={`Show ${product.name} view ${index + 1}`}
@@ -140,9 +140,9 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
             </div>
 
             <div>
-              <div className="border border-[#ded3c8] bg-[#fffdf9] p-6 md:p-8">
+              <div className="shadow-sm rounded-[32px] bg-[#fffdf9] p-6 md:p-8">
                 <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9a6b4e]">
-                  <Sparkles className="h-4 w-4" />
+                  
                   {product.category}
                 </p>
                 <h1 className="mt-4 text-4xl font-display uppercase leading-none tracking-normal sm:text-5xl">
@@ -179,7 +179,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                     const Icon = item.icon;
 
                     return (
-                      <div key={item.label} className="border border-[#eadfd4] bg-[#fbf8f4] p-4">
+                      <div key={item.label} className="rounded-[32px] shadow-md bg-[#fbf8f4] p-4">
                         <Icon className="h-4 w-4 text-[#9a6b4e]" />
                         <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7765]">
                           {item.label}
@@ -200,7 +200,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                     Quantity
                   </label>
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                    <div className="grid h-14 w-full grid-cols-[48px_56px_48px] border border-[#ded3c8] bg-white sm:w-[152px]">
+                    <div className="grid h-14 w-full grid-cols-[48px_56px_48px] border border-[#ded3c8] overflow-hidden shadow-md rounded-[32px] bg-white sm:w-[152px]">
                       <button
                         type="button"
                         className="flex items-center justify-center text-[#7d746d] transition hover:bg-[#f7f2ec] hover:text-[#171717] disabled:cursor-not-allowed disabled:opacity-35"
@@ -265,7 +265,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
               );
             })}
           </div>
-          <div className="mt-7 border border-[#eadfd4] bg-[#fbf8f4] p-6 md:p-8">
+          <div className="mt-7 rounded-[32px] shadow-md bg-[#fbf8f4] p-6 md:p-8">
             {tabContent}
           </div>
         </div>

@@ -50,18 +50,17 @@ export default async function ClassPage({ params }: ClassPageProps) {
 
           <div className="site-container relative flex min-h-[580px] items-end py-12 md:py-16">
             <div className="max-w-4xl">
-              <Link
+              {/* <Link
                 href="/classes"
                 className="mb-8 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#ead7c3] transition hover:text-white"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Classes
-              </Link>
+              </Link> */}
               <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#ead7c3]">
-                <Sparkles className="h-4 w-4" />
                 {classItem.level}
               </p>
-              <h1 className="mt-4 text-4xl font-display uppercase leading-[1] tracking-normal sm:text-7xl lg:text-8xl">
+              <h1 className="mt-4 text-4xl font-display uppercase leading-[1] tracking-normal sm:text-5xl lg:text-6xl">
                 {classItem.title}
               </h1>
               <p className="mt-7 max-w-2xl text-sm leading-7 text-[#f2e3d5] md:text-base md:leading-8">
@@ -75,7 +74,7 @@ export default async function ClassPage({ params }: ClassPageProps) {
           <div className="site-container">
             <div className="grid gap-10 lg:grid-cols-[1fr_380px] lg:items-start xl:gap-16">
               <div>
-                <div className="grid border-y border-[#d8cec1] text-center sm:grid-cols-3">
+                <div className="grid border border-[#d8cec1] shadow-md rounded-[32px] text-center sm:grid-cols-3">
                   <div className="border-b border-[#d8cec1] px-5 py-6 sm:border-b-0 sm:border-r">
                     <Clock className="mx-auto h-5 w-5 text-[#9a6b4e]" />
                     <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8a7765]">
@@ -120,7 +119,7 @@ export default async function ClassPage({ params }: ClassPageProps) {
                   </div>
                 </div>
 
-                <div className="mt-12 border border-[#d8cec1] bg-[#fffdf9] p-6 md:p-8">
+                <div className="mt-12 rounded-[32px] shadow-sm bg-[#fffdf9] p-6 md:p-8">
                   <h2 className="text-xs font-semibold uppercase tracking-[0.2em]">
                     Included in your seat
                   </h2>
@@ -151,7 +150,7 @@ export default async function ClassPage({ params }: ClassPageProps) {
               </div>
 
               <aside className="lg:sticky lg:top-28">
-                <div className="overflow-hidden border border-[#d8cec1] bg-[#fffdf9]">
+                <div className="overflow-hidden rounded-[32px] shadow-md bg-[#fffdf9]">
                   <div className="relative aspect-[1.2/1] bg-[#e8ded3]">
                     <Image
                       src={classItem.image}
@@ -213,15 +212,15 @@ export default async function ClassPage({ params }: ClassPageProps) {
                 <Link
                   key={relatedClass.slug}
                   href={`/classes/${relatedClass.slug}`}
-                  className="group grid gap-5 border border-[#d8cec1] bg-[#fffdf9] p-4 sm:grid-cols-[150px_1fr]"
+                  className="group grid gap-5 shadow-sm rounded-[32px] bg-[#fffdf9] p-4 sm:grid-cols-[150px_1fr]"
                 >
-                  <div className="relative aspect-square overflow-hidden bg-[#f1ece6]">
+                  <div className="relative aspect-square rounded-[32px] overflow-hidden bg-[#f1ece6]">
                     <Image
                       src={relatedClass.image}
                       alt={relatedClass.title}
                       fill
                       sizes="150px"
-                      className="object-cover"
+                      className="object-cover "
                     />
                   </div>
                   <div>

@@ -60,16 +60,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <Link
                   key={relatedProduct.id}
                   href={`/products/${relatedProduct.id}`}
-                  className="group block overflow-hidden border border-[#d8cec1] bg-[#fffdf9]"
+                  className="group block overflow-hidden rounded-[32px] shadow-sm bg-[#fffdf9]"
                 >
                   <div className="relative aspect-[0.95/1] overflow-hidden bg-[#eee6dc]">
-                    {relatedProduct.badge ? (
+                    {/* {relatedProduct.badge ? (
                       <span className="absolute right-4 top-4 z-10 border border-white/45 bg-[#1b1511]/75 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
                         {relatedProduct.badge}
                       </span>
-                    ) : null}
+                    ) : null} */}
                     <Image
-                      src={relatedProduct.images[0]}
+                      src={relatedProduct.images[1]}
                       alt={relatedProduct.name}
                       fill
                       sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
