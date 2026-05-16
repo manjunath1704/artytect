@@ -9,6 +9,7 @@ import { prisma } from "@/lib/prisma";
 import { products as catalogProducts } from "@/lib/products";
 import { formatPrice, getProductOrderMessage } from "@/lib/whatsapp";
 import { motion, useScroll, useTransform } from "framer-motion";
+import ProductCard from "@/app/components/cards/product-card";
 
 type CategoryPageProps = {
   params: Promise<{
@@ -225,75 +226,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             {products.length ? (
               <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
                 {products.map((product) => (
-                  <article key={product.id} className="group overflow-hidden rounded-2xl shadow-sm transition-shadow duration-300 hover:shadow-md">
-
-                    {/* Image */}
-                    <Link href={`/products/${product.id}`} className="block">
-                      <div className="relative aspect-[4/3] overflow-hidden bg-[#e4d9d0]">
-                        {product.badge ? (
-                          <span className="absolute left-0 top-0 z-10 rounded-br-lg border-b border-r border-[#d9cfc6] bg-[#f5f0eb] px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.24em] text-[#9a6b4e]">
-                            {product.badge}
-                          </span>
-                        ) : null}
-                        <Image
-                          src={product.images[0]}
-                          alt={product.name}
-                          fill
-                          sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, calc(100vw - 48px)"
-                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                        />
-                        {/* Hover overlay */}
-                        <div className="absolute inset-0 bg-[#1b1511] opacity-0 transition-opacity duration-500 group-hover:opacity-8" />
-                      </div>
-                    </Link>
-
-                    {/* Content */}
-                    <div className="border border-t-0 border-[#d9cfc6] bg-[#faf6f2] px-4 py-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a6b4e]">
-                          {product.category}
-                        </p>
-                        <p className="text-sm font-semibold text-[#1b1511]">
-                          {product.compareAtPrice ? (
-                            <>
-                              <span className="mr-2 text-[#9a8d82] line-through">
-                                {formatPrice(product.compareAtPrice)}
-                              </span>
-                              <span>{formatPrice(product.price)}</span>
-                            </>
-                          ) : (
-                            formatPrice(product.price)
-                          )}
-                        </p>
-                      </div>
-
-                      <Link href={`/products/${product.id}`} className="block">
-                        <h2 className="mt-2 text-sm font-semibold uppercase tracking-[0.1em] text-[#1b1511] transition-opacity duration-200 group-hover:opacity-60">
-                          {product.name}
-                        </h2>
-                      </Link>
-
-                      <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#7a6e65]">
-                        {product.shortDescription}
-                      </p>
-
-                      <div className="mt-4 grid grid-cols-[1fr_auto] gap-2 border-t border-[#d9cfc6] pt-4">
-                        <WhatsAppButton
-                          message={getProductOrderMessage(product)}
-                          className="h-10 rounded-xl px-4 text-[10px]"
-                        >
-                          Order Now
-                        </WhatsAppButton>
-                        <Link
-                          href={`/products/${product.id}`}
-                          className="inline-flex h-10 items-center justify-center rounded-xl border border-[#d9cfc6] bg-transparent px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition-colors duration-200 hover:border-[#1b1511] hover:bg-[#1b1511] hover:text-white"
-                        >
-                          <ArrowUpRight className="h-3.5 w-3.5" />
-                        </Link>
-                      </div>
-                    </div>
-
-                  </article>
+                 <article key={product.id}>
+                   <ProductCard product={product}/>
+                 </article>
                 ))}
               </div>
             ) : (

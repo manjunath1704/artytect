@@ -242,14 +242,14 @@ export default function CategoriesPage() {
                         ].join(" ")}
                       >
                         <Image
-                          src={category.thumbnailSrc}
+                          src={category.hoverThumbnailSrc}
                           alt={category.title}
                           fill
                           sizes="(min-width: 768px) 50vw, 100vw"
                           className="object-cover transition-[opacity,transform] duration-[1200ms] ease-out group-hover:scale-105 group-hover:opacity-0"
                         />
                         <Image
-                          src={category.hoverThumbnailSrc}
+                          src={category.thumbnailSrc}
                           alt={`${category.title} alternate view`}
                           fill
                           sizes="(min-width: 768px) 50vw, 100vw"

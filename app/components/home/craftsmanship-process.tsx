@@ -230,7 +230,7 @@ function ProcessItem({
   return (
     <motion.article
       ref={stepRef}
-      className="relative overflow-hidden border border-[#e5dbcf] bg-white md:overflow-visible md:border-0 md:bg-transparent md:pl-16"
+      className="relative overflow-hidden rounded-[32px] shadow-md bg-white md:overflow-visible md:rounded-none md:shadow-none md:bg-transparent md:pl-16"
       style={{ opacity, y }}
     >
       <div className="relative aspect-[1.18/1] bg-[#e8dfd2] md:hidden">
