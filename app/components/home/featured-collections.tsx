@@ -166,11 +166,11 @@ const FeaturedCollections = () => {
             ]}
             className="w-full py-5"
           >
-            <CarouselContent className="-ml-5">
+            <CarouselContent className="">
               {collections.map((collection, index) => (
                 <CarouselItem
                   key={`${collection.title}-${index}`}
-                  className="basis-[88%] pl-5 sm:basis-[54%] lg:basis-1/3 xl:basis-1/3"
+                  className="basis-[100%] sm:basis-1/2 lg:basis-1/3 xl:basis-1/3"
                 >
                   <CategoryCard
                     title={collection.title}

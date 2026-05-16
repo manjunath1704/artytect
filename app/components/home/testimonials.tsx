@@ -78,11 +78,11 @@ export default function TestimonialsSection() {
           ]}
           className="w-full"
         >
-          <CarouselContent className="-ml-5">
+          <CarouselContent >
             {testimonials.map((testimonial, index) => (
               <CarouselItem
                 key={testimonial.id}
-                className="basis-[88%] pl-5 sm:basis-[62%] lg:basis-1/3"
+               className="basis-[100%] sm:basis-1/2 lg:basis-1/3 xl:basis-1/3"
               >
                 <TestimonialCard testimonial={testimonial} index={index} />
               </CarouselItem>
