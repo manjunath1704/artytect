@@ -132,8 +132,6 @@ export default function CategoriesPage() {
             className="object-cover"
           />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(24,18,14,0.84),rgba(24,18,14,0.5),rgba(24,18,14,0.2))]" />
-          {/* <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#f5f0eb] to-transparent" /> */}
-
           <div className="site-container relative flex min-h-[calc(100vh-5rem)] items-end pb-12 pt-20 md:pb-16">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -194,7 +192,7 @@ export default function CategoriesPage() {
         </section>
 
         {/* ── Categories — Alternating Split Sections ──────────────── */}
-        <div id="collections" className="site-container my-10 rounded-[32px]">
+        <div id="collections" className="site-container py-10 rounded-[32px]">
           {isLoading ? (
             /* Loading skeleton */
             <div className="divide-y divide-[#d9cfc6]">
@@ -280,7 +278,7 @@ export default function CategoriesPage() {
                               Collection
                             </p>
 
-                            <h2 className="mt-6 font-display text-[clamp(3rem,6vw,5rem)] uppercase leading-[0.95] tracking-[-0.03em] text-[#1b1511]">
+                            <h2 className="mt-6 font-display text-[clamp(3rem,6vw,3rem)] uppercase leading-[0.95] tracking-[-0.03em] text-[#1b1511]">
                               {category.title}
                             </h2>
 
