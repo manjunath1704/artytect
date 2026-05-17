@@ -148,7 +148,7 @@ export default function CategoriesPage() {
               <div className="max-w-3xl">
                 <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.34em] text-[#ead7c3]">
                   
-                  Collections
+                categories
                 </p>
                 <h1 className="mt-5 text-4xl font-display uppercase leading-[1] tracking-normal sm:5xl lg:text-6xl">
                   Explore our ceramic forms
@@ -162,7 +162,7 @@ export default function CategoriesPage() {
                   href="#collections"
                   className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition hover:bg-[#ead7c3]"
                 >
-                  Browse collections
+                  Browse categories
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -172,7 +172,7 @@ export default function CategoriesPage() {
                   <div>
                     <p className="text-2xl font-display">{categories.length}</p>
                     <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#e6d3c1]">
-                      Collections
+                    categories
                     </p>
                   </div>
                   <div>
@@ -279,7 +279,7 @@ export default function CategoriesPage() {
                             transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                           >
                             <p className="text-[10px] font-semibold uppercase tracking-[0.36em] text-[#9a6b4e]">
-                              Collection
+                            categories
                             </p>
 
                             <h2 className="mt-6 font-display text-[clamp(3rem,6vw,3rem)] uppercase leading-[0.95] tracking-[-0.03em] text-[#1b1511]">
@@ -294,7 +294,7 @@ export default function CategoriesPage() {
 
                             {/* Explore link */}
                             <div className="mt-10 inline-flex items-center gap-3 border-b border-[#1b1511] pb-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#1b1511] transition-opacity duration-300 group-hover:opacity-60">
-                              <span>Explore collection</span>
+                              <span>Explore categories</span>
                               <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
                             </div>
                           </motion.div>

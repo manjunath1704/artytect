@@ -58,6 +58,21 @@ export const potteryClasses: PotteryClass[] = [
       "A focused surface design workshop for people who already know basic clay handling and want to deepen the finish, texture, and visual language of their work.",
     includes: ["Practice tiles", "Surface materials", "Glaze testing", "Firing included"],
   },
+  {
+    slug: "glaze-application-workshop",
+    title: "Glaze Application Workshop",
+    featured: true,
+    price: 1899,
+    duration: "1 Day",
+    level: "Intermediate",
+    capacity: "12 seats",
+    image: "/images/glazing.jpg",
+    shortDescription:
+      "Explore slips, carving, wax resist, and layered glazes for expressive ceramic surfaces.",
+    description:
+      "A focused surface design workshop for people who already know basic clay handling and want to deepen the finish, texture, and visual language of their work.",
+    includes: ["Practice tiles", "Surface materials", "Glaze testing", "Firing included"],
+  },
 ];
 
 export function getClass(slug: string) {

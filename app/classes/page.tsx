@@ -99,7 +99,7 @@ export default function ClassesPage() {
               </p>
             </div>
 
-            <div className="hidden md:block">
+            <div className="hidden md:block mt-10">
             <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3 ">
               {potteryClasses.map((classItem, index) => (
                 <ClassCard
