@@ -309,7 +309,7 @@ export default function CategoriesPage() {
            
         </div>
 
-       <div className="site-container grid gap-5 grid-cols-2 py-10 md:hidden">
+       <div className="site-container grid gap-3 grid-cols-2 py-10 md:hidden">
        {
             categories.map((category, index) => (
               <div key={index}>
