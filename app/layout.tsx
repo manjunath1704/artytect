@@ -18,9 +18,9 @@ export const metadata: Metadata = {
     siteName: "Studio Haritham",
     images: [
       {
-        url: "/favicon.png",
-        width: 500,
-        height: 500,
+        url: "/haritham-og.png",
+        width: 580,
+        height: 250,
         alt: "Studio Haritham",
       },
     ],
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Studio Haritham | Handcrafted Pottery, Ceramic Art & Pottery Classes",
     description: "Discover handcrafted ceramics, artistic pottery collections, and immersive pottery workshops at Studio Haritham. Thoughtfully made pieces inspired by earth, craft, and slow living.",
-    images: ["/favicon.png"],
+    images: ["/haritham-og.png"],
   },
 };
 
