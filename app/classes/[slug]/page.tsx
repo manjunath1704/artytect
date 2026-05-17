@@ -74,15 +74,15 @@ export default async function ClassPage({ params }: ClassPageProps) {
           <div className="site-container">
             <div className="grid gap-10 lg:grid-cols-[1fr_380px] lg:items-start xl:gap-16">
               <div>
-                <div className="grid border border-[#d8cec1] shadow-md rounded-[32px] text-center sm:grid-cols-3">
-                  <div className="border-b border-[#d8cec1] px-5 py-6 sm:border-b-0 sm:border-r">
+                <div className="grid border border-[#d8cec1] shadow-md rounded-[32px] text-center grid-cols-3">
+                  <div className=" border-[#d8cec1] px-5 py-6 sm:border-b-0 sm:border-r">
                     <Clock className="mx-auto h-5 w-5 text-[#9a6b4e]" />
                     <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8a7765]">
                       Duration
                     </p>
                     <p className="mt-2 text-sm font-semibold">{classItem.duration}</p>
                   </div>
-                  <div className="border-b border-[#d8cec1] px-5 py-6 sm:border-b-0 sm:border-r">
+                  <div className=" border-[#d8cec1] px-5 py-6 sm:border-b-0 sm:border-r">
                     <Users className="mx-auto h-5 w-5 text-[#9a6b4e]" />
                     <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8a7765]">
                       Capacity

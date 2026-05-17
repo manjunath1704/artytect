@@ -6,6 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
+import CategoryCardMicro from "../components/cards/category-card-micro";
 
 type CategoryItem = {
   title: string;
@@ -197,7 +198,7 @@ export default function CategoriesPage() {
         </section>
 
         {/* ── Categories — Alternating Split Sections ──────────────── */}
-        <div id="collections" className="site-container py-10 rounded-[32px]">
+        <div id="collections" className="site-container py-10 rounded-[32px] hidden md:block">
           {isLoading ? (
             /* Loading skeleton */
             <div className="divide-y divide-[#d9cfc6]">
@@ -305,9 +306,25 @@ export default function CategoriesPage() {
               })}
             </div>
           )}
+           
         </div>
 
-       
+       <div className="site-container grid gap-5 grid-cols-2 py-10 md:hidden">
+       {
+            categories.map((category, index) => (
+              <div key={index}>
+                <CategoryCardMicro
+                    title={category.title}
+                    description={category.description}
+                    href={"/categories/" + category.slug}
+                    index={index + 1}
+                    thumbnailSrc={category.hoverThumbnailSrc}
+                    hoverThumbnailSrc={category.thumbnailSrc}
+                  />
+              </div>
+            ))
+           }
+       </div>
       </main>
       <Footer />
     </>
