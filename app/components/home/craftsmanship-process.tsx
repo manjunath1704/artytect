@@ -104,7 +104,7 @@ export default function CraftsmanshipProcess() {
   return (
     <section
       ref={sectionRef}
-      className="w-full bg-[#fcfdfa] py-16 text-[#1b1511] md:py-32"
+      className="w-full bg-[#fcfdfa] text-[#1b1511] py-20 md:py-28"
     >
       <div className="site-container">
         <motion.div

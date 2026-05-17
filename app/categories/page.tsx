@@ -60,6 +60,7 @@ const fallbackCategories: CategoryItem[] = [
     thumbnailSrc: "/images/deep-a.avif",
     hoverThumbnailSrc: "/images/deep-b.avif",
   },
+  
 ];
 
 type CategoryRow = {
@@ -198,7 +199,7 @@ export default function CategoriesPage() {
         </section>
 
         {/* ── Categories — Alternating Split Sections ──────────────── */}
-        <div id="collections" className="site-container py-10 rounded-[32px] hidden md:block">
+        <div id="collections" className="site-container py-20 md:py-28 rounded-[32px] hidden md:block">
           {isLoading ? (
             /* Loading skeleton */
             <div className="divide-y divide-[#d9cfc6]">

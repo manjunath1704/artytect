@@ -122,6 +122,7 @@ export const products: Product[] = [
     materials: "Stoneware ceramic with food-safe glaze",
     images: ["/images/deep-a.avif", "/images/deep-b.avif", "/images/plate-b.avif"],
   },
+  
 ];
 
 export function getProduct(id: string) {

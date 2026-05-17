@@ -49,7 +49,7 @@ export default function FeaturedProductsSection({
   }, [api]);
 
   return (
-    <section className="bg-[#fbf8f4] py-16 md:py-24" aria-labelledby="featured-products-title">
+    <section className="bg-[#fbf8f4] py-20 md:py-28" aria-labelledby="featured-products-title">
       <div className="site-container">
         <SectionHeader
           id="featured-products-title"
@@ -77,7 +77,7 @@ export default function FeaturedProductsSection({
                   stopOnMouseEnter: true,
                 }),
               ]}
-              className="w-full py-5"
+              className="w-full"
             >
               <CarouselContent>
                 {featuredProducts.map((product) => (

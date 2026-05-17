@@ -41,7 +41,7 @@ export default function TestimonialsSection() {
 
   return (
     <section
-      className="relative overflow-hidden bg-[#f4efe6] py-20 text-[#1b1511] md:py-24"
+      className="relative overflow-hidden bg-[#f4efe6] py-20 md:py-28 text-[#1b1511]"
       aria-labelledby="testimonials-title"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(185,130,94,0.16),transparent_30%),radial-gradient(circle_at_86%_18%,rgba(154,107,78,0.12),transparent_28%)]" />

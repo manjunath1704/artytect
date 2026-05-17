@@ -164,7 +164,7 @@ const FeaturedCollections = () => {
                 stopOnMouseEnter: true,
               }),
             ]}
-            className="w-full py-5"
+            className="w-full"
           >
             <CarouselContent className="">
               {collections.map((collection, index) => (

@@ -7,13 +7,13 @@ import WhatsAppFloatingButton from "./components/whatsapp-floating-button";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Earthware Landing Page",
-  description: "Reusable Next.js + Tailwind conversion of the Earthware ceramic pot design.",
+  title: "Studio Haritham | Handcrafted Pottery, Ceramic Art & Pottery Classes",
+  description: "Discover handcrafted ceramics, artistic pottery collections, and immersive pottery workshops at Studio Haritham. Thoughtfully made pieces inspired by earth, craft, and slow living.",
   icons:{
     icon: "/favicon.png",
   },openGraph: {
-    title: "Studio Haritham",
-    description: "Handcrafted pottery and earthy home decor.",
+    title: "Studio Haritham | Handcrafted Pottery, Ceramic Art & Pottery Classes",
+    description: "Discover handcrafted ceramics, artistic pottery collections, and immersive pottery workshops at Studio Haritham. Thoughtfully made pieces inspired by earth, craft, and slow living.",
     url: "https://artytect.vercel.app/",
     siteName: "Studio Haritham",
     images: [
@@ -30,8 +30,8 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Studio Haritham",
-    description: "Handcrafted pottery and earthy home decor.",
+    title: "Studio Haritham | Handcrafted Pottery, Ceramic Art & Pottery Classes",
+    description: "Discover handcrafted ceramics, artistic pottery collections, and immersive pottery workshops at Studio Haritham. Thoughtfully made pieces inspired by earth, craft, and slow living.",
     images: ["/favicon.png"],
   },
 };

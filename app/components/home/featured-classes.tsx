@@ -49,7 +49,7 @@ export default function FeaturedClassesSection({
   }, [api]);
 
   return (
-    <section className="bg-[#fff7f4] py-16 md:py-24" aria-labelledby="featured-classes-title">
+    <section className="bg-[#fff7f4] py-20 md:py-28" aria-labelledby="featured-classes-title">
       <div className="site-container">
         <SectionHeader
           id="featured-classes-title"
@@ -77,7 +77,7 @@ export default function FeaturedClassesSection({
                   stopOnMouseEnter: true,
                 }),
               ]}
-              className="w-full py-5"
+              className="w-full"
             >
               <CarouselContent >
                 {featuredClasses.map((classItem, index) => (

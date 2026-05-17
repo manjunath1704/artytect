@@ -248,7 +248,7 @@ export default function GalleryApp() {
   return (
     <section
       id="gallery"
-      className="relative overflow-hidden py-20 text-[#1b1511] md:py-28"
+      className="relative overflow-hidden py-20 md:py-28 text-[#1b1511]"
     >
       {/* <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_10%,rgba(185,130,94,0.16),transparent_30%),radial-gradient(circle_at_88%_18%,rgba(154,107,78,0.1),transparent_32%)]" />
       <div className="absolute inset-0 opacity-[0.05] [background-image:repeating-linear-gradient(0deg,rgba(27,21,17,0.28)_0px,rgba(27,21,17,0.28)_1px,transparent_1px,transparent_5px)]" /> */}
