@@ -7,6 +7,7 @@ import ClassCard from "@/app/components/cards/class-card";
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
 import { potteryClasses } from "@/lib/classes";
+import ClassCardMicro from "../components/cards/class-card-micro";
 
 export default function ClassesPage() {
   const { scrollY } = useScroll();
@@ -81,9 +82,9 @@ export default function ClassesPage() {
           </div>
         </section>
 
-        <section id="classes" className="py-14 md:py-20">
+        <section id="classes" className="py-10 md:py-20">
           <div className="site-container">
-            <div className="mb-10 grid gap-6 border-b border-[#d7cabd] pb-7 md:grid-cols-[0.8fr_1fr] md:items-end">
+            <div className=" grid gap-6 border-b border-[#d7cabd] pb-7 md:grid-cols-[0.8fr_1fr] md:items-end">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#9a6b4e]">
                   Studio calendar
@@ -98,9 +99,20 @@ export default function ClassesPage() {
               </p>
             </div>
 
-            <div className="grid gap-7 lg:grid-cols-3">
+            <div className="hidden md:block">
+            <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3 ">
               {potteryClasses.map((classItem, index) => (
                 <ClassCard
+                  key={classItem.slug}
+                  classItem={classItem}
+                  index={index + 1}
+                />
+              ))}
+            </div>
+            </div>
+            <div className="grid gap-3 grid-cols-2 py-10 md:hidden">
+              {potteryClasses.map((classItem, index) => (
+                <ClassCardMicro
                   key={classItem.slug}
                   classItem={classItem}
                   index={index + 1}
