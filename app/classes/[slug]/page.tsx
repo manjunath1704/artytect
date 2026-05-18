@@ -177,7 +177,7 @@ export default async function ClassPage({ params }: ClassPageProps) {
                     </p>
                     <WhatsAppButton
                       message={getClassBookingMessage(classItem)}
-                      className="mt-6 hidden h-14 w-full md:inline-flex"
+                      className="mt-6  h-14 w-full inline-flex"
                     >
                       Book via WhatsApp
                     </WhatsAppButton>
@@ -241,7 +241,7 @@ export default async function ClassPage({ params }: ClassPageProps) {
         </section>
       </main>
 
-      <div className="fixed inset-x-4 bottom-4 z-[70] md:hidden">
+      <div className=" sticky bottom-[5.5rem] z-[70] md:hidden px-5">
         <WhatsAppButton message={getClassBookingMessage(classItem)} className="h-14 w-full">
           Book via WhatsApp
         </WhatsAppButton>
