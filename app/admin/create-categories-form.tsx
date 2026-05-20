@@ -19,7 +19,9 @@ const CreateCategoriesForm = () => {
   const [checkingSession, setCheckingSession] = useState(true);
   const [creating, setCreating] = useState(false);
   const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
+  const [thumbnailAlt, setThumbnailAlt] = useState("");
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [hoverThumbnailFile, setHoverThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
@@ -84,13 +86,15 @@ const CreateCategoriesForm = () => {
     setSuccess(null);
 
     try {
-      if (!title.trim() || !description.trim() || !thumbnailFile || !hoverThumbnailFile) {
-        throw new Error("Please fill in title, description, and both thumbnail images.");
+      if (!title.trim() || !slug.trim() || !description.trim() || !thumbnailAlt.trim() || !thumbnailFile || !hoverThumbnailFile) {
+        throw new Error("Please fill in all fields and upload both thumbnail images.");
       }
 
       const formData = new FormData();
       formData.append("title", title.trim());
+      formData.append("slug", slug.trim());
       formData.append("description", description.trim());
+      formData.append("thumbnailAlt", thumbnailAlt.trim());
       formData.append("thumbnail", thumbnailFile);
       formData.append("hoverThumbnail", hoverThumbnailFile);
 
@@ -108,7 +112,9 @@ const CreateCategoriesForm = () => {
       }
 
       setTitle("");
+      setSlug("");
       setDescription("");
+      setThumbnailAlt("");
       setThumbnailFile(null);
       setHoverThumbnailFile(null);
       setFileInputKey((current) => current + 1);
@@ -176,6 +182,21 @@ const CreateCategoriesForm = () => {
             </label>
 
             <label className="block text-sm font-medium text-[#352a21]">
+              Slug (URL-friendly name)
+              <input
+                type="text"
+                value={slug}
+                onChange={(event) => setSlug(event.target.value)}
+                className={inputClassName}
+                placeholder="mugs"
+                required
+              />
+              <p className="mt-1 text-xs text-[#8a7765]">
+                Used in URLs. Use lowercase letters, numbers, and hyphens only.
+              </p>
+            </label>
+
+            <label className="block text-sm font-medium text-[#352a21]">
               Description
               <textarea
                 value={description}
@@ -186,6 +207,21 @@ const CreateCategoriesForm = () => {
                 placeholder="Everyday forms with soft handles and warm glazes for slow mornings."
                 required
               />
+            </label>
+
+            <label className="block text-sm font-medium text-[#352a21]">
+              Thumbnail Alt Text
+              <input
+                type="text"
+                value={thumbnailAlt}
+                onChange={(event) => setThumbnailAlt(event.target.value)}
+                className={inputClassName}
+                placeholder="Handcrafted ceramic mugs"
+                required
+              />
+              <p className="mt-1 text-xs text-[#8a7765]">
+                Describes the image for accessibility and SEO.
+              </p>
             </label>
 
             <label className="block text-sm font-medium text-[#352a21]">

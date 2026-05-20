@@ -7,7 +7,6 @@ import {
   ensureCategoryThumbnailsBucket,
   getAdminClient,
 } from "@/lib/supabase/admin";
-import { prisma } from "@/lib/prisma";
 
 const slugify = (value: string) =>
   value
@@ -45,90 +44,100 @@ const getAuthenticatedUser = async () => {
 };
 
 export async function POST(request: Request) {
-  const user = await getAuthenticatedUser();
+  try {
+    const user = await getAuthenticatedUser();
 
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
-  }
-
-  const formData = await request.formData();
-  const title = String(formData.get("title") ?? "").trim();
-  const description = String(formData.get("description") ?? "").trim();
-  const thumbnail = formData.get("thumbnail");
-  const hoverThumbnail = formData.get("hoverThumbnail");
-
-  if (!title || !description) {
-    return NextResponse.json(
-      { error: "Title and description are required." },
-      { status: 400 },
-    );
-  }
-
-  if (!(thumbnail instanceof File) || !(hoverThumbnail instanceof File)) {
-    return NextResponse.json(
-      { error: "Please upload both thumbnail images." },
-      { status: 400 },
-    );
-  }
-
-  const categorySlug = slugify(title);
-  const timestamp = Date.now();
-  const supabase = getAdminClient();
-
-  await ensureCategoryThumbnailsBucket();
-
-  const uploadThumbnail = async (file: File, variant: "default" | "hover") => {
-    const extension = file.name.includes(".") ? file.name.split(".").pop() : "jpg";
-    const filePath = `${categorySlug}/${variant}-${timestamp}.${extension}`;
-    const buffer = Buffer.from(await file.arrayBuffer());
-
-    const { error: uploadError } = await supabase.storage
-      .from(CATEGORY_BUCKET)
-      .upload(filePath, buffer, {
-        contentType: file.type || "image/jpeg",
-        upsert: false,
-      });
-
-    if (uploadError) {
-      throw new Error(uploadError.message);
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
 
-    const { data } = supabase.storage.from(CATEGORY_BUCKET).getPublicUrl(filePath);
-    return data.publicUrl;
-  };
+    const formData = await request.formData();
+    const title = String(formData.get("title") ?? "").trim();
+    const slug = String(formData.get("slug") ?? "").trim();
+    const description = String(formData.get("description") ?? "").trim();
+    const thumbnailAlt = String(formData.get("thumbnailAlt") ?? "").trim();
+    const thumbnail = formData.get("thumbnail");
+    const hoverThumbnail = formData.get("hoverThumbnail");
 
-  const thumbnail_url = await uploadThumbnail(thumbnail, "default");
-  const hover_thumbnail_url = await uploadThumbnail(hoverThumbnail, "hover");
+    if (!title || !slug || !description || !thumbnailAlt) {
+      return NextResponse.json(
+        { error: "Title, slug, description, and thumbnail alt text are required." },
+        { status: 400 },
+      );
+    }
 
-  const insertedCategory = await prisma.category.create({
-    data: {
-      title,
-      slug: categorySlug,
-      description,
-      thumbnailUrl: thumbnail_url,
-      hoverThumbnailUrl: hover_thumbnail_url,
-    },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      description: true,
-      thumbnailUrl: true,
-      hoverThumbnailUrl: true,
-    },
-  });
+    if (!(thumbnail instanceof File) || !(hoverThumbnail instanceof File)) {
+      return NextResponse.json(
+        { error: "Please upload both thumbnail images." },
+        { status: 400 },
+      );
+    }
 
-  return NextResponse.json(
-    {
-      category: {
-        id: insertedCategory.id,
-        title: insertedCategory.title,
-        slug: insertedCategory.slug,
-        description: insertedCategory.description,
-        thumbnail_url: insertedCategory.thumbnailUrl,
-        hover_thumbnail_url: insertedCategory.hoverThumbnailUrl,
+    const timestamp = Date.now();
+    const supabase = getAdminClient();
+
+    await ensureCategoryThumbnailsBucket();
+
+    const uploadThumbnail = async (file: File, variant: "default" | "hover") => {
+      const extension = file.name.includes(".") ? file.name.split(".").pop() : "jpg";
+      const filePath = `${slug}/${variant}-${timestamp}.${extension}`;
+      const buffer = Buffer.from(await file.arrayBuffer());
+
+      const { error: uploadError } = await supabase.storage
+        .from(CATEGORY_BUCKET)
+        .upload(filePath, buffer, {
+          contentType: file.type || "image/jpeg",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        throw new Error(uploadError.message);
+      }
+
+      const { data } = supabase.storage.from(CATEGORY_BUCKET).getPublicUrl(filePath);
+      return data.publicUrl;
+    };
+
+    const thumbnail_url = await uploadThumbnail(thumbnail, "default");
+    const hover_thumbnail_url = await uploadThumbnail(hoverThumbnail, "hover");
+
+    // Insert into Supabase database directly
+    const { data: insertedCategory, error: insertError } = await supabase
+      .from('categories')
+      .insert({
+        category_name: title,
+        category_slug: slug,
+        category_description: description,
+        category_thumbnail: thumbnail_url,
+        category_hover_thumbnail: hover_thumbnail_url,
+        category_thumbnail_alt: thumbnailAlt,
+      })
+      .select()
+      .single();
+
+    if (insertError) {
+      console.error('Database insert error:', insertError);
+      throw new Error(insertError.message);
+    }
+
+    return NextResponse.json(
+      {
+        category: {
+          id: insertedCategory.id,
+          title: insertedCategory.category_name,
+          slug: insertedCategory.category_slug,
+          description: insertedCategory.category_description,
+          thumbnail_url: insertedCategory.category_thumbnail,
+          hover_thumbnail_url: insertedCategory.category_hover_thumbnail,
+        },
       },
-    },
-    { status: 201 },
-  );
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error('Error creating category:', error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unable to create category." },
+      { status: 500 },
+    );
+  }
 }
