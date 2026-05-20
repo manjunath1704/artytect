@@ -29,6 +29,8 @@ export default async function CategoriesPage() {
     .select('*')
     .order('created_at', { ascending: false });
 
+  console.log('Categories fetched:', categoriesData?.length, 'Error:', error?.message);
+
   const categories: CategoryRow[] = error ? [] : (categoriesData || []).map((cat: {
     id: number;
     category_name: string;
@@ -46,6 +48,8 @@ export default async function CategoriesPage() {
     hover_thumbnail_url: cat.category_hover_thumbnail || cat.category_thumbnail || '',
     thumbnail_alt: cat.category_thumbnail_alt || '',
   }));
+
+  console.log('Mapped categories:', categories.length);
 
   return (
     <CategoriesManager

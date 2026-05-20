@@ -47,6 +47,8 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
   const [updating, setUpdating] = useState(false);
   const [editError, setEditError] = useState<string | null>(null);
 
+  console.log('CategoriesManager rendered with', initialCategories.length, 'categories');
+
   useEffect(() => {
     const syncSession = async () => {
       const { data } = await supabase.auth.getUser();
@@ -217,7 +219,7 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
           </div>
         </div>
 
-        <div className="rounded-[32px] border border-[#dbcbb8] bg-white p-6 shadow-sm sm:p-8">
+        <div className="rounded-[32px]  bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h1 className="text-3xl tracking-[-0.03em] text-[#1b1511]">Manage Categories</h1>
@@ -230,7 +232,7 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
           </div>
         </div>
 
-        <div className="mt-8 rounded-[32px] border border-[#dbcbb8] bg-white p-6 shadow-sm sm:p-8">
+        <div className="mt-8 rounded-[32px] bg-white p-6 shadow-sm sm:p-8">
           <div className="overflow-x-auto">
             {categories.length ? (
               <table className="w-full border-collapse">
@@ -287,7 +289,7 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
 
         {editingCategory && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[32px] border border-[#dbcbb8] bg-white p-6 shadow-2xl sm:p-8">
+            <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[32px]  bg-white p-6 shadow-sm sm:p-8">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl tracking-[-0.03em] text-[#1b1511]">Edit Category</h2>
                 <button onClick={handleCloseEdit} className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#d9ccbc] text-[#1b1511] transition hover:bg-[#f5eee4]">

@@ -38,9 +38,10 @@ const getAuthenticatedUser = async () => {
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await getAuthenticatedUser();
 
     if (!user) {
@@ -128,7 +129,7 @@ export async function PUT(
     const { data: updatedCategory, error: updateError } = await supabase
       .from('categories')
       .update(updateData)
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single();
 
@@ -162,9 +163,10 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await getAuthenticatedUser();
 
     if (!user) {
@@ -177,7 +179,7 @@ export async function DELETE(
     const { error: deleteError } = await supabase
       .from('categories')
       .delete()
-      .eq('id', params.id);
+      .eq('id', id);
 
     if (deleteError) {
       console.error('Database delete error:', deleteError);
