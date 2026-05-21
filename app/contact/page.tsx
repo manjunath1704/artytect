@@ -96,7 +96,7 @@ export default function ContactPage() {
               </div>
             </aside>
 
-            <form className="overflow-hidden rounded-[32px] shadow-sm bg-white p-5 md:p-8">
+            <form className="overflow-hidden rounded-[32px] shadow-sm bg-[#F6EFE6] p-5 md:p-8">
               <div className="grid gap-5 md:grid-cols-2">
                 <label className="block">
                   <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]">
