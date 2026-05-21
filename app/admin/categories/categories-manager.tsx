@@ -4,9 +4,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, LogOut, ArrowLeft, Pencil, Trash2, X, Plus } from "lucide-react";
+import { Loader2, LogOut, ArrowLeft, Pencil, Trash2, X, Plus, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
 import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
@@ -46,6 +47,14 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
   const [editHoverThumbnailPreview, setEditHoverThumbnailPreview] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [editError, setEditError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Reset to page 1 when search query changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   console.log('CategoriesManager rendered with', initialCategories.length, 'categories');
 
@@ -202,6 +211,23 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
     );
   }
 
+  // Filter categories based on search query
+  const filteredCategories = categories.filter((category) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      category.title.toLowerCase().includes(query) ||
+      category.slug.toLowerCase().includes(query) ||
+      category.description.toLowerCase().includes(query) ||
+      category.thumbnail_alt.toLowerCase().includes(query)
+    );
+  });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedCategories = filteredCategories.slice(startIndex, endIndex);
+
   return (
     <main className="min-h-[100svh] bg-[linear-gradient(180deg,#f6efe4_0%,#efe4d5_100%)] px-6 py-8 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
@@ -233,8 +259,20 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
         </div>
 
         <div className="mt-8 rounded-[32px] bg-white p-6 shadow-sm sm:p-8">
+          {/* Search Input */}
+          <div className="mb-6 flex items-center gap-3 rounded-full border border-[#d9ccbc] bg-[#fcfaf7] px-4 py-3">
+            <Search className="h-5 w-5 text-[#8a7765]" />
+            <input
+              type="text"
+              placeholder="Search by title, slug, description, or alt text..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex-1 bg-transparent text-sm text-[#1b1511] outline-none placeholder:text-[#a69280]"
+            />
+          </div>
+
           <div className="overflow-x-auto">
-            {categories.length ? (
+            {paginatedCategories.length ? (
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="border-b-2 border-[#d9ccbc]">
@@ -248,9 +286,9 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
                   </tr>
                 </thead>
                 <tbody>
-                  {categories.map((category, index) => (
+                  {paginatedCategories.map((category, index) => (
                     <tr key={category.id} className="border-b border-[#e8ddd1] transition hover:bg-[#fcfaf7]">
-                      <td className="p-3 text-sm text-[#665b4f]">{String(index + 1).padStart(2, '0')}</td>
+                      <td className="p-3 text-sm text-[#665b4f]">{String(startIndex + index + 1).padStart(2, '0')}</td>
                       <td className="p-3">
                         <div className="flex gap-2">
                           <div className="relative h-16 w-16 overflow-hidden rounded-2xl border border-[#e8ddd1]">
@@ -281,10 +319,24 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
               </table>
             ) : (
               <div className="rounded-2xl border border-dashed border-[#d9ccbc] bg-[#fcfaf7] p-8 text-center text-sm leading-7 text-[#665b4f]">
-                No categories yet. Create the first one.
+                {searchQuery ? "No categories match your search." : "No categories yet. Create the first one."}
               </div>
             )}
           </div>
+
+          {/* Pagination */}
+          {filteredCategories.length > 0 && totalPages > 1 && (
+            <div className="mt-6 flex items-center justify-between border-t border-[#e8ddd1] pt-6">
+              <p className="text-sm text-[#665b4f]">
+                Showing {startIndex + 1} to {Math.min(endIndex, filteredCategories.length)} of {filteredCategories.length} categories
+              </p>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+          )}
         </div>
 
         {editingCategory && (

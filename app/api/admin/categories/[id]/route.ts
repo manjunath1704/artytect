@@ -175,6 +175,44 @@ export async function DELETE(
 
     const supabase = getAdminClient();
 
+    // Fetch category to get image URLs and slug
+    const { data: category, error: fetchError } = await supabase
+      .from('categories')
+      .select('category_slug, category_thumbnail, category_hover_thumbnail')
+      .eq('id', id)
+      .single();
+
+    if (fetchError || !category) {
+      console.error('Category fetch error:', fetchError);
+      throw new Error('Category not found.');
+    }
+
+    // Delete images from storage if they exist
+    if (category.category_slug) {
+      try {
+        // List all files in the category's folder
+        const { data: files, error: listError } = await supabase.storage
+          .from(CATEGORY_BUCKET)
+          .list(category.category_slug);
+
+        if (!listError && files && files.length > 0) {
+          // Delete all files in the category folder
+          const filePaths = files.map((file) => `${category.category_slug}/${file.name}`);
+          const { error: deleteFilesError } = await supabase.storage
+            .from(CATEGORY_BUCKET)
+            .remove(filePaths);
+
+          if (deleteFilesError) {
+            console.error('Storage delete error:', deleteFilesError);
+            // Continue with database deletion even if storage deletion fails
+          }
+        }
+      } catch (storageError) {
+        console.error('Error deleting storage files:', storageError);
+        // Continue with database deletion even if storage deletion fails
+      }
+    }
+
     // Delete from database
     const { error: deleteError } = await supabase
       .from('categories')
