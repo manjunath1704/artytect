@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import "@fontsource/lato/400.css";
 import "@fontsource/lato/700.css";
 import "@fontsource/dm-serif-display/400.css";
+import { Toaster } from "@/components/ui/sonner";
 import WhatsAppFloatingButton from "./components/whatsapp-floating-button";
 import "./globals.css";
 
@@ -46,6 +47,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         {children}
         <WhatsAppFloatingButton />
+        <Toaster position="top-right" richColors closeButton />
       </body>
     </html>
   );

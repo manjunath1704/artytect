@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { ImageUploader } from "@/components/ui/image-uploader";
@@ -10,24 +11,84 @@ import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
 
-const inputClassName =
-  "mt-2 w-full rounded-2xl border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
+// ─── validation ───────────────────────────────────────────────────────────────
+type Fields = {
+  title:        string;
+  slug:         string;
+  description:  string;
+  thumbnailAlt: string;
+  thumbnail:    File | null;
+  hoverThumbnail: File | null;
+};
 
+type FieldErrors = Partial<Record<keyof Fields, string>>;
+
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+function validate(fields: Fields): FieldErrors {
+  const errors: FieldErrors = {};
+
+  if (!fields.title.trim())
+    errors.title = "Title is required.";
+
+  if (!fields.slug.trim())
+    errors.slug = "Slug is required.";
+  else if (!SLUG_RE.test(fields.slug.trim()))
+    errors.slug = "Slug must be lowercase letters, numbers, and hyphens only.";
+
+  if (!fields.description.trim())
+    errors.description = "Description is required.";
+
+  if (!fields.thumbnailAlt.trim())
+    errors.thumbnailAlt = "Alt text is required.";
+
+  if (!fields.thumbnail)
+    errors.thumbnail = "Default thumbnail image is required.";
+
+  if (!fields.hoverThumbnail)
+    errors.hoverThumbnail = "Hover thumbnail image is required.";
+
+  return errors;
+}
+
+// ─── shared input style ───────────────────────────────────────────────────────
+const inputBase =
+  "mt-2 w-full rounded-2xl border bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:ring-4 focus:ring-[#d7b68b]/20";
+
+function inputCls(hasError: boolean) {
+  return `${inputBase} ${
+    hasError
+      ? "border-red-400 focus:border-red-400"
+      : "border-[#d9ccbc] focus:border-[#b38d67]"
+  }`;
+}
+
+// ─── FieldError helper ────────────────────────────────────────────────────────
+function FieldError({ msg }: { msg?: string }) {
+  if (!msg) return null;
+  return <p className="mt-1.5 text-xs text-red-500">{msg}</p>;
+}
+
+// ─── component ────────────────────────────────────────────────────────────────
 const CreateCategoriesForm = () => {
   const router = useRouter();
 
   const [checkingSession, setCheckingSession] = useState(true);
   const [creating,        setCreating]        = useState(false);
+
+  // field state
   const [title,           setTitle]           = useState("");
   const [slug,            setSlug]            = useState("");
   const [description,     setDescription]     = useState("");
   const [thumbnailAlt,    setThumbnailAlt]    = useState("");
   const [thumbnailFile,   setThumbnailFile]   = useState<File | null>(null);
   const [hoverFile,       setHoverFile]       = useState<File | null>(null);
-  const [error,           setError]           = useState<string | null>(null);
-  const [success,         setSuccess]         = useState<string | null>(null);
 
-  // ── session guard ──────────────────────────────────────────────────────────
+  // per-field errors (only shown after first submit attempt)
+  const [errors,          setErrors]          = useState<FieldErrors>({});
+  const [submitted,       setSubmitted]       = useState(false);
+
+  // ── session guard ────────────────────────────────────────────────────────
   useEffect(() => {
     const syncSession = async () => {
       const { data } = await supabase.auth.getUser();
@@ -42,28 +103,59 @@ const CreateCategoriesForm = () => {
     return () => subscription.unsubscribe();
   }, [router]);
 
-  // ── submit ─────────────────────────────────────────────────────────────────
+  // ── live re-validation after first submit ────────────────────────────────
+  useEffect(() => {
+    if (!submitted) return;
+    setErrors(validate({ title, slug, description, thumbnailAlt, thumbnail: thumbnailFile, hoverThumbnail: hoverFile }));
+  }, [title, slug, description, thumbnailAlt, thumbnailFile, hoverFile, submitted]);
+
+  // ── auto-generate slug from title ────────────────────────────────────────
+  const handleTitleChange = (value: string) => {
+    setTitle(value);
+    // Only auto-fill slug if user hasn't manually edited it
+    if (!submitted || !slug) {
+      setSlug(
+        value
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-")
+      );
+    }
+  };
+
+  // ── submit ───────────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitted(true);
+
+    const fields: Fields = {
+      title, slug, description, thumbnailAlt,
+      thumbnail: thumbnailFile,
+      hoverThumbnail: hoverFile,
+    };
+
+    const validationErrors = validate(fields);
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      toast.error("Please fix the errors before submitting.");
+      return;
+    }
+
     setCreating(true);
-    setError(null);
-    setSuccess(null);
+
+    const toastId = toast.loading("Creating category…");
 
     try {
-      if (!title.trim() || !slug.trim() || !description.trim() || !thumbnailAlt.trim()) {
-        throw new Error("Please fill in all text fields.");
-      }
-      if (!thumbnailFile || !hoverFile) {
-        throw new Error("Please upload both thumbnail images.");
-      }
-
       const formData = new FormData();
-      formData.append("title",        title.trim());
-      formData.append("slug",         slug.trim());
-      formData.append("description",  description.trim());
-      formData.append("thumbnailAlt", thumbnailAlt.trim());
-      formData.append("thumbnail",    thumbnailFile);
-      formData.append("hoverThumbnail", hoverFile);
+      formData.append("title",           title.trim());
+      formData.append("slug",            slug.trim());
+      formData.append("description",     description.trim());
+      formData.append("thumbnailAlt",    thumbnailAlt.trim());
+      formData.append("thumbnail",       thumbnailFile!);
+      formData.append("hoverThumbnail",  hoverFile!);
 
       const response = await fetch("/api/admin/categories", {
         method: "POST",
@@ -71,7 +163,12 @@ const CreateCategoriesForm = () => {
       });
 
       const result = (await response.json().catch(() => null)) as { error?: string } | null;
-      if (!response.ok) throw new Error(result?.error ?? "Unable to create category.");
+
+      if (!response.ok) {
+        throw new Error(result?.error ?? "Unable to create category.");
+      }
+
+      toast.success("Category created successfully.", { id: toastId });
 
       // Reset form
       setTitle("");
@@ -80,15 +177,20 @@ const CreateCategoriesForm = () => {
       setThumbnailAlt("");
       setThumbnailFile(null);
       setHoverFile(null);
-      setSuccess("Category created successfully.");
+      setErrors({});
+      setSubmitted(false);
+
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to create category.");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to create category.",
+        { id: toastId }
+      );
     } finally {
       setCreating(false);
     }
   };
 
-  // ── loading state ──────────────────────────────────────────────────────────
+  // ── loading state ────────────────────────────────────────────────────────
   if (checkingSession) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -100,7 +202,7 @@ const CreateCategoriesForm = () => {
     );
   }
 
-  // ── render ─────────────────────────────────────────────────────────────────
+  // ── render ───────────────────────────────────────────────────────────────
   return (
     <div className="px-6 py-8 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-4xl">
@@ -114,113 +216,117 @@ const CreateCategoriesForm = () => {
             <div>
               <h1 className="text-3xl tracking-[-0.03em] text-[#1b1511]">Create category</h1>
               <p className="text-sm text-[#665b4f]">
-                Add the title, description, and two thumbnail images.
+                All fields are required.
               </p>
             </div>
           </div>
 
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
 
             {/* Title */}
-            <label className="block text-sm font-medium text-[#352a21]">
-              Title <span className="text-[#b38d67]">*</span>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className={inputClassName}
-                placeholder="Mugs"
-                required
-              />
-            </label>
+            <div>
+              <label className="block text-sm font-medium text-[#352a21]">
+                Title <span className="text-[#b38d67]">*</span>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => handleTitleChange(e.target.value)}
+                  className={inputCls(!!errors.title)}
+                  placeholder="Mugs"
+                />
+              </label>
+              <FieldError msg={errors.title} />
+            </div>
 
             {/* Slug */}
-            <label className="block text-sm font-medium text-[#352a21]">
-              Slug <span className="text-[#b38d67]">*</span>
-              <input
-                type="text"
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                className={inputClassName}
-                placeholder="mugs"
-                required
-              />
+            <div>
+              <label className="block text-sm font-medium text-[#352a21]">
+                Slug <span className="text-[#b38d67]">*</span>
+                <input
+                  type="text"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  className={inputCls(!!errors.slug)}
+                  placeholder="mugs"
+                />
+              </label>
               <p className="mt-1 text-xs text-[#8a7765]">
-                Used in URLs — lowercase letters, numbers, and hyphens only.
+                Auto-generated from title. Lowercase letters, numbers, and hyphens only.
               </p>
-            </label>
+              <FieldError msg={errors.slug} />
+            </div>
 
             {/* Description */}
-            <label className="block text-sm font-medium text-[#352a21]">
-              Description <span className="text-[#b38d67]">*</span>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className={`${inputClassName} min-h-[120px] resize-y`}
-                placeholder="Everyday forms with soft handles and warm glazes for slow mornings."
-                required
-              />
-            </label>
+            <div>
+              <label className="block text-sm font-medium text-[#352a21]">
+                Description <span className="text-[#b38d67]">*</span>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className={`${inputCls(!!errors.description)} min-h-[120px] resize-y`}
+                  placeholder="Everyday forms with soft handles and warm glazes for slow mornings."
+                />
+              </label>
+              <FieldError msg={errors.description} />
+            </div>
 
             {/* Alt text */}
-            <label className="block text-sm font-medium text-[#352a21]">
-              Thumbnail Alt Text <span className="text-[#b38d67]">*</span>
-              <input
-                type="text"
-                value={thumbnailAlt}
-                onChange={(e) => setThumbnailAlt(e.target.value)}
-                className={inputClassName}
-                placeholder="Handcrafted ceramic mugs"
-                required
-              />
+            <div>
+              <label className="block text-sm font-medium text-[#352a21]">
+                Thumbnail Alt Text <span className="text-[#b38d67]">*</span>
+                <input
+                  type="text"
+                  value={thumbnailAlt}
+                  onChange={(e) => setThumbnailAlt(e.target.value)}
+                  className={inputCls(!!errors.thumbnailAlt)}
+                  placeholder="Handcrafted ceramic mugs"
+                />
+              </label>
               <p className="mt-1 text-xs text-[#8a7765]">
                 Describes the image for accessibility and SEO.
               </p>
-            </label>
-
-            {/* Image uploaders — side by side on sm+ */}
-            <div className="grid gap-6 sm:grid-cols-2">
-              <ImageUploader
-                label="Default Thumbnail"
-                hint="Shown in the category card at rest"
-                file={thumbnailFile}
-                onChange={setThumbnailFile}
-                onRemove={() => setThumbnailFile(null)}
-                required
-              />
-              <ImageUploader
-                label="Hover Thumbnail"
-                hint="Shown when the user hovers the card"
-                file={hoverFile}
-                onChange={setHoverFile}
-                onRemove={() => setHoverFile(null)}
-                required
-              />
+              <FieldError msg={errors.thumbnailAlt} />
             </div>
 
-            {/* Error / success */}
-            {error && (
-              <p className="rounded-2xl border border-[#d7b68b] bg-[#faf4ea] px-4 py-3 text-sm text-[#7a4d1d]">
-                {error}
-              </p>
-            )}
-            {success && (
-              <p className="rounded-2xl border border-[#b7cfb7] bg-[#f1f8f1] px-4 py-3 text-sm text-[#2c5f2c]">
-                {success}
-              </p>
-            )}
+            {/* Image uploaders */}
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div>
+                <ImageUploader
+                  label="Default Thumbnail"
+                  hint="Shown in the category card at rest"
+                  file={thumbnailFile}
+                  onChange={(f) => setThumbnailFile(f)}
+                  onRemove={() => setThumbnailFile(null)}
+                  required
+                  hasError={!!errors.thumbnail}
+                />
+                <FieldError msg={errors.thumbnail} />
+              </div>
+              <div>
+                <ImageUploader
+                  label="Hover Thumbnail"
+                  hint="Shown when the user hovers the card"
+                  file={hoverFile}
+                  onChange={(f) => setHoverFile(f)}
+                  onRemove={() => setHoverFile(null)}
+                  required
+                  hasError={!!errors.hoverThumbnail}
+                />
+                <FieldError msg={errors.hoverThumbnail} />
+              </div>
+            </div>
 
             {/* Submit */}
             <Button
               type="submit"
               size="lg"
               disabled={creating}
-              className="h-12 rounded-full bg-[#1b1511] px-10 text-[#f8f2e8] hover:bg-[#2a211a]"
+              className="h-12 rounded-full bg-[#1b1511] px-10 text-[#f8f2e8] hover:bg-[#2a211a] disabled:opacity-60"
             >
               {creating ? (
                 <span className="inline-flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Creating category…
+                  Creating…
                 </span>
               ) : (
                 "Create category"

@@ -20,6 +20,8 @@ interface ImageUploaderProps {
   onRemove: () => void;
   /** Whether the field is required */
   required?: boolean;
+  /** Show error border on the drop zone */
+  hasError?: boolean;
 }
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
@@ -66,6 +68,7 @@ export function ImageUploader({
   onChange,
   onRemove,
   required,
+  hasError = false,
 }: ImageUploaderProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -123,6 +126,8 @@ export function ImageUploader({
                 animate={
                   isDragging
                     ? { borderColor: "#b38d67", backgroundColor: "#faf4ea", scale: 1.01 }
+                    : hasError
+                    ? { borderColor: "#f87171", backgroundColor: "#fff5f5", scale: 1 }
                     : { borderColor: "#d9ccbc", backgroundColor: "#fcfaf7", scale: 1 }
                 }
                 transition={{ duration: 0.15 }}
