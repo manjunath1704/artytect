@@ -7,6 +7,7 @@ import {
   ChevronLeft,
   ChevronRight,
   HeartHandshake,
+  Home,
   FolderOpen,
   LayoutDashboard,
   LogOut,
@@ -39,6 +40,7 @@ const W_COLLAPSED = 68;
 // ─── breadcrumb config ────────────────────────────────────────────────────────
 const BREADCRUMBS: Record<string, { label: string; parent?: string }> = {
   "/admin":                   { label: "Dashboard" },
+  "/admin/hero":              { label: "Hero", parent: "/admin" },
   "/admin/categories":        { label: "Categories",      parent: "/admin" },
   "/admin/create-categories": { label: "Create Category", parent: "/admin/categories" },
   "/admin/testimonials":        { label: "Testimonials",      parent: "/admin" },
@@ -72,6 +74,7 @@ type NavItem  = {
 
 const NAV: NavItem[] = [
   { title: "Dashboard",  href: "/admin",            icon: LayoutDashboard, children: [] },
+  { title: "Hero", href: "/admin/hero", icon: Home, children: [] },
   {
     title: "Categories", href: "/admin/categories", icon: FolderOpen,
     children: [

@@ -1,0 +1,140 @@
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+
+import {
+  HERO_BUCKET,
+  ensureHeroMediaBucket,
+  getAdminClient,
+} from "@/lib/supabase/admin";
+
+const getAuthenticatedUser = async () => {
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options),
+          );
+        },
+      },
+    },
+  );
+
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user) return null;
+  return data.user;
+};
+
+const uploadFile = async (file: File, prefix: string) => {
+  const supabase = getAdminClient();
+  await ensureHeroMediaBucket();
+
+  const timestamp = Date.now();
+  const extension = file.name.includes(".") ? file.name.split(".").pop() : "jpg";
+  const filePath = `${prefix}-${timestamp}.${extension}`;
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  const { error } = await supabase.storage
+    .from(HERO_BUCKET)
+    .upload(filePath, buffer, {
+      contentType: file.type || "application/octet-stream",
+      upsert: false,
+    });
+
+  if (error) throw new Error(error.message);
+
+  const { data } = supabase.storage.from(HERO_BUCKET).getPublicUrl(filePath);
+  return data.publicUrl;
+};
+
+export async function PUT(request: Request) {
+  try {
+    const user = await getAuthenticatedUser();
+    if (!user) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+
+    const formData = await request.formData();
+    const title = String(formData.get("title") ?? "").trim();
+    const subtitle = String(formData.get("subtitle") ?? "").trim();
+    const buttonLabel = String(formData.get("buttonLabel") ?? "").trim();
+    const buttonHref = String(formData.get("buttonHref") ?? "").trim();
+    const scrollTarget = String(formData.get("scrollTarget") ?? "").trim();
+    const desktopVideo = formData.get("desktopVideo");
+    const mobileVideo = formData.get("mobileVideo");
+    const poster = formData.get("poster");
+
+    if (!title || !subtitle || !buttonLabel || !buttonHref || !scrollTarget) {
+      return NextResponse.json(
+        { error: "Title, subtitle, button, and scroll target fields are required." },
+        { status: 400 },
+      );
+    }
+
+    const supabase = getAdminClient();
+    const { data: current, error: currentError } = await supabase
+      .from("hero_sections")
+      .select("id")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (currentError) throw new Error(currentError.message);
+
+    const payload: {
+      title: string;
+      subtitle: string;
+      button_label: string;
+      button_href: string;
+      scroll_target: string;
+      desktop_video_url?: string;
+      mobile_video_url?: string;
+      poster_url?: string;
+    } = {
+      title,
+      subtitle,
+      button_label: buttonLabel,
+      button_href: buttonHref,
+      scroll_target: scrollTarget,
+    };
+
+    if (desktopVideo instanceof File) {
+      payload.desktop_video_url = await uploadFile(desktopVideo, "desktop-video");
+    }
+
+    if (mobileVideo instanceof File) {
+      payload.mobile_video_url = await uploadFile(mobileVideo, "mobile-video");
+    }
+
+    if (poster instanceof File) {
+      payload.poster_url = await uploadFile(poster, "poster");
+    }
+
+    if (!current && (!payload.desktop_video_url || !payload.mobile_video_url || !payload.poster_url)) {
+      return NextResponse.json(
+        { error: "Desktop video, mobile video, and poster are required for the first hero section save." },
+        { status: 400 },
+      );
+    }
+
+    const query = current
+      ? supabase.from("hero_sections").update(payload).eq("id", current.id)
+      : supabase.from("hero_sections").insert(payload);
+
+    const { data: hero, error } = await query.select().single();
+    if (error) throw new Error(error.message);
+
+    return NextResponse.json({ hero }, { status: 200 });
+  } catch (error) {
+    console.error("Error updating hero section:", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unable to update hero section." },
+      { status: 500 },
+    );
+  }
+}

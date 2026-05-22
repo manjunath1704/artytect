@@ -1,5 +1,7 @@
 import Navbar from "./components/home/navbar";
-import Hero from "./components/home/hero";
+import Hero, {
+  type HeroSectionContent,
+} from "./components/home/hero";
 import FeaturedCollections, {
   type CategoriesSectionHeader,
 } from "./components/home/featured-collections";
@@ -38,6 +40,10 @@ type CategoriesSectionData = {
 
 type TestimonialsSectionData = {
   header: TestimonialsSectionHeader;
+};
+
+type HeroSectionData = {
+  content: HeroSectionContent;
 };
 
 function getPublicSupabaseClient() {
@@ -104,6 +110,48 @@ async function getProcessSection(): Promise<ProcessSectionData> {
             imageAlt: step.image_alt || step.title,
             sortOrder: Number(step.sort_order || 0),
           })),
+  };
+}
+
+async function getHeroSection(): Promise<HeroSectionData> {
+  const fallbackContent = {
+    title: "Slow living,\nsculpted.",
+    subtitle: "Earthy pottery shaped for everyday rituals.",
+    buttonLabel: "Shop now",
+    buttonHref: "/products",
+    desktopVideoUrl: "/videos/hero.mp4",
+    mobileVideoUrl: "/videos/hero-a-mobile.mp4",
+    posterUrl: "/images/gallery/pexels-rdne-8903259.jpg",
+    scrollTarget: "#collections",
+  };
+  const supabase = getPublicSupabaseClient();
+
+  if (!supabase) {
+    return { content: fallbackContent };
+  }
+
+  const { data: hero, error } = await supabase
+    .from("hero_sections")
+    .select("id, title, subtitle, button_label, button_href, desktop_video_url, mobile_video_url, poster_url, scroll_target")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) console.error("Error fetching hero section:", error);
+
+  return {
+    content: error
+      ? fallbackContent
+      : {
+          title: hero?.title || fallbackContent.title,
+          subtitle: hero?.subtitle || fallbackContent.subtitle,
+          buttonLabel: hero?.button_label || fallbackContent.buttonLabel,
+          buttonHref: hero?.button_href || fallbackContent.buttonHref,
+          desktopVideoUrl: hero?.desktop_video_url || fallbackContent.desktopVideoUrl,
+          mobileVideoUrl: hero?.mobile_video_url || fallbackContent.mobileVideoUrl,
+          posterUrl: hero?.poster_url || fallbackContent.posterUrl,
+          scrollTarget: hero?.scroll_target || fallbackContent.scrollTarget,
+        },
   };
 }
 
@@ -237,7 +285,8 @@ async function getCraftedMoments(): Promise<CraftedMomentsData> {
 }
 
 export default async function Page() {
-  const [categoriesSection, processSection, testimonialsSection, craftedMoments] = await Promise.all([
+  const [heroSection, categoriesSection, processSection, testimonialsSection, craftedMoments] = await Promise.all([
+    getHeroSection(),
     getCategoriesSection(),
     getProcessSection(),
     getTestimonialsSection(),
@@ -248,7 +297,7 @@ export default async function Page() {
     <>
       <Navbar />
       <main>
-        <Hero />
+        <Hero content={heroSection.content} />
         <FeaturedCollections header={categoriesSection.header} />
         <FeaturedProductsSection />
         <FeaturedClassesSection />

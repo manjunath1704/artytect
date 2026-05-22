@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FolderOpen, HeartHandshake, MessageSquareQuote, Package, Route, Sparkles, Users } from "lucide-react";
+import { FolderOpen, HeartHandshake, Home, MessageSquareQuote, Package, Route, Sparkles, Users } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -11,6 +11,7 @@ const supabase = createClient();
 
 type AdminPanelProps = {
   initialUserEmail: string;
+  heroCount: number;
   categoriesCount: number;
   testimonialsCount: number;
   aboutSectionsCount: number;
@@ -18,7 +19,7 @@ type AdminPanelProps = {
   craftedMomentsCount: number;
 };
 
-const AdminPanel = ({ initialUserEmail, categoriesCount, testimonialsCount, aboutSectionsCount, processStepsCount, craftedMomentsCount }: AdminPanelProps) => {
+const AdminPanel = ({ initialUserEmail, heroCount, categoriesCount, testimonialsCount, aboutSectionsCount, processStepsCount, craftedMomentsCount }: AdminPanelProps) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -52,6 +53,29 @@ const AdminPanel = ({ initialUserEmail, categoriesCount, testimonialsCount, abou
 
         {/* Cards */}
         <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <Link
+            href="/admin/hero"
+            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1b1511] text-[#f8f2e8]">
+                <Home className="h-7 w-7" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Hero</h2>
+                <p className="mt-1 text-sm text-[#665b4f]">
+                  {heroCount ? "Configured" : "Not configured"}
+                </p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
+              Edit homepage hero copy, button, poster, and video backgrounds.
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
+              Manage Hero <span>→</span>
+            </div>
+          </Link>
+
           <Link
             href="/admin/categories"
             className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"

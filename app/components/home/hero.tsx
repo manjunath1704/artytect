@@ -28,7 +28,33 @@ const itemVariants: Variants = {
   },
 };
 
-const Hero = () => {
+export type HeroSectionContent = {
+  title: string;
+  subtitle: string;
+  buttonLabel: string;
+  buttonHref: string;
+  desktopVideoUrl: string;
+  mobileVideoUrl: string;
+  posterUrl: string;
+  scrollTarget: string;
+};
+
+const fallbackHero: HeroSectionContent = {
+  title: "Slow living,\nsculpted.",
+  subtitle: "Earthy pottery shaped for everyday rituals.",
+  buttonLabel: "Shop now",
+  buttonHref: "/products",
+  desktopVideoUrl: "/videos/hero.mp4",
+  mobileVideoUrl: "/videos/hero-a-mobile.mp4",
+  posterUrl: "/images/gallery/pexels-rdne-8903259.jpg",
+  scrollTarget: "#collections",
+};
+
+const Hero = ({
+  content = fallbackHero,
+}: {
+  content?: HeroSectionContent;
+}) => {
   const heroRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -55,11 +81,11 @@ const Hero = () => {
         loop
         playsInline
         preload="metadata"
-        poster="/images/gallery/pexels-rdne-8903259.jpg"
+        poster={content.posterUrl}
         aria-hidden="true"
       >
-        <source src="/videos/hero-a-mobile.mp4" type="video/mp4" media="(max-width: 767px)" />
-        <source src="/videos/hero.mp4" type="video/mp4" />
+        <source src={content.mobileVideoUrl} type="video/mp4" media="(max-width: 767px)" />
+        <source src={content.desktopVideoUrl} type="video/mp4" />
       </motion.video>
 
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,12,8,0.66),rgba(32,22,15,0.34)_48%,rgba(18,12,8,0.10))]" />
@@ -85,14 +111,19 @@ const Hero = () => {
             variants={itemVariants}
             className="uppercase  text-6xl md:text-8xl font-display leading-[1.08] tracking-normal text-[#ffffff] sm:leading-[1.04] text-center"
           >
-         Slow living, <br />sculpted.
+            {content.title.split("\n").map((line, index, lines) => (
+              <span key={`${line}-${index}`}>
+                {line}
+                {index < lines.length - 1 ? <br /> : null}
+              </span>
+            ))}
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
             className=" font-semibold text-[clamp(1rem,2.6vw,1.25rem)] leading-8 text-[#ffffff]"
           >
-           Earthy pottery shaped for everyday rituals.
+            {content.subtitle}
           </motion.p>
 
           <motion.div
@@ -104,8 +135,8 @@ const Hero = () => {
               className="group h-14 rounded-full border border-[#f8f2e8]/20 bg-[#ffffff] px-7 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#17140f] shadow-[0_18px_48px_rgba(248,242,232,0.18)] transition hover:-translate-y-0.5 hover:bg-[#efe4d6] sm:px-8"
               asChild
             >
-              <Link href="/products">
-                Shop now
+              <Link href={content.buttonHref}>
+                {content.buttonLabel}
                 <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
               </Link>
             </Button>
@@ -116,7 +147,7 @@ const Hero = () => {
       </motion.div>
 
       <motion.a
-        href="#collections"
+        href={content.scrollTarget}
         className="absolute bottom-7 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-[#f8e6d0]"
         aria-label="Scroll to collections"
         animate={prefersReducedMotion ? undefined : { y: [0, 8, 0] }}
