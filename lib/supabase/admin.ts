@@ -8,6 +8,8 @@ const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 export const CATEGORY_BUCKET = "category-thumbnails";
 export const TESTIMONIAL_BUCKET = "testimonial-images";
 export const ABOUT_BUCKET = "about-section-images";
+export const PROCESS_BUCKET = "process-step-images";
+export const CRAFTED_MOMENTS_BUCKET = "crafted-moments-media";
 
 export const getAdminClient = () => {
   if (!supabaseUrl) {
@@ -109,6 +111,64 @@ export const ensureAboutSectionImagesBucket = async () => {
 
     throw new Error(
       `Unable to create Supabase Storage bucket "${ABOUT_BUCKET}": ${createBucketError.message}`,
+    );
+  }
+};
+
+export const ensureProcessStepImagesBucket = async () => {
+  const supabase = getAdminClient();
+
+  const { error: bucketLookupError } = await supabase.storage.getBucket(PROCESS_BUCKET);
+
+  if (!bucketLookupError) {
+    return;
+  }
+
+  const { error: createBucketError } = await supabase.storage.createBucket(
+    PROCESS_BUCKET,
+    {
+      public: true,
+      allowedMimeTypes: ["image/*"],
+      fileSizeLimit: "10485760",
+    },
+  );
+
+  if (createBucketError) {
+    if (createBucketError.message.toLowerCase().includes("already exists")) {
+      return;
+    }
+
+    throw new Error(
+      `Unable to create Supabase Storage bucket "${PROCESS_BUCKET}": ${createBucketError.message}`,
+    );
+  }
+};
+
+export const ensureCraftedMomentsMediaBucket = async () => {
+  const supabase = getAdminClient();
+
+  const { error: bucketLookupError } = await supabase.storage.getBucket(CRAFTED_MOMENTS_BUCKET);
+
+  if (!bucketLookupError) {
+    return;
+  }
+
+  const { error: createBucketError } = await supabase.storage.createBucket(
+    CRAFTED_MOMENTS_BUCKET,
+    {
+      public: true,
+      allowedMimeTypes: ["image/*", "video/*"],
+      fileSizeLimit: "52428800",
+    },
+  );
+
+  if (createBucketError) {
+    if (createBucketError.message.toLowerCase().includes("already exists")) {
+      return;
+    }
+
+    throw new Error(
+      `Unable to create Supabase Storage bucket "${CRAFTED_MOMENTS_BUCKET}": ${createBucketError.message}`,
     );
   }
 };

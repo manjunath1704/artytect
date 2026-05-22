@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FolderOpen, HeartHandshake, MessageSquareQuote, Package, Users } from "lucide-react";
+import { FolderOpen, HeartHandshake, MessageSquareQuote, Package, Route, Sparkles, Users } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -14,9 +14,11 @@ type AdminPanelProps = {
   categoriesCount: number;
   testimonialsCount: number;
   aboutSectionsCount: number;
+  processStepsCount: number;
+  craftedMomentsCount: number;
 };
 
-const AdminPanel = ({ initialUserEmail, categoriesCount, testimonialsCount, aboutSectionsCount }: AdminPanelProps) => {
+const AdminPanel = ({ initialUserEmail, categoriesCount, testimonialsCount, aboutSectionsCount, processStepsCount, craftedMomentsCount }: AdminPanelProps) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -49,7 +51,7 @@ const AdminPanel = ({ initialUserEmail, categoriesCount, testimonialsCount, abou
         </div>
 
         {/* Cards */}
-        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <Link
             href="/admin/categories"
             className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
@@ -116,6 +118,52 @@ const AdminPanel = ({ initialUserEmail, categoriesCount, testimonialsCount, abou
             </p>
             <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
               Manage About <span>→</span>
+            </div>
+          </Link>
+
+          <Link
+            href="/admin/process"
+            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#fcfdfa] text-[#1b1511]">
+                <Route className="h-7 w-7" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Process</h2>
+                <p className="mt-1 text-sm text-[#665b4f]">
+                  {processStepsCount} {processStepsCount === 1 ? "step" : "steps"}
+                </p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
+              Edit section titles and manage the process step collection.
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
+              Manage Process <span>→</span>
+            </div>
+          </Link>
+
+          <Link
+            href="/admin/crafted-moments"
+            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f5eee4] text-[#1b1511]">
+                <Sparkles className="h-7 w-7" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Crafted Moments</h2>
+                <p className="mt-1 text-sm text-[#665b4f]">
+                  {craftedMomentsCount} {craftedMomentsCount === 1 ? "item" : "items"}
+                </p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
+              Edit the studio moments header and manage image or video tiles.
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
+              Manage Crafted Moments <span>→</span>
             </div>
           </Link>
 

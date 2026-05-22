@@ -76,7 +76,24 @@ type CollectionItem = {
   hoverThumbnailSrc: string;
 };
 
-const FeaturedCollections = () => {
+export type CategoriesSectionHeader = {
+  eyebrow: string;
+  title: string;
+  description: string;
+};
+
+const fallbackHeader: CategoriesSectionHeader = {
+  eyebrow: "Featured collections",
+  title: "Find your everyday form",
+  description:
+    "Explore bowls, mugs, vases, planters, plates, and deep serving forms selected for a quiet home, tactile tables, and daily rituals.",
+};
+
+const FeaturedCollections = ({
+  header = fallbackHeader,
+}: {
+  header?: CategoriesSectionHeader;
+}) => {
   const [collections, setCollections] = useState<CollectionItem[]>(fallbackCollections);
   const [api, setApi] = useState<CarouselApi>();
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -143,10 +160,9 @@ const FeaturedCollections = () => {
        
  <SectionHeader
           id="featured-products-title"
-          eyebrow="Featured collections"
-          title=" Find your everyday form"
-          description=" Explore bowls, mugs, vases, planters, plates, and deep serving
-              forms selected for a quiet home, tactile tables, and daily rituals."
+          eyebrow={header.eyebrow}
+          title={header.title}
+          description={header.description}
           action={<ViewMoreLink href="/categories">View all categories</ViewMoreLink>}
         />
         <div className="mt-12 md:mt-14">

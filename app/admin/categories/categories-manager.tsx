@@ -11,6 +11,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 
 const supabase = createClient();
 
@@ -24,16 +25,28 @@ type CategoryRow = {
   thumbnail_alt: string;
 };
 
+type CategoriesHeader = {
+  id?: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+};
+
 type CategoriesManagerProps = {
   initialUserEmail: string;
+  initialHeader: CategoriesHeader;
   initialCategories: CategoryRow[];
 };
 
 const inputClassName =
   "mt-2 w-full border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
 
-const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesManagerProps) => {
+const CategoriesManager = ({ initialUserEmail, initialHeader, initialCategories }: CategoriesManagerProps) => {
   const router = useRouter();
+  const [headerEyebrow, setHeaderEyebrow] = useState(initialHeader.eyebrow);
+  const [headerTitle, setHeaderTitle] = useState(initialHeader.title);
+  const [headerDescription, setHeaderDescription] = useState(initialHeader.description);
+  const [savingHeader, setSavingHeader] = useState(false);
   const [categories, setCategories] = useState<CategoryRow[]>(initialCategories);
   const [checkingSession, setCheckingSession] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -81,6 +94,34 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.replace("/admin/login");
+  };
+
+  const saveHeader = async () => {
+    if (!headerEyebrow.trim() || !headerTitle.trim() || !headerDescription.trim()) {
+      toast.error("Categories eyebrow, title, and description are required.");
+      return;
+    }
+
+    setSavingHeader(true);
+    const toastId = toast.loading("Saving categories section...");
+    try {
+      const response = await fetch("/api/admin/categories-section", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eyebrow: headerEyebrow.trim(),
+          title: headerTitle.trim(),
+          description: headerDescription.trim(),
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result?.error ?? "Unable to save categories section.");
+      toast.success("Categories section saved.", { id: toastId });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Unable to save categories section.", { id: toastId });
+    } finally {
+      setSavingHeader(false);
+    }
   };
 
   const handleEdit = (category: CategoryRow) => {
@@ -213,6 +254,32 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
   return (
     <div className="px-6 py-8 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
+        <section className="mb-8 rounded-[32px] bg-white p-6 shadow-sm sm:p-8">
+          <div>
+            <h1 className="text-3xl tracking-[-0.03em] text-[#1b1511]">Categories Section Header</h1>
+            <p className="mt-2 text-sm text-[#665b4f]">
+              Edit the homepage collections section title and description.
+            </p>
+          </div>
+          <div className="mt-8 grid gap-5 md:grid-cols-[0.8fr_1.2fr]">
+            <label className="block text-sm font-medium text-[#352a21]">
+              Eyebrow
+              <input value={headerEyebrow} onChange={(event) => setHeaderEyebrow(event.target.value)} className={inputClassName} />
+            </label>
+            <label className="block text-sm font-medium text-[#352a21]">
+              Title
+              <input value={headerTitle} onChange={(event) => setHeaderTitle(event.target.value)} className={inputClassName} />
+            </label>
+          </div>
+          <label className="mt-5 block text-sm font-medium text-[#352a21]">
+            Description
+            <textarea value={headerDescription} onChange={(event) => setHeaderDescription(event.target.value)} className={`${inputClassName} min-h-[110px] resize-y`} />
+          </label>
+          <Button onClick={saveHeader} disabled={savingHeader} className="mt-5 h-11 rounded-full bg-[#1b1511] px-6 text-[#f8f2e8] hover:bg-[#2a211a]">
+            {savingHeader ? "Saving..." : "Save Categories Header"}
+          </Button>
+        </section>
+
         <div className="rounded-[32px] bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>

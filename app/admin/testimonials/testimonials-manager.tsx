@@ -11,6 +11,7 @@ import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { Pagination } from "@/components/ui/pagination";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 
 const supabase = createClient();
 
@@ -25,8 +26,16 @@ type TestimonialRow = {
   review: string;
 };
 
+type TestimonialsHeader = {
+  id?: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+};
+
 type TestimonialsManagerProps = {
   initialUserEmail: string;
+  initialHeader: TestimonialsHeader;
   initialTestimonials: TestimonialRow[];
 };
 
@@ -35,9 +44,14 @@ const inputClassName =
 
 export default function TestimonialsManager({
   initialUserEmail,
+  initialHeader,
   initialTestimonials,
 }: TestimonialsManagerProps) {
   const router = useRouter();
+  const [headerEyebrow, setHeaderEyebrow] = useState(initialHeader.eyebrow);
+  const [headerTitle, setHeaderTitle] = useState(initialHeader.title);
+  const [headerDescription, setHeaderDescription] = useState(initialHeader.description);
+  const [savingHeader, setSavingHeader] = useState(false);
   const [testimonials, setTestimonials] = useState<TestimonialRow[]>(initialTestimonials);
   const [checkingSession, setCheckingSession] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -99,6 +113,34 @@ export default function TestimonialsManager({
     setEditPurchased("");
     setEditReview("");
     setEditError(null);
+  };
+
+  const saveHeader = async () => {
+    if (!headerEyebrow.trim() || !headerTitle.trim() || !headerDescription.trim()) {
+      toast.error("Testimonials eyebrow, title, and description are required.");
+      return;
+    }
+
+    setSavingHeader(true);
+    const toastId = toast.loading("Saving testimonials section...");
+    try {
+      const response = await fetch("/api/admin/testimonials-section", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eyebrow: headerEyebrow.trim(),
+          title: headerTitle.trim(),
+          description: headerDescription.trim(),
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result?.error ?? "Unable to save testimonials section.");
+      toast.success("Testimonials section saved.", { id: toastId });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Unable to save testimonials section.", { id: toastId });
+    } finally {
+      setSavingHeader(false);
+    }
   };
 
   const handleUpdateTestimonial = async () => {
@@ -223,6 +265,32 @@ export default function TestimonialsManager({
   return (
     <div className="px-6 py-8 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
+        <section className="mb-8 rounded-[32px] bg-white p-6 shadow-sm sm:p-8">
+          <div>
+            <h1 className="text-3xl tracking-[-0.03em] text-[#1b1511]">Testimonials Section Header</h1>
+            <p className="mt-2 text-sm text-[#665b4f]">
+              Edit the homepage testimonials section title and description.
+            </p>
+          </div>
+          <div className="mt-8 grid gap-5 md:grid-cols-[0.8fr_1.2fr]">
+            <label className="block text-sm font-medium text-[#352a21]">
+              Eyebrow
+              <input value={headerEyebrow} onChange={(event) => setHeaderEyebrow(event.target.value)} className={inputClassName} />
+            </label>
+            <label className="block text-sm font-medium text-[#352a21]">
+              Title
+              <input value={headerTitle} onChange={(event) => setHeaderTitle(event.target.value)} className={inputClassName} />
+            </label>
+          </div>
+          <label className="mt-5 block text-sm font-medium text-[#352a21]">
+            Description
+            <textarea value={headerDescription} onChange={(event) => setHeaderDescription(event.target.value)} className={`${inputClassName} min-h-[110px] resize-y`} />
+          </label>
+          <Button onClick={saveHeader} disabled={savingHeader} className="mt-5 h-11 rounded-full bg-[#1b1511] px-6 text-[#f8f2e8] hover:bg-[#2a211a]">
+            {savingHeader ? "Saving..." : "Save Testimonials Header"}
+          </Button>
+        </section>
+
         <div className="rounded-[32px] bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>

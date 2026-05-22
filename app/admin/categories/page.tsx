@@ -16,6 +16,13 @@ type CategoryRow = {
   thumbnail_alt: string;
 };
 
+type CategoriesHeader = {
+  id?: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+};
+
 export default async function CategoriesPage() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
@@ -24,10 +31,18 @@ export default async function CategoriesPage() {
     redirect("/admin/login");
   }
 
-  const { data: categoriesData, error } = await supabase
-    .from('categories')
-    .select('*')
-    .order('created_at', { ascending: false });
+  const [{ data: header }, { data: categoriesData, error }] = await Promise.all([
+    supabase
+      .from("categories_sections")
+      .select("id, eyebrow, title, description")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from('categories')
+      .select('*')
+      .order('created_at', { ascending: false }),
+  ]);
 
   const categories: CategoryRow[] = error ? [] : (categoriesData || []).map((cat: {
     id: number;
@@ -51,6 +66,14 @@ export default async function CategoriesPage() {
     <AdminLayout userEmail={data.user.email ?? ""}>
       <CategoriesManager
         initialUserEmail={data.user.email ?? ""}
+        initialHeader={{
+          id: header?.id ? String(header.id) : undefined,
+          eyebrow: header?.eyebrow || "Featured collections",
+          title: header?.title || "Find your everyday form",
+          description:
+            header?.description ||
+            "Explore bowls, mugs, vases, planters, plates, and deep serving forms selected for a quiet home, tactile tables, and daily rituals.",
+        } satisfies CategoriesHeader}
         initialCategories={categories}
       />
     </AdminLayout>

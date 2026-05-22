@@ -30,7 +30,24 @@ type TestimonialsResponse = {
   testimonials?: Testimonial[];
 };
 
-export default function TestimonialsSection() {
+export type TestimonialsSectionHeader = {
+  eyebrow: string;
+  title: string;
+  description: string;
+};
+
+const fallbackHeader: TestimonialsSectionHeader = {
+  eyebrow: "Community stories",
+  title: "Stories From Our Pottery Community",
+  description:
+    "Notes from collectors, students, and home stylists who brought Haritham pieces into their rituals, shelves, and studio practice.",
+};
+
+export default function TestimonialsSection({
+  header = fallbackHeader,
+}: {
+  header?: TestimonialsSectionHeader;
+}) {
   const [api, setApi] = useState<CarouselApi>();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
@@ -95,9 +112,9 @@ export default function TestimonialsSection() {
         >
           <SectionHeader
             id="testimonials-title"
-            eyebrow="Community stories"
-            title="Stories From Our Pottery Community"
-            description="Notes from collectors, students, and home stylists who brought Haritham pieces into their rituals, shelves, and studio practice."
+            eyebrow={header.eyebrow}
+            title={header.title}
+            description={header.description}
           />
         </motion.div>
 

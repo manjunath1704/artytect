@@ -2,236 +2,65 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Play, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { motion } from "framer-motion";
-import { MasonryPhotoAlbum } from "react-photo-album";
 import Lightbox from "yet-another-react-lightbox";
 import Video from "yet-another-react-lightbox/plugins/video";
 import "react-photo-album/masonry.css";
 import "yet-another-react-lightbox/styles.css";
 
-const images = [
-  {
-    src: "/images/gallery/pexels-handanovijc-12859531.jpg",
-    width: 1280,
-    height: 1920,
-    caption: "Clay vessel study",
-  },
-  {
-    src: "/images/gallery/pexels-ivan-s-7119222.jpg",
-    width: 1280,
-    height: 853,
-    caption: "Ceramic studio shelf",
-  },
-  {
-    src: "/images/gallery/pexels-rdne-8903303.jpg",
-    width: 1280,
-    height: 1920,
-    caption: "Pottery wheel process",
-  },
-  {
-    src: "/images/gallery/pexels-karola-g-6805523.jpg",
-    width: 1279,
-    height: 853,
-    caption: "Earth-toned ceramic forms",
-  },
-  {
-    src: "/images/gallery/pexels-rdne-8903259.jpg",
-    width: 1280,
-    height: 1920,
-    caption: "Hands shaping clay",
-  },
-  {
-    src: "/images/gallery/pexels-karola-g-6920401.jpg",
-    width: 1280,
-    height: 853,
-    caption: "Minimal ceramic display",
-  },
-  {
-    src: "/images/gallery/pexels-karola-g-7588511.jpg",
-    width: 1280,
-    height: 1920,
-    caption: "Wheel-thrown pottery",
-  },
-  {
-    src: "/images/gallery/pexels-mart-production-8217302.jpg",
-    width: 1279,
-    height: 853,
-    caption: "Handmade clay collection",
-  },
-  {
-    src: "/images/gallery/pexels-photogbasya-a-1171505293-29665160.jpg",
-    width: 1280,
-    height: 1707,
-    caption: "Handmade ceramic detail",
-  },
-  {
-    src: "/images/gallery/pexels-rdne-8903648.jpg",
-    width: 1280,
-    height: 853,
-    caption: "Ceramic studio table",
-  },
-  {
-    src: "/images/gallery/pexels-jessejames-16691991.jpg",
-    width: 1280,
-    height: 2276,
-    caption: "Tall studio vessel",
-  },
-  {
-    src: "/images/gallery/pexels-readymade-3847457.jpg",
-    width: 1280,
-    height: 853,
-    caption: "Finished clay pieces",
-  },
-  {
-    src: "/images/gallery/pexels-makaroff-aleksandr-114409006-10401476.jpg",
-    width: 1280,
-    height: 1920,
-    caption: "Glazed pottery detail",
-  },
-  {
-    src: "/images/gallery/pexels-ron-lach-10222718.jpg",
-    width: 1280,
-    height: 853,
-    caption: "Artisan ceramic workspace",
-  },
-  {
-    src: "/images/gallery/pexels-picdrow-10995878.jpg",
-    width: 1280,
-    height: 1920,
-    caption: "Clay vessel texture",
-  },
-  {
-    src: "/images/gallery/pexels-stephanie-loewe-23778814-6842672.jpg",
-    width: 1280,
-    height: 853,
-    caption: "Stacked ceramic forms",
-  },
-  {
-    src: "/images/gallery/pexels-readymade-3847467.jpg",
-    width: 1280,
-    height: 1619,
-    caption: "Clay work in progress",
-  },
-  {
-    src: "/images/gallery/pexels-readymade-3847438.jpg",
-    width: 1280,
-    height: 853,
-    caption: "Earthware collection",
-  },
-  {
-    src: "/images/gallery/pexels-ramon-clemente-1097299-6546576.jpg",
-    width: 1280,
-    height: 1920,
-    caption: "Ceramic finishing process",
-  },
-];
+export type CraftedMomentsHeader = {
+  eyebrow: string;
+  title: string;
+  description: string;
+};
 
-type ProcessCard =
-  | {
-      type: "video";
-      src: string;
-      poster: string;
-      title: string;
-      caption: string;
-    }
-  | {
-      type: "image";
-      src: string;
-      index: number;
-      title: string;
-      caption: string;
-    };
+export type CraftedMomentItem = {
+  id: number | string;
+  type: "image" | "video";
+  title: string;
+  caption: string;
+  mediaUrl: string;
+  posterUrl?: string;
+  label: string;
+  isFeatured: boolean;
+  sortOrder: number;
+};
 
-const processCards: ProcessCard[] = [
-  {
-    type: "video",
-    src: "/videos/hero-video.mp4",
-    poster: "/images/gallery/pexels-rdne-8903303.jpg",
-    title: "Wheel throwing rhythm",
-    caption: "Clay centered by hand, turning slowly into everyday form.",
-  },
-  {
-    type: "image",
-    src: images[4].src,
-    index: 4,
-    title: "Hands shaping clay",
-    caption: "Quiet pressure, patient movement, and the first gesture of a vessel.",
-  },
-  {
-    type: "image",
-    src: images[11].src,
-    index: 11,
-    title: "Finished clay pieces",
-    caption: "Earthware forms gathered after firing, ready for daily rituals.",
-  },
-  {
-    type: "video",
-    src: "/videos/hero-a.mp4",
-    poster: "/images/gallery/pexels-readymade-3847467.jpg",
-    title: "Clay work in progress",
-    caption: "Small studio gestures, quiet tools, and surfaces taking shape.",
-  },
-  {
-    type: "image",
-    src: images[12].src,
-    index: 12,
-    title: "Glazed pottery detail",
-    caption: "Layered glaze, mineral color, and the final language of the kiln.",
-  },
-  {
-    type: "image",
-    src: images[17].src,
-    index: 17,
-    title: "Earthware collection",
-    caption: "Finished pieces arranged for tactile tables and slow living.",
-  },
-  {
-    type: "image",
-    src: images[18].src,
-    index: 18,
-    title: "Ceramic finishing process",
-    caption: "Edges softened, surfaces refined, and each form made ready by hand.",
-  },
-];
+const fallbackHeader: CraftedMomentsHeader = {
+  eyebrow: "Crafted moments",
+  title: "Inside Our Pottery Studio",
+  description:
+    "A cinematic glimpse into the artistry, craftsmanship, and soulful process behind every handmade ceramic piece.",
+};
 
-const lightboxVideoSlides = [
-  {
-    type: "video" as const,
-    title: "Clay, water, pressure, and time",
-    poster: "/images/gallery/pexels-rdne-8903303.jpg",
-    width: 1920,
-    height: 1080,
-    sources: [
-      { src: "/videos/hero-video-b.mp4", type: "video/mp4" },
-      { src: "/videos/hero.mp4", type: "video/mp4" },
-    ],
-  },
-  ...processCards
-    .filter((item): item is Extract<ProcessCard, { type: "video" }> => item.type === "video")
-    .map((item) => ({
-      type: "video" as const,
-      title: item.title,
-      poster: item.poster,
-      width: 1920,
-      height: 1080,
-      sources: [{ src: item.src, type: "video/mp4" }],
-    })),
-];
-
-const lightboxSlides = [
-  ...lightboxVideoSlides,
-  ...images.map((img) => ({
-    src: img.src,
-    title: img.caption,
-  })),
-];
-
-const imageLightboxOffset = lightboxVideoSlides.length;
-
-export default function GalleryApp() {
+export default function GalleryApp({
+  header = fallbackHeader,
+  items,
+}: {
+  header?: CraftedMomentsHeader;
+  items: CraftedMomentItem[];
+}) {
   const [index, setIndex] = useState<number>(-1);
   const isLightboxOpen = index >= 0;
+  const featuredItem = items.find((item) => item.isFeatured) ?? items[0];
+  const gridItems = items.filter((item) => item.id !== featuredItem?.id);
+  const lightboxSlides = items.map((item) =>
+    item.type === "video"
+      ? {
+          type: "video" as const,
+          title: item.title,
+          poster: item.posterUrl,
+          width: 1920,
+          height: 1080,
+          sources: [{ src: item.mediaUrl, type: "video/mp4" }],
+        }
+      : {
+          src: item.mediaUrl,
+          title: item.title,
+          description: item.caption,
+        },
+  );
 
   const showPrevious = () => {
     setIndex((currentIndex) =>
@@ -244,6 +73,15 @@ export default function GalleryApp() {
       currentIndex >= lightboxSlides.length - 1 ? 0 : currentIndex + 1
     );
   };
+
+  const openItem = (item: CraftedMomentItem) => {
+    const nextIndex = items.findIndex((currentItem) => currentItem.id === item.id);
+    setIndex(nextIndex >= 0 ? nextIndex : 0);
+  };
+
+  if (!items.length || !featuredItem) {
+    return null;
+  }
 
   return (
     <section
@@ -263,65 +101,73 @@ export default function GalleryApp() {
         >
           <div>
             <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9a6b4e]">
-             
-              Crafted moments
+              {header.eyebrow}
             </p>
             <h2 className="mt-3 max-w-3xl text-4xl font-display uppercase leading-none tracking-normal text-[#1b1511] sm:text-5xl lg:text-6xl">
-              Inside Our Pottery Studio
+              {header.title}
             </h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-[#665b4f] md:justify-self-end">
-            A cinematic glimpse into the artistry, craftsmanship, and soulful
-            process behind every handmade ceramic piece.
+            {header.description}
           </p>
         </motion.div>
 
         <div className="grid gap-5 lg:grid-cols-[1.45fr_0.9fr]">
           <motion.button
             type="button"
-            onClick={() => setIndex(0)}
-            aria-label="Open featured pottery process video"
+            onClick={() => openItem(featuredItem)}
+            aria-label={`Open ${featuredItem.title}`}
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.65, ease: "easeOut" }}
             className="relative min-h-[420px] overflow-hidden rounded-[32px] border border-[#d8cabd] bg-[#17110d] text-left shadow-sm transition-shadow duration-300 hover:shadow-md lg:min-h-[640px]"
           >
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              poster="/images/gallery/pexels-rdne-8903303.jpg"
-              className="absolute inset-0 h-full w-full object-cover"
-              aria-hidden="true"
-            >
-              <source src="/videos/hero-video-b.mp4" type="video/mp4" />
-              <source src="/videos/hero.mp4" type="video/mp4" />
-            </video>
+            {featuredItem.type === "video" ? (
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                poster={featuredItem.posterUrl}
+                className="absolute inset-0 h-full w-full object-cover"
+                aria-hidden="true"
+              >
+                <source src={featuredItem.mediaUrl} type="video/mp4" />
+              </video>
+            ) : (
+              <Image
+                src={featuredItem.mediaUrl}
+                alt={featuredItem.title}
+                fill
+                sizes="(min-width: 1024px) 58vw, calc(100vw - 48px)"
+                className="object-cover"
+              />
+            )}
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,17,13,0.12),rgba(23,17,13,0.18)_42%,rgba(23,17,13,0.72))]" />
-            <div className="absolute left-5 top-5 flex h-12 w-12 items-center justify-center rounded-full border border-white/35 bg-white/12 text-white backdrop-blur-md">
-              <Play className="h-4 w-4" fill="currentColor" />
-            </div>
+            {featuredItem.type === "video" ? (
+              <div className="absolute left-5 top-5 flex h-12 w-12 items-center justify-center rounded-full border border-white/35 bg-white/12 text-white backdrop-blur-md">
+                <Play className="h-4 w-4" fill="currentColor" />
+              </div>
+            ) : null}
             <div className="absolute inset-x-5 bottom-5 text-white md:inset-x-7 md:bottom-7">
               <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[#ead7c3]">
-                Featured process
+                {featuredItem.label}
               </p>
               <h3 className="mt-3 max-w-xl text-4xl font-display uppercase leading-none tracking-normal md:text-5xl">
-                Clay, water, pressure, and time
+                {featuredItem.title}
               </h3>
               <p className="mt-4 max-w-lg text-sm leading-7 text-[#f3e4d4]">
-                Watch the quiet studio rhythm behind each thrown, glazed, and
-                fired piece.
+                {featuredItem.caption}
               </p>
             </div>
           </motion.button>
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-            {processCards.map((item, itemIndex) => (
+            {gridItems.map((item, itemIndex) => (
               <motion.article
-                key={item.title}
+                key={item.id}
                 initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.25 }}
@@ -332,12 +178,7 @@ export default function GalleryApp() {
                   <button
                     type="button"
                     className="absolute inset-0 text-left"
-                    onClick={() => {
-                      const videoIndex = lightboxVideoSlides.findIndex(
-                        (slide) => slide.title === item.title,
-                      );
-                      setIndex(videoIndex >= 0 ? videoIndex : 0);
-                    }}
+                    onClick={() => openItem(item)}
                     aria-label={`Open ${item.title} video`}
                   >
                     <video
@@ -346,22 +187,22 @@ export default function GalleryApp() {
                       loop
                       playsInline
                       preload="metadata"
-                      poster={item.poster}
+                      poster={item.posterUrl}
                       className="absolute inset-0 h-full w-full object-cover"
                       aria-hidden="true"
                     >
-                      <source src={item.src} type="video/mp4" />
+                      <source src={item.mediaUrl} type="video/mp4" />
                     </video>
                   </button>
                 ) : (
                   <button
                     type="button"
                     className="absolute inset-0 text-left"
-                    onClick={() => setIndex(imageLightboxOffset + item.index)}
+                    onClick={() => openItem(item)}
                     aria-label={`Open ${item.title}`}
                   >
                     <Image
-                      src={item.src}
+                      src={item.mediaUrl}
                       alt={item.title}
                       fill
                       sizes="(min-width: 1024px) 35vw, calc(100vw - 48px)"
@@ -372,7 +213,7 @@ export default function GalleryApp() {
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(23,17,13,0.08),rgba(23,17,13,0.70))]" />
                 <div className="pointer-events-none absolute inset-x-5 bottom-5 text-white">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#ead7c3]">
-                    Studio study
+                    {item.label}
                   </p>
                   <h3 className="mt-2 text-2xl font-display uppercase leading-none">
                     {item.title}
