@@ -8,6 +8,7 @@ import { Loader2, Pencil, Trash2, X, Plus, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/pagination";
+import { ImageUploader } from "@/components/ui/image-uploader";
 import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
@@ -42,8 +43,6 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
   const [editThumbnailAlt, setEditThumbnailAlt] = useState("");
   const [editThumbnailFile, setEditThumbnailFile] = useState<File | null>(null);
   const [editHoverThumbnailFile, setEditHoverThumbnailFile] = useState<File | null>(null);
-  const [editThumbnailPreview, setEditThumbnailPreview] = useState<string | null>(null);
-  const [editHoverThumbnailPreview, setEditHoverThumbnailPreview] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [editError, setEditError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -75,26 +74,6 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
     return () => subscription.unsubscribe();
   }, [initialUserEmail, router]);
 
-  useEffect(() => {
-    if (!editThumbnailFile) {
-      setEditThumbnailPreview(null);
-      return;
-    }
-    const previewUrl = URL.createObjectURL(editThumbnailFile);
-    setEditThumbnailPreview(previewUrl);
-    return () => URL.revokeObjectURL(previewUrl);
-  }, [editThumbnailFile]);
-
-  useEffect(() => {
-    if (!editHoverThumbnailFile) {
-      setEditHoverThumbnailPreview(null);
-      return;
-    }
-    const previewUrl = URL.createObjectURL(editHoverThumbnailFile);
-    setEditHoverThumbnailPreview(previewUrl);
-    return () => URL.revokeObjectURL(previewUrl);
-  }, [editHoverThumbnailFile]);
-
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.replace("/admin/login");
@@ -108,8 +87,6 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
     setEditThumbnailAlt(category.thumbnail_alt);
     setEditThumbnailFile(null);
     setEditHoverThumbnailFile(null);
-    setEditThumbnailPreview(null);
-    setEditHoverThumbnailPreview(null);
     setEditError(null);
   };
 
@@ -121,8 +98,6 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
     setEditThumbnailAlt("");
     setEditThumbnailFile(null);
     setEditHoverThumbnailFile(null);
-    setEditThumbnailPreview(null);
-    setEditHoverThumbnailPreview(null);
     setEditError(null);
   };
 
@@ -356,38 +331,43 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
                 </label>
 
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <div>
-                    <label className="block text-sm font-medium text-[#352a21]">
-                      Default Thumbnail
-                      <input type="file" accept="image/*" onChange={(e) => setEditThumbnailFile(e.target.files?.[0] ?? null)} className={inputClassName} />
-                    </label>
-                    {editThumbnailPreview ? (
-                      <div className="relative mt-3 h-32 w-full overflow-hidden rounded-2xl border border-[#e8ddd1]">
-                        <Image src={editThumbnailPreview} alt="New thumbnail" fill unoptimized className="object-cover" />
-                      </div>
-                    ) : (
-                      <div className="relative mt-3 h-32 w-full overflow-hidden rounded-2xl border border-[#e8ddd1]">
-                        <Image src={editingCategory.thumbnail_url} alt="Current" fill unoptimized className="object-cover" />
-                      </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-[#352a21]">
-                      Hover Thumbnail
-                      <input type="file" accept="image/*" onChange={(e) => setEditHoverThumbnailFile(e.target.files?.[0] ?? null)} className={inputClassName} />
-                    </label>
-                    {editHoverThumbnailPreview ? (
-                      <div className="relative mt-3 h-32 w-full overflow-hidden rounded-2xl border border-[#e8ddd1]">
-                        <Image src={editHoverThumbnailPreview} alt="New hover" fill unoptimized className="object-cover" />
-                      </div>
-                    ) : (
-                      <div className="relative mt-3 h-32 w-full overflow-hidden rounded-2xl border border-[#e8ddd1]">
-                        <Image src={editingCategory.hover_thumbnail_url} alt="Current hover" fill unoptimized className="object-cover" />
-                      </div>
-                    )}
-                  </div>
+                  <ImageUploader
+                    label="Default Thumbnail"
+                    hint="Leave empty to keep the current image"
+                    file={editThumbnailFile}
+                    onChange={setEditThumbnailFile}
+                    onRemove={() => setEditThumbnailFile(null)}
+                  />
+                  <ImageUploader
+                    label="Hover Thumbnail"
+                    hint="Leave empty to keep the current image"
+                    file={editHoverThumbnailFile}
+                    onChange={setEditHoverThumbnailFile}
+                    onRemove={() => setEditHoverThumbnailFile(null)}
+                  />
                 </div>
+
+                {/* Current images (shown when no new file selected) */}
+                {(!editThumbnailFile || !editHoverThumbnailFile) && (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {!editThumbnailFile && (
+                      <div>
+                        <p className="mb-2 text-xs text-[#8a7765]">Current default thumbnail</p>
+                        <div className="relative h-32 w-full overflow-hidden rounded-2xl border border-[#e8ddd1] bg-[#f5eee4]">
+                          <Image src={editingCategory.thumbnail_url} alt="Current" fill unoptimized className="object-contain" />
+                        </div>
+                      </div>
+                    )}
+                    {!editHoverThumbnailFile && (
+                      <div>
+                        <p className="mb-2 text-xs text-[#8a7765]">Current hover thumbnail</p>
+                        <div className="relative h-32 w-full overflow-hidden rounded-2xl border border-[#e8ddd1] bg-[#f5eee4]">
+                          <Image src={editingCategory.hover_thumbnail_url} alt="Current hover" fill unoptimized className="object-contain" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {editError && <p className="rounded-2xl border border-[#d7b68b] bg-[#faf4ea] px-4 py-3 text-sm text-[#7a4d1d]">{editError}</p>}
 
