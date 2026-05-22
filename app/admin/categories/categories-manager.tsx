@@ -9,6 +9,7 @@ import { Loader2, Pencil, Trash2, X, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/pagination";
 import { ImageUploader } from "@/components/ui/image-uploader";
+import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
 import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
@@ -48,6 +49,9 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+
+  // Delete confirmation dialog state
+  const [deleteTarget, setDeleteTarget] = useState<CategoryRow | null>(null);
 
   // Reset to page 1 when search query changes
   useEffect(() => {
@@ -151,22 +155,28 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
     }
   };
 
-  const handleDelete = async (categoryId: string) => {
-    if (!confirm("Are you sure you want to delete this category?")) {
-      return;
-    }
-    setDeleting(categoryId);
+  // Open the delete confirmation dialog
+  const handleDeleteClick = (category: CategoryRow) => {
+    setDeleteTarget(category);
+  };
+
+  // Called when user confirms deletion in the dialog
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return;
+    setDeleting(deleteTarget.id);
     try {
-      const response = await fetch(`/api/admin/categories/${categoryId}`, {
+      const response = await fetch(`/api/admin/categories/${deleteTarget.id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
         const result = await response.json();
         throw new Error(result?.error ?? "Unable to delete category.");
       }
-      setCategories((current) => current.filter((cat) => cat.id !== categoryId));
+      setCategories((current) => current.filter((cat) => cat.id !== deleteTarget.id));
+      setDeleteTarget(null); // close dialog on success
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Unable to delete category.");
+      // Keep dialog open so user sees the error — we just stop the spinner
+      console.error(error);
     } finally {
       setDeleting(null);
     }
@@ -268,7 +278,7 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
                           <button onClick={() => handleEdit(category)} className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#d9ccbc] text-[#1b1511] transition hover:bg-[#f5eee4]" title="Edit category">
                             <Pencil className="h-4 w-4" />
                           </button>
-                          <button onClick={() => handleDelete(category.id)} disabled={deleting === category.id} className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#d9ccbc] text-[#7a4d1d] transition hover:bg-[#faf4ea] disabled:opacity-50" title="Delete category">
+                          <button onClick={() => handleDeleteClick(category)} disabled={deleting === category.id} className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#d9ccbc] text-[#7a4d1d] transition hover:bg-[#faf4ea] disabled:opacity-50" title="Delete category">
                             {deleting === category.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                           </button>
                         </div>
@@ -384,6 +394,15 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
           </div>
         )}
       </div>
+
+      {/* ── Delete confirmation dialog ── */}
+      <DeleteConfirmDialog
+        open={!!deleteTarget}
+        itemName={deleteTarget?.title}
+        loading={deleting === deleteTarget?.id}
+        onCancel={() => { if (!deleting) setDeleteTarget(null); }}
+        onConfirm={handleDeleteConfirm}
+      />
     </div>
   );
 };
