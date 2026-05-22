@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import CategoriesManager from "./categories-manager";
+import { AdminLayout } from "../admin-layout";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -23,13 +24,10 @@ export default async function CategoriesPage() {
     redirect("/admin/login");
   }
 
-  // Fetch categories
   const { data: categoriesData, error } = await supabase
     .from('categories')
     .select('*')
     .order('created_at', { ascending: false });
-
-  console.log('Categories fetched:', categoriesData?.length, 'Error:', error?.message);
 
   const categories: CategoryRow[] = error ? [] : (categoriesData || []).map((cat: {
     id: number;
@@ -49,12 +47,12 @@ export default async function CategoriesPage() {
     thumbnail_alt: cat.category_thumbnail_alt || '',
   }));
 
-  console.log('Mapped categories:', categories.length);
-
   return (
-    <CategoriesManager
-      initialUserEmail={data.user.email ?? ""}
-      initialCategories={categories}
-    />
+    <AdminLayout userEmail={data.user.email ?? ""}>
+      <CategoriesManager
+        initialUserEmail={data.user.email ?? ""}
+        initialCategories={categories}
+      />
+    </AdminLayout>
   );
 }

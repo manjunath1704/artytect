@@ -10,7 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 const supabase = createClient();
 
 const inputClassName =
-  "mt-2 w-full border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
+  "mt-2 w-full border border-gray-300 rounded-[32px] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
 
 const AdminLoginForm = () => {
   const router = useRouter();
@@ -119,7 +119,7 @@ const AdminLoginForm = () => {
                 <Button
                   type="submit"
                   size="lg"
-                  className="h-12 w-full rounded-none bg-[#1b1511] text-[#f8f2e8] hover:bg-[#2a211a]"
+                  className="h-12 w-full rounded-[32px] bg-[#1b1511] text-[#f8f2e8] hover:bg-[#2a211a]"
                   disabled={loading}
                 >
                   {loading ? (

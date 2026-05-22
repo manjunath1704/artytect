@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import AdminPanel from "./admin-panel";
+import { AdminLayout } from "./admin-layout";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -13,15 +14,16 @@ export default async function AdminPage() {
     redirect("/admin/login");
   }
 
-  // Fetch categories count
   const { count } = await supabase
     .from('categories')
     .select('*', { count: 'exact', head: true });
 
   return (
-    <AdminPanel
-      initialUserEmail={data.user.email ?? ""}
-      categoriesCount={count || 0}
-    />
+    <AdminLayout userEmail={data.user.email ?? ""}>
+      <AdminPanel
+        initialUserEmail={data.user.email ?? ""}
+        categoriesCount={count || 0}
+      />
+    </AdminLayout>
   );
 }

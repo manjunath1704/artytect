@@ -1,10 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Loader2, ArrowLeft, Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -12,7 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 const supabase = createClient();
 
 const inputClassName =
-  "mt-2 w-full border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
+  "mt-2 w-full border border-gray-300 rounded-[32px] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
 
 const CreateCategoriesForm = () => {
   const router = useRouter();
@@ -79,7 +78,7 @@ const CreateCategoriesForm = () => {
     return () => URL.revokeObjectURL(previewUrl);
   }, [hoverThumbnailFile]);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setCreating(true);
     setError(null);
@@ -128,32 +127,19 @@ const CreateCategoriesForm = () => {
 
   if (checkingSession) {
     return (
-      <main className="flex min-h-[100svh] items-center justify-center bg-[linear-gradient(180deg,#f6efe4_0%,#efe4d5_100%)] px-6">
+      <div className="flex min-h-[60vh] items-center justify-center">
         <div className="flex items-center gap-3 text-[#665b4f]">
           <Loader2 className="h-5 w-5 animate-spin" />
-          <span>Checking admin session...</span>
+          <span>Checking session…</span>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-[100svh] bg-[linear-gradient(180deg,#f6efe4_0%,#efe4d5_100%)] px-6 py-8 sm:px-8 lg:px-10">
+    <div className="px-6 py-8 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-4xl">
-        <div className="mb-6 flex items-center justify-between gap-4">
-          <Link
-            href="/admin"
-            className="inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] underline-offset-4 transition hover:underline"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to admin
-          </Link>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-[#8a7765]">
-            Create categories
-          </p>
-        </div>
-
-        <section className="border border-[#dbcbb8] bg-white p-6 shadow-[0_20px_70px_rgba(23,20,15,0.08)] sm:p-8">
+        <section className="rounded-[32px] shadow-sm bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center bg-[#1b1511] text-[#f8f2e8]">
               <Plus className="h-5 w-5" />
@@ -200,7 +186,7 @@ const CreateCategoriesForm = () => {
               Description
               <textarea
                 value={description}
-                onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
+                onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
                   setDescription(event.target.value)
                 }
                 className={`${inputClassName} min-h-[120px] resize-y`}
@@ -305,7 +291,7 @@ const CreateCategoriesForm = () => {
             <Button
               type="submit"
               size="lg"
-              className="h-12 w-full rounded-none bg-[#1b1511] text-[#f8f2e8] hover:bg-[#2a211a]"
+              className="h-12 rounded-[32px] px-10  bg-[#1b1511] text-[#f8f2e8] hover:bg-[#2a211a]"
               disabled={creating}
             >
               {creating ? (
@@ -320,7 +306,7 @@ const CreateCategoriesForm = () => {
           </form>
         </section>
       </div>
-    </main>
+    </div>
   );
 };
 

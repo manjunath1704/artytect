@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, LogOut, ArrowLeft, Pencil, Trash2, X, Plus, Search } from "lucide-react";
+import { Loader2, Pencil, Trash2, X, Plus, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/pagination";
@@ -32,7 +32,6 @@ const inputClassName =
 
 const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesManagerProps) => {
   const router = useRouter();
-  const [userEmail, setUserEmail] = useState(initialUserEmail);
   const [categories, setCategories] = useState<CategoryRow[]>(initialCategories);
   const [checkingSession, setCheckingSession] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -65,7 +64,6 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
         router.replace("/admin/login");
         return;
       }
-      setUserEmail(data.user.email ?? initialUserEmail);
       setCheckingSession(false);
     };
     void syncSession();
@@ -100,7 +98,6 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.replace("/admin/login");
-    router.refresh();
   };
 
   const handleEdit = (category: CategoryRow) => {
@@ -202,12 +199,12 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
 
   if (checkingSession) {
     return (
-      <main className="flex min-h-[100svh] items-center justify-center bg-[linear-gradient(180deg,#f6efe4_0%,#efe4d5_100%)] px-6">
+      <div className="flex min-h-[60vh] items-center justify-center">
         <div className="flex items-center gap-3 text-[#665b4f]">
           <Loader2 className="h-5 w-5 animate-spin" />
-          <span>Checking admin session...</span>
+          <span>Checking session…</span>
         </div>
-      </main>
+      </div>
     );
   }
 
@@ -229,27 +226,15 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
   const paginatedCategories = filteredCategories.slice(startIndex, endIndex);
 
   return (
-    <main className="min-h-[100svh] bg-[linear-gradient(180deg,#f6efe4_0%,#efe4d5_100%)] px-6 py-8 sm:px-8 lg:px-10">
+    <div className="px-6 py-8 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-6 flex items-center justify-between gap-4">
-          <Link href="/admin" className="inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] underline-offset-4 transition hover:underline">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Dashboard
-          </Link>
-          <div className="flex items-center gap-3">
-            <p className="text-xs uppercase tracking-[0.25em] text-[#8a7765]">{userEmail}</p>
-            <Button type="button" variant="outline" size="sm" className="h-10 rounded-full border-[#d9ccbc] bg-transparent text-[#1b1511] hover:bg-[#f5eee4]" onClick={handleLogout}>
-              <LogOut className="h-4 w-4" />
-              Logout
-            </Button>
-          </div>
-        </div>
-
-        <div className="rounded-[32px]  bg-white p-6 shadow-sm sm:p-8">
+        <div className="rounded-[32px] bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h1 className="text-3xl tracking-[-0.03em] text-[#1b1511]">Manage Categories</h1>
-              <p className="mt-2 text-sm text-[#665b4f]">{categories.length} {categories.length === 1 ? 'category' : 'categories'} in database</p>
+              <p className="mt-2 text-sm text-[#665b4f]">
+                {categories.length} {categories.length === 1 ? "category" : "categories"} in database
+              </p>
             </div>
             <Link href="/admin/create-categories" className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#1b1511] px-6 text-sm font-medium text-[#f8f2e8] transition hover:bg-[#2a211a]">
               <Plus className="h-4 w-4" />
@@ -419,7 +404,7 @@ const CategoriesManager = ({ initialUserEmail, initialCategories }: CategoriesMa
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 };
 
