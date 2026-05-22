@@ -14,18 +14,47 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { testimonials as fallbackTestimonials, type Testimonial } from "@/data/testimonials";
 
-type TestimonialsSectionProps = {
+type Testimonial = {
+  id: number | string;
+  name: string;
+  location: string;
+  image: string;
+  imageAlt?: string;
+  rating: number;
+  purchased: string;
+  review: string;
+};
+
+type TestimonialsResponse = {
   testimonials?: Testimonial[];
 };
 
-export default function TestimonialsSection({
-  testimonials = fallbackTestimonials,
-}: TestimonialsSectionProps) {
+export default function TestimonialsSection() {
   const [api, setApi] = useState<CarouselApi>();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await fetch("/api/testimonials", {
+          cache: "no-store",
+        });
+        const result = (await response.json()) as TestimonialsResponse;
+        setTestimonials(result.testimonials ?? []);
+      } catch (error) {
+        console.error("Unable to load testimonials.", error);
+        setTestimonials([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchTestimonials();
+  }, []);
 
   useEffect(() => {
     if (!api) return;
@@ -44,6 +73,10 @@ export default function TestimonialsSection({
       api.off("reInit", updateCarouselState);
     };
   }, [api]);
+
+  if (loading || testimonials.length === 0) {
+    return null;
+  }
 
   return (
     <section
