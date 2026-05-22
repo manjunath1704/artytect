@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FolderOpen, HeartHandshake, Home, MessageSquareQuote, Package, Route, Sparkles, Users } from "lucide-react";
+import { FolderOpen, HeartHandshake, Home, Mail, MessageSquareQuote, Package, Route, Sparkles, Users } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -12,6 +12,7 @@ const supabase = createClient();
 type AdminPanelProps = {
   initialUserEmail: string;
   heroCount: number;
+  messagesCount: number;
   categoriesCount: number;
   testimonialsCount: number;
   aboutSectionsCount: number;
@@ -19,7 +20,7 @@ type AdminPanelProps = {
   craftedMomentsCount: number;
 };
 
-const AdminPanel = ({ initialUserEmail, heroCount, categoriesCount, testimonialsCount, aboutSectionsCount, processStepsCount, craftedMomentsCount }: AdminPanelProps) => {
+const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCount, testimonialsCount, aboutSectionsCount, processStepsCount, craftedMomentsCount }: AdminPanelProps) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -73,6 +74,29 @@ const AdminPanel = ({ initialUserEmail, heroCount, categoriesCount, testimonials
             </p>
             <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
               Manage Hero <span>→</span>
+            </div>
+          </Link>
+
+          <Link
+            href="/admin/messages"
+            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f4eadf] text-[#1b1511]">
+                <Mail className="h-7 w-7" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Messages</h2>
+                <p className="mt-1 text-sm text-[#665b4f]">
+                  {messagesCount} {messagesCount === 1 ? "message" : "messages"}
+                </p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
+              Review, filter, export, and delete contact form submissions.
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
+              Manage Messages <span>→</span>
             </div>
           </Link>
 

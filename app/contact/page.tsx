@@ -4,6 +4,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
 import ContactMap from "../components/contact-map";
+import ContactForm from "./contact-form";
 
 const contactMethods = [
   {
@@ -96,85 +97,7 @@ export default function ContactPage() {
               </div>
             </aside>
 
-            <form className="overflow-hidden rounded-[32px] shadow-sm bg-[#F6EFE6] p-5 md:p-8">
-              <div className="grid gap-5 md:grid-cols-2">
-                <label className="block">
-                  <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]">
-                    Name
-                  </span>
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    className="h-12 w-full rounded-full shadow-sm bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
-                    placeholder="Your name"
-                  />
-                </label>
-
-                <label className="block">
-                  <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]">
-                    Email
-                  </span>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    className="h-12 w-full rounded-full shadow-sm bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
-                    placeholder="you@example.com"
-                  />
-                </label>
-
-                <label className="block">
-                  <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]">
-                    Mobile number
-                  </span>
-                  <input
-                    type="tel"
-                    name="mobile"
-                    required
-                    inputMode="tel"
-                    className="h-12 w-full rounded-full shadow-sm bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
-                    placeholder="+91 98765 43210"
-                  />
-                </label>
-
-                <label className="block">
-                  <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]">
-                    Topic
-                  </span>
-                  <select
-                    name="topic"
-                    className="h-12 w-full rounded-full shadow-sm bg-[#fcfdfa] px-4 text-sm outline-none transition focus:border-[#1b1511]"
-                    defaultValue="Custom order"
-                  >
-                    <option>Custom order</option>
-                    <option>Product question</option>
-                    <option>Collaboration</option>
-                    <option>Studio visit</option>
-                  </select>
-                </label>
-              </div>
-
-              <label className="mt-5 block">
-                <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]">
-                  Message
-                </span>
-                <textarea
-                  name="message"
-                  required
-                  rows={7}
-                  className="w-full resize-y rounded-2xl shadow-sm bg-[#fcfdfa] px-4 py-3 text-sm leading-7 outline-none transition focus:border-[#1b1511]"
-                  placeholder="Tell us what you are looking for."
-                />
-              </label>
-
-              <button
-                type="submit"
-                className="mt-6 h-12 rounded-full bg-[#1b1511] px-8 text-[11px] font-semibold uppercase tracking-[0.24em] text-white transition hover:bg-[#3a2f27]"
-              >
-                Send inquiry
-              </button>
-            </form>
+            <ContactForm />
           </div>
         </section>
        
