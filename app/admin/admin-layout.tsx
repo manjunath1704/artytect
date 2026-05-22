@@ -6,6 +6,7 @@ import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
+  HeartHandshake,
   FolderOpen,
   LayoutDashboard,
   LogOut,
@@ -40,6 +41,8 @@ const BREADCRUMBS: Record<string, { label: string; parent?: string }> = {
   "/admin/create-categories": { label: "Create Category", parent: "/admin/categories" },
   "/admin/testimonials":        { label: "Testimonials",      parent: "/admin" },
   "/admin/create-testimonials": { label: "Create Testimonial", parent: "/admin/testimonials" },
+  "/admin/about-sections":        { label: "About Sections",      parent: "/admin" },
+  "/admin/create-about-sections": { label: "Create About Section", parent: "/admin/about-sections" },
 };
 
 function useBreadcrumbs(pathname: string) {
@@ -77,6 +80,13 @@ const NAV: NavItem[] = [
     children: [
       { title: "View All",   href: "/admin/testimonials" },
       { title: "Create New", href: "/admin/create-testimonials" },
+    ],
+  },
+  {
+    title: "About", href: "/admin/about-sections", icon: HeartHandshake,
+    children: [
+      { title: "View All", href: "/admin/about-sections" },
+      { title: "Create New", href: "/admin/create-about-sections" },
     ],
   },
   { title: "Products", href: "#", icon: Package, disabled: true, children: [] },

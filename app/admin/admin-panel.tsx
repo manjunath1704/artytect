@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FolderOpen, MessageSquareQuote, Package, Users } from "lucide-react";
+import { FolderOpen, HeartHandshake, MessageSquareQuote, Package, Users } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -13,9 +13,10 @@ type AdminPanelProps = {
   initialUserEmail: string;
   categoriesCount: number;
   testimonialsCount: number;
+  aboutSectionsCount: number;
 };
 
-const AdminPanel = ({ initialUserEmail, categoriesCount, testimonialsCount }: AdminPanelProps) => {
+const AdminPanel = ({ initialUserEmail, categoriesCount, testimonialsCount, aboutSectionsCount }: AdminPanelProps) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -48,7 +49,7 @@ const AdminPanel = ({ initialUserEmail, categoriesCount, testimonialsCount }: Ad
         </div>
 
         {/* Cards */}
-        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
           <Link
             href="/admin/categories"
             className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
@@ -92,6 +93,29 @@ const AdminPanel = ({ initialUserEmail, categoriesCount, testimonialsCount }: Ad
             </p>
             <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
               Manage Testimonials <span>→</span>
+            </div>
+          </Link>
+
+          <Link
+            href="/admin/about-sections"
+            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#fff0eb] text-[#1b1511]">
+                <HeartHandshake className="h-7 w-7" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">About</h2>
+                <p className="mt-1 text-sm text-[#665b4f]">
+                  {aboutSectionsCount} {aboutSectionsCount === 1 ? "section" : "sections"}
+                </p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
+              Manage the homepage creator story and call-to-action.
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
+              Manage About <span>→</span>
             </div>
           </Link>
 

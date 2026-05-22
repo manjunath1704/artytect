@@ -7,6 +7,7 @@ const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 export const CATEGORY_BUCKET = "category-thumbnails";
 export const TESTIMONIAL_BUCKET = "testimonial-images";
+export const ABOUT_BUCKET = "about-section-images";
 
 export const getAdminClient = () => {
   if (!supabaseUrl) {
@@ -79,6 +80,35 @@ export const ensureTestimonialImagesBucket = async () => {
 
     throw new Error(
       `Unable to create Supabase Storage bucket "${TESTIMONIAL_BUCKET}": ${createBucketError.message}`,
+    );
+  }
+};
+
+export const ensureAboutSectionImagesBucket = async () => {
+  const supabase = getAdminClient();
+
+  const { error: bucketLookupError } = await supabase.storage.getBucket(ABOUT_BUCKET);
+
+  if (!bucketLookupError) {
+    return;
+  }
+
+  const { error: createBucketError } = await supabase.storage.createBucket(
+    ABOUT_BUCKET,
+    {
+      public: true,
+      allowedMimeTypes: ["image/*"],
+      fileSizeLimit: "10485760",
+    },
+  );
+
+  if (createBucketError) {
+    if (createBucketError.message.toLowerCase().includes("already exists")) {
+      return;
+    }
+
+    throw new Error(
+      `Unable to create Supabase Storage bucket "${ABOUT_BUCKET}": ${createBucketError.message}`,
     );
   }
 };
