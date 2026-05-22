@@ -18,11 +18,16 @@ export default async function AdminPage() {
     .from('categories')
     .select('*', { count: 'exact', head: true });
 
+  const { count: testimonialsCount } = await supabase
+    .from('testimonials')
+    .select('*', { count: 'exact', head: true });
+
   return (
     <AdminLayout userEmail={data.user.email ?? ""}>
       <AdminPanel
         initialUserEmail={data.user.email ?? ""}
         categoriesCount={count || 0}
+        testimonialsCount={testimonialsCount || 0}
       />
     </AdminLayout>
   );

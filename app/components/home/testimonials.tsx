@@ -14,9 +14,15 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { testimonials } from "@/data/testimonials";
+import { testimonials as fallbackTestimonials, type Testimonial } from "@/data/testimonials";
 
-export default function TestimonialsSection() {
+type TestimonialsSectionProps = {
+  testimonials?: Testimonial[];
+};
+
+export default function TestimonialsSection({
+  testimonials = fallbackTestimonials,
+}: TestimonialsSectionProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);

@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  MessageSquareQuote,
   Package,
   Plus,
   Users,
@@ -37,6 +38,8 @@ const BREADCRUMBS: Record<string, { label: string; parent?: string }> = {
   "/admin":                   { label: "Dashboard" },
   "/admin/categories":        { label: "Categories",      parent: "/admin" },
   "/admin/create-categories": { label: "Create Category", parent: "/admin/categories" },
+  "/admin/testimonials":        { label: "Testimonials",      parent: "/admin" },
+  "/admin/create-testimonials": { label: "Create Testimonial", parent: "/admin/testimonials" },
 };
 
 function useBreadcrumbs(pathname: string) {
@@ -67,6 +70,13 @@ const NAV: NavItem[] = [
     children: [
       { title: "View All",   href: "/admin/categories" },
       { title: "Create New", href: "/admin/create-categories" },
+    ],
+  },
+  {
+    title: "Testimonials", href: "/admin/testimonials", icon: MessageSquareQuote,
+    children: [
+      { title: "View All",   href: "/admin/testimonials" },
+      { title: "Create New", href: "/admin/create-testimonials" },
     ],
   },
   { title: "Products", href: "#", icon: Package, disabled: true, children: [] },
@@ -275,7 +285,7 @@ function SidebarContent({
                                   : "text-[#665b4f] hover:bg-[#fcfaf7] hover:text-[#1b1511]"
                               }`}
                             >
-                              {child.href === "/admin/create-categories" && (
+                              {child.href.startsWith("/admin/create-") && (
                                 <Plus className="h-3 w-3 shrink-0 text-[#a69280]" />
                               )}
                               {child.title}

@@ -33,7 +33,7 @@ export default function TestimonialCard({
         <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-[#eadfd5] ring-1 ring-[#e1d2c5]">
           <Image
             src={testimonial.image}
-            alt={`${testimonial.name} portrait`}
+            alt={testimonial.imageAlt ?? `${testimonial.name} portrait`}
             fill
             sizes="64px"
             className="object-cover object-top"

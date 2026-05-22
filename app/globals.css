@@ -6,6 +6,28 @@
   .site-container {
     @apply mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-10;
   }
+
+  .haritham-toaster [data-sonner-toast] {
+    transition:
+      transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 240ms ease,
+      height 360ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 200ms ease,
+      filter 200ms ease;
+    will-change: transform, opacity;
+  }
+
+  .haritham-toaster [data-sonner-toast][data-mounted="true"] {
+    filter: none;
+  }
+
+  .haritham-toaster [data-sonner-toast][data-removed="true"] {
+    filter: blur(1px);
+  }
+
+  .haritham-toaster [data-close-button] svg {
+    pointer-events: none;
+  }
 }
 
 :root {

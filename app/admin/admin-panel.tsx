@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FolderOpen, Package, Users } from "lucide-react";
+import { FolderOpen, MessageSquareQuote, Package, Users } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -12,9 +12,10 @@ const supabase = createClient();
 type AdminPanelProps = {
   initialUserEmail: string;
   categoriesCount: number;
+  testimonialsCount: number;
 };
 
-const AdminPanel = ({ initialUserEmail, categoriesCount }: AdminPanelProps) => {
+const AdminPanel = ({ initialUserEmail, categoriesCount, testimonialsCount }: AdminPanelProps) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -42,12 +43,12 @@ const AdminPanel = ({ initialUserEmail, categoriesCount }: AdminPanelProps) => {
             Welcome back
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-[#665b4f]">
-            Manage your pottery website content, categories, products, and classes.
+            Manage your pottery website content, categories, testimonials, products, and classes.
           </p>
         </div>
 
         {/* Cards */}
-        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <Link
             href="/admin/categories"
             className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
@@ -68,6 +69,29 @@ const AdminPanel = ({ initialUserEmail, categoriesCount }: AdminPanelProps) => {
             </p>
             <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
               Manage Categories <span>→</span>
+            </div>
+          </Link>
+
+          <Link
+            href="/admin/testimonials"
+            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f5eee4] text-[#1b1511]">
+                <MessageSquareQuote className="h-7 w-7" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Testimonials</h2>
+                <p className="mt-1 text-sm text-[#665b4f]">
+                  {testimonialsCount} {testimonialsCount === 1 ? "testimonial" : "testimonials"}
+                </p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
+              Create and manage customer stories shown in the community section.
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
+              Manage Testimonials <span>→</span>
             </div>
           </Link>
 

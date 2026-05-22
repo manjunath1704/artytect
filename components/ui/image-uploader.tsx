@@ -90,6 +90,13 @@ export function ImageUploader({
     setIsDragging(false);
   };
 
+  const handleChange = (selectedFile: File | File[]) => {
+    const nextFile = Array.isArray(selectedFile) ? selectedFile[0] : selectedFile;
+    if (nextFile) {
+      onChange(nextFile);
+    }
+  };
+
   return (
     <div className="space-y-2">
       {/* Label */}
@@ -113,7 +120,7 @@ export function ImageUploader({
           >
             {/* FileUploader renders its own wrapper; we style via className on the child */}
             <FileUploader
-              handleChange={onChange}
+              handleChange={handleChange}
               name={label}
               types={FILE_TYPES}
               onDraggingStateChange={setIsDragging}

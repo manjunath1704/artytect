@@ -1,8 +1,9 @@
 export type Testimonial = {
-  id: number;
+  id: number | string;
   name: string;
   location: string;
   image: string;
+  imageAlt?: string;
   rating: number;
   purchased: string;
   review: string;
