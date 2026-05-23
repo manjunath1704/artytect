@@ -660,7 +660,7 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
                     <tr key={blog.id} className="border-b border-[#e8ddd1] align-middle transition hover:bg-[#fcfaf7]">
                       <td className="p-3">
                         <div className="flex items-center gap-3">
-                          <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-[32px] border border-[#e8ddd1] bg-[#f5eee4]">
+                          <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-xl border border-[#e8ddd1] bg-[#f5eee4]">
                             {blog.featured_image ? <Image src={blog.featured_image} alt={blog.title} fill className="object-cover" /> : null}
                           </div>
                           <div>

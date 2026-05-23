@@ -42,7 +42,7 @@ type TestimonialsManagerProps = {
 };
 
 const inputClassName =
-  "mt-2 w-full border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
+  "mt-2 w-full border border-[#d9ccbc] rounded-[32px] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
 const ratingOptions: SelectOption[] = [
   { value: "5", label: "5 stars" },
   { value: "4", label: "4 stars" },

@@ -43,7 +43,7 @@ export function AppSelect<
       control: (base, state) => ({
         ...base,
         minHeight: 48,
-        borderRadius: 10,
+        borderRadius: 32,
         borderColor: invalid ? "#f87171" : state.isFocused ? "#b38d67" : "#d9ccbc",
         backgroundColor: state.isDisabled ? "#f5eee4" : "#fffdf9",
         boxShadow: state.isFocused ? "0 0 0 4px rgba(215, 182, 139, 0.2)" : "none",
