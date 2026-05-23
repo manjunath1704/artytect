@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import { Loader2, Lock, Mail } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,6 @@ const inputClassName =
   "mt-2 w-full border border-gray-300 rounded-[32px] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
 
 const AdminLoginForm = () => {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,11 +32,15 @@ const AdminLoginForm = () => {
         throw signInError;
       }
 
-      router.replace("/admin");
-      router.refresh();
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+
+      if (sessionError || !sessionData.session) {
+        throw sessionError ?? new Error("Signed in, but the session was not created.");
+      }
+
+      window.location.replace("/admin");
     } catch (signInError) {
       setError(signInError instanceof Error ? signInError.message : "Unable to sign in.");
-    } finally {
       setLoading(false);
     }
   };
@@ -134,4 +136,3 @@ const AdminLoginForm = () => {
 };
 
 export default AdminLoginForm;
-
