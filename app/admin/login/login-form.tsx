@@ -5,6 +5,7 @@ import { Loader2, Lock, Mail } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
+import Navbar from "@/app/components/home/navbar";
 
 const supabase = createClient();
 
@@ -46,6 +47,8 @@ const AdminLoginForm = () => {
   };
 
   return (
+    <>
+    <Navbar forceSolid/>
     <main className="min-h-[100svh] bg-[linear-gradient(180deg,#f6efe4_0%,#efe4d5_100%)] px-6 py-12 sm:px-8 lg:px-10">
       <div className="mx-auto flex min-h-[calc(100svh-6rem)] max-w-7xl items-center justify-center">
         <section className="grid w-full max-w-5xl gap-0 overflow-hidden rounded-[32px] bg-white shadow-md lg:grid-cols-[1.05fr_0.95fr]">
@@ -131,7 +134,7 @@ const AdminLoginForm = () => {
           </div>
         </section>
       </div>
-    </main>
+    </main></>
   );
 };
 

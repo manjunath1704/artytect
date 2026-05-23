@@ -98,7 +98,7 @@ const Navbar = ({
       className={[
         "sticky top-0 z-50 -mb-20 transition-colors duration-300",
         showSolid
-          ? "border-b border-black/8 bg-white/95 text-black shadow-[0_12px_40px_rgba(23,20,15,0.12)] backdrop-blur-md"
+          ? "border-b border-black/8 bg-white/95 text-black  backdrop-blur-md"
           : transparentIsDark
             ? "bg-transparent text-[#1b1511]"
             : "bg-transparent text-white",

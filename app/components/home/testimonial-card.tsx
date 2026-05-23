@@ -62,7 +62,7 @@ export default function TestimonialCard({
         ))}
       </div>
 
-      <p className="mt-4 flex-1 text-base font-display leading-7 text-[#2b211b]">
+      <p className="mt-4 flex-1 text-sm leading-6 text-[#2b211b]">
         {testimonial.review}
       </p>
 
