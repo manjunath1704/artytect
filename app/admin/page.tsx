@@ -42,6 +42,10 @@ export default async function AdminPage() {
     .from('crafted_moments_items')
     .select('*', { count: 'exact', head: true });
 
+  const { count: blogsCount } = await supabase
+    .from('blogs')
+    .select('*', { count: 'exact', head: true });
+
   return (
     <AdminLayout userEmail={data.user.email ?? ""}>
       <AdminPanel
@@ -53,6 +57,7 @@ export default async function AdminPage() {
         aboutSectionsCount={aboutSectionsCount || 0}
         processStepsCount={processStepsCount || 0}
         craftedMomentsCount={craftedMomentsCount || 0}
+        blogsCount={blogsCount || 0}
       />
     </AdminLayout>
   );

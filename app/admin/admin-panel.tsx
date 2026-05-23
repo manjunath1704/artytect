@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FolderOpen, HeartHandshake, Home, Mail, MessageSquareQuote, Package, Route, Sparkles, Users } from "lucide-react";
+import { FolderOpen, HeartHandshake, Home, Mail, MessageSquareQuote, Newspaper, Package, Route, Sparkles, Users,ChevronRight } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -18,9 +18,10 @@ type AdminPanelProps = {
   aboutSectionsCount: number;
   processStepsCount: number;
   craftedMomentsCount: number;
+  blogsCount: number;
 };
 
-const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCount, testimonialsCount, aboutSectionsCount, processStepsCount, craftedMomentsCount }: AdminPanelProps) => {
+const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCount, testimonialsCount, aboutSectionsCount, processStepsCount, craftedMomentsCount, blogsCount }: AdminPanelProps) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -72,8 +73,8 @@ const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCoun
             <p className="mt-4 text-sm leading-7 text-[#665b4f]">
               Edit homepage hero copy, button, poster, and video backgrounds.
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
-              Manage Hero <span>→</span>
+            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
+              Manage hero <ChevronRight className="text-xs" />
             </div>
           </Link>
 
@@ -95,8 +96,9 @@ const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCoun
             <p className="mt-4 text-sm leading-7 text-[#665b4f]">
               Review, filter, export, and delete contact form submissions.
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
-              Manage Messages <span>→</span>
+          
+            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
+              Manage Messages <ChevronRight className="text-xs" />
             </div>
           </Link>
 
@@ -118,8 +120,9 @@ const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCoun
             <p className="mt-4 text-sm leading-7 text-[#665b4f]">
               Manage product categories, create new ones, and organize your collections.
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
-              Manage Categories <span>→</span>
+           
+            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
+              Manage Categories <ChevronRight className="text-xs" />
             </div>
           </Link>
 
@@ -141,8 +144,8 @@ const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCoun
             <p className="mt-4 text-sm leading-7 text-[#665b4f]">
               Create and manage customer stories shown in the community section.
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
-              Manage Testimonials <span>→</span>
+            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
+              Manage Testimonials <ChevronRight className="text-xs" />
             </div>
           </Link>
 
@@ -164,8 +167,8 @@ const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCoun
             <p className="mt-4 text-sm leading-7 text-[#665b4f]">
               Manage the homepage creator story and call-to-action.
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
-              Manage About <span>→</span>
+            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
+              Manage About <ChevronRight className="text-xs" />
             </div>
           </Link>
 
@@ -187,8 +190,8 @@ const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCoun
             <p className="mt-4 text-sm leading-7 text-[#665b4f]">
               Edit section titles and manage the process step collection.
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
-              Manage Process <span>→</span>
+            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
+              Manage Process <ChevronRight className="text-xs" />
             </div>
           </Link>
 
@@ -210,8 +213,31 @@ const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCoun
             <p className="mt-4 text-sm leading-7 text-[#665b4f]">
               Edit the studio moments header and manage image or video tiles.
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1b1511] transition group-hover:gap-3">
-              Manage Crafted Moments <span>→</span>
+            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
+              Manage Crafted Moments <ChevronRight className="text-xs" />
+            </div>
+          </Link>
+
+          <Link
+            href="/admin/blogs"
+            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#fff7e8] text-[#1b1511]">
+                <Newspaper className="h-7 w-7" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Blogs</h2>
+                <p className="mt-1 text-sm text-[#665b4f]">
+                  {blogsCount} {blogsCount === 1 ? "blog" : "blogs"}
+                </p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
+              Create, edit, publish, and organize studio journal stories.
+            </p>
+            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
+              Manage Blogs <ChevronRight className="text-xs" />
             </div>
           </Link>
 

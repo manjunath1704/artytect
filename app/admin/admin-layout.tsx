@@ -6,6 +6,7 @@ import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
+  Newspaper,
   HeartHandshake,
   Home,
   FolderOpen,
@@ -51,6 +52,7 @@ const BREADCRUMBS: Record<string, { label: string; parent?: string }> = {
   "/admin/create-about-sections": { label: "Create About Section", parent: "/admin/about-sections" },
   "/admin/process": { label: "Process", parent: "/admin" },
   "/admin/crafted-moments": { label: "Crafted Moments", parent: "/admin" },
+  "/admin/blogs": { label: "Blogs", parent: "/admin" },
 };
 
 function useBreadcrumbs(pathname: string) {
@@ -101,6 +103,7 @@ const NAV: NavItem[] = [
   },
   { title: "Process", href: "/admin/process", icon: Route, children: [] },
   { title: "Crafted Moments", href: "/admin/crafted-moments", icon: Sparkles, children: [] },
+  { title: "Blogs", href: "/admin/blogs", icon: Newspaper, children: [] },
   { title: "Products", href: "#", icon: Package, disabled: true, children: [] },
   { title: "Classes",  href: "#", icon: Users,   disabled: true, children: [] },
 ];

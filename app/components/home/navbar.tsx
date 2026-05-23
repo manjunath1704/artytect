@@ -11,6 +11,7 @@ const navItems = [
   { label: "Categories", href: "/categories" },
   { label: "Products", href: "/products" },
   { label: "Classes", href: "/classes" },
+  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -83,6 +84,10 @@ const Navbar = ({
 
     if (href === "/classes") {
       return pathname.startsWith("/classes");
+    }
+
+    if (href === "/blog") {
+      return pathname.startsWith("/blog");
     }
 
     return pathname === href;

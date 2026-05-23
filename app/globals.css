@@ -66,3 +66,77 @@ h6 {
 ::selection {
   background: rgba(157, 103, 69, 0.2);
 }
+
+.blog-content {
+  font-size: 1rem;
+  line-height: 1.85;
+}
+
+.blog-content > * + * {
+  margin-top: 1.1rem;
+}
+
+.blog-content h1,
+.blog-content h2,
+.blog-content h3 {
+  color: #1b1511;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.blog-content h1 {
+  font-size: 2.5rem;
+}
+
+.blog-content h2 {
+  font-size: 2rem;
+}
+
+.blog-content h3 {
+  font-size: 1.5rem;
+}
+
+.blog-content ul,
+.blog-content ol {
+  padding-left: 1.25rem;
+}
+
+.blog-content ul {
+  list-style: disc;
+}
+
+.blog-content ol {
+  list-style: decimal;
+}
+
+.blog-content a {
+  color: #8a5f3b;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.blog-content blockquote {
+  border-left: 3px solid #d7b68b;
+  color: #665b4f;
+  padding-left: 1rem;
+}
+
+.blog-content pre {
+  overflow-x: auto;
+  border-radius: 8px;
+  background: #1b1511;
+  color: #f8f2e8;
+  padding: 1rem;
+}
+
+.blog-content code {
+  border-radius: 6px;
+  background: #f5eee4;
+  padding: 0.15rem 0.35rem;
+}
+
+.blog-content pre code {
+  background: transparent;
+  padding: 0;
+}
