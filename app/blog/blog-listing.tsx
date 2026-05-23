@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Search, Tag, X } from "lucide-react";
+import { ArrowUpRight, Search, Tag, X } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Pagination } from "@/components/ui/pagination";
@@ -69,24 +69,25 @@ export default function BlogListing({ blogs }: BlogListingProps) {
   };
 
   return (
-    <main className="bg-[#fbf8f3] text-[#1b1511]">
-      <section className="site-container pb-10 pt-32 sm:pt-36">
-        <div className="border-b border-black/10 pb-6">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#9a8d82]">
-            Journal
-          </p>
-          <h1 className="mt-3 text-5xl tracking-[-0.04em] sm:text-6xl">
-            Notes from the studio
-          </h1>
-          <p className="mt-4 max-w-2xl text-base leading-8 text-[#665b4f]">
-            Stories on ceramic craft, material experiments, studio rituals, and the quiet details behind handmade earthware.
+    <main className="bg-[#fbf8f4] text-[#1b1511]">
+      <section id="stories" className="site-container py-16 md:py-24">
+        <div className="mb-10 grid gap-6 border-b border-[#d8cabd] pb-8 md:grid-cols-[0.8fr_1fr] md:items-end">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9a6b4e]">
+              Read the journal
+            </p>
+            <h2 className="mt-3 max-w-2xl text-4xl font-display uppercase leading-none tracking-normal text-[#1b1511] sm:text-5xl">
+              Stories in clay
+            </h2>
+          </div>
+          <p className="max-w-2xl text-sm leading-7 text-[#665b4f] md:justify-self-end">
+            Filter studio notes by topic, search for materials or techniques,
+            and keep exploring without leaving the public site rhythm.
           </p>
         </div>
-      </section>
 
-      <section className="site-container pb-16">
-        <div className="mb-10 rounded-[10px] bg-[#fcfaf7] p-4 shadow-sm md:p-5">
-          <div className="grid gap-4 lg:grid-cols-[1fr_220px_220px_auto] lg:items-end">
+        <div className="mb-10 border-b border-[#d8cabd] pb-6">
+          <div className="grid gap-4 lg:grid-cols-[1fr_210px_190px_auto] lg:items-end">
             <label className="block">
               <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a817a]">
                 Search
@@ -97,7 +98,7 @@ export default function BlogListing({ blogs }: BlogListingProps) {
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Search title, tag, or author"
-                  className="h-12 rounded-full border border-black/10 bg-white pl-11 pr-4 text-sm outline-none transition placeholder:text-[#a59b93] focus-visible:border-[#1b1511] focus-visible:ring-0"
+                  className="h-12 rounded-[10px] border border-[#d9ccbc] bg-[#fffdf9] pl-11 pr-4 text-sm outline-none transition placeholder:text-[#a59b93] focus-visible:border-[#1b1511] focus-visible:ring-0"
                 />
               </span>
             </label>
@@ -109,7 +110,7 @@ export default function BlogListing({ blogs }: BlogListingProps) {
               <select
                 value={category}
                 onChange={(event) => setCategory(event.target.value)}
-                className="h-12 w-full rounded-full border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#1b1511]"
+                className="h-12 w-full rounded-[10px] border border-[#d9ccbc] bg-[#fffdf9] px-4 text-sm outline-none transition focus:border-[#1b1511]"
               >
                 {categories.map((item) => (
                   <option key={item} value={item}>
@@ -126,7 +127,7 @@ export default function BlogListing({ blogs }: BlogListingProps) {
               <select
                 value={sort}
                 onChange={(event) => setSort(event.target.value as "latest" | "oldest")}
-                className="h-12 w-full rounded-full border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#1b1511]"
+                className="h-12 w-full rounded-[10px] border border-[#d9ccbc] bg-[#fffdf9] px-4 text-sm outline-none transition focus:border-[#1b1511]"
               >
                 <option value="latest">Latest first</option>
                 <option value="oldest">Oldest first</option>
@@ -137,7 +138,7 @@ export default function BlogListing({ blogs }: BlogListingProps) {
               type="button"
               onClick={clearFilters}
               disabled={!hasActiveFilters}
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:border-[#1b1511] disabled:cursor-not-allowed disabled:opacity-40"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#d9ccbc] bg-[#fffdf9] px-4 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:border-[#1b1511] hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
             >
               <X className="h-4 w-4" />
               Clear
@@ -145,98 +146,109 @@ export default function BlogListing({ blogs }: BlogListingProps) {
           </div>
         </div>
 
-        {loading ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="rounded-[10px] bg-[#fffdf9] p-4 shadow-sm">
-                <Skeleton className="aspect-[4/3] rounded-[10px] bg-[#eee3d6]" />
-                <Skeleton className="mt-5 h-5 w-3/4 bg-[#eee3d6]" />
-                <Skeleton className="mt-3 h-4 w-full bg-[#eee3d6]" />
-                <Skeleton className="mt-2 h-4 w-2/3 bg-[#eee3d6]" />
-              </div>
-            ))}
-          </div>
-        ) : visibleBlogs.length ? (
-          <>
-            <motion.div layout className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <AnimatePresence mode="popLayout">
-                {visibleBlogs.map((blog) => (
-                  <motion.article
-                    key={blog.id}
-                    layout
-                    initial={{ opacity: 0, y: 18 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 18 }}
-                    transition={{ duration: 0.25 }}
-                  >
-                    <Link
-                      href={`/blog/${blog.slug}`}
-                      className="group block h-full overflow-hidden rounded-[10px] bg-[#fffdf9] shadow-sm transition-shadow hover:shadow-md"
-                    >
-                      <div className="relative aspect-[4/3] overflow-hidden bg-[#efe5d9]">
-                        {blog.featured_image ? (
-                          <Image
-                            src={blog.featured_image}
-                            alt={blog.title}
-                            fill
-                            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                            className="object-cover transition duration-500 group-hover:scale-105"
-                          />
-                        ) : (
-                        <div className="flex h-full items-center justify-center text-sm text-[#8a7765]">
-                            Studio Journal
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(27,21,17,0.02),rgba(27,21,17,0.08)_45%,rgba(27,21,17,0.42))] opacity-70 transition group-hover:opacity-90" />
-                        <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-3 text-white">
-                          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#ead7c3]">
-                            {blog.category}
-                          </p>
-                          <span className="text-[10px] font-semibold uppercase tracking-[0.18em]">
-                            {formatBlogDate(blog.published_at)}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="p-5">
-                        <div className="flex flex-wrap items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a6b4e]">
-                          <span className="inline-flex items-center gap-1.5">
-                            <Tag className="h-3.5 w-3.5" />
-                            {normalizeBlogTags(blog.tags)[0] ?? "Studio"}
-                          </span>
-                        </div>
-                        <h2 className="mt-3 text-xl leading-tight tracking-normal md:text-2xl">
-                          {blog.title}
-                        </h2>
-                        <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#7d746d]">
-                          {blog.short_description}
-                        </p>
-                        <p className="mt-4 inline-flex h-10 items-center rounded-full border border-[#ded3c8] bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1b1511] transition group-hover:border-[#1b1511]">
-                          Read article
-                        </p>
-                      </div>
-                    </Link>
-                  </motion.article>
-                ))}
-              </AnimatePresence>
-            </motion.div>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7765]">
+          <p>
+            Showing {visibleBlogs.length ? (currentPage - 1) * PAGE_SIZE + 1 : 0}-
+            {Math.min(currentPage * PAGE_SIZE, filteredBlogs.length)} of {filteredBlogs.length}
+          </p>
+          <p>{category === "all" ? "All categories" : category}</p>
+        </div>
 
-            {totalPages > 1 && (
-              <div className="mt-10">
-                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="rounded-[10px] border border-dashed border-[#d9ccbc] bg-[#fcfaf7] px-6 py-16 text-center">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[#8a7765]">
-              No stories found
-            </p>
-            <h2 className="mt-3 text-3xl tracking-[-0.03em]">The shelf is quiet for now.</h2>
-            <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#665b4f]">
-              Try a different search, category, or sort order.
-            </p>
-          </div>
-        )}
+        <div className="min-h-[720px]">
+          {loading ? (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="rounded-[10px] bg-[#fffdf9] p-4 shadow-sm">
+                  <Skeleton className="aspect-[4/3] rounded-[10px] bg-[#eee3d6]" />
+                  <Skeleton className="mt-5 h-5 w-3/4 bg-[#eee3d6]" />
+                  <Skeleton className="mt-3 h-4 w-full bg-[#eee3d6]" />
+                  <Skeleton className="mt-2 h-4 w-2/3 bg-[#eee3d6]" />
+                </div>
+              ))}
+            </div>
+          ) : visibleBlogs.length ? (
+            <>
+              <motion.div layout className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <AnimatePresence mode="popLayout">
+                  {visibleBlogs.map((blog) => (
+                    <motion.article
+                      key={blog.id}
+                      layout
+                      initial={{ opacity: 0, y: 18 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 18 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <Link
+                        href={`/blog/${blog.slug}`}
+                        className="group block h-full overflow-hidden rounded-[32px] bg-[#fffdf9] shadow-sm transition-shadow duration-300 hover:shadow-md"
+                      >
+                        <div className="relative aspect-[4/3] overflow-hidden bg-[#efe5d9]">
+                          {blog.featured_image ? (
+                            <Image
+                              src={blog.featured_image}
+                              alt={blog.title}
+                              fill
+                              sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="flex h-full items-center justify-center text-sm text-[#8a7765]">
+                              Studio Journal
+                            </div>
+                          )}
+                          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(27,21,17,0.02),rgba(27,21,17,0.08)_45%,rgba(27,21,17,0.42))] opacity-70 transition group-hover:opacity-90" />
+                          <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-3 text-white">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#ead7c3]">
+                              {blog.category}
+                            </p>
+                            <span className="text-[10px] font-semibold uppercase tracking-[0.18em]">
+                              {formatBlogDate(blog.published_at)}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="p-5">
+                          <div className="flex flex-wrap items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a6b4e]">
+                            <span className="inline-flex items-center gap-1.5">
+                              <Tag className="h-3.5 w-3.5" />
+                              {normalizeBlogTags(blog.tags)[0] ?? "Studio"}
+                            </span>
+                          </div>
+                          <h3 className="mt-3 text-xl font-display uppercase leading-none tracking-normal md:text-2xl">
+                            {blog.title}
+                          </h3>
+                          <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#7d746d]">
+                            {blog.short_description}
+                          </p>
+                          <p className="mt-4 inline-flex h-10 items-center gap-2 rounded-full border border-[#ded3c8] bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1b1511] transition group-hover:border-[#1b1511]">
+                            Read article
+                            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                          </p>
+                        </div>
+                      </Link>
+                    </motion.article>
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+
+              {totalPages > 1 && (
+                <div className="mt-10">
+                  <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="rounded-[10px] border border-dashed border-[#d9ccbc] bg-[#fcfaf7] px-6 py-16 text-center">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[#8a7765]">
+                No stories found
+              </p>
+              <h2 className="mt-3 text-3xl tracking-[-0.03em]">The shelf is quiet for now.</h2>
+              <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#665b4f]">
+                Try a different search, category, or sort order.
+              </p>
+            </div>
+          )}
+        </div>
       </section>
     </main>
   );
