@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CalendarDays, Search, Tag } from "lucide-react";
+import { Search, Tag, X } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Pagination } from "@/components/ui/pagination";
@@ -57,63 +57,99 @@ export default function BlogListing({ blogs }: BlogListingProps) {
   }, [blogs, category, query, sort]);
 
   const totalPages = Math.max(1, Math.ceil(filteredBlogs.length / PAGE_SIZE));
-  const visibleBlogs = filteredBlogs.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const currentPage = Math.min(page, totalPages);
+  const visibleBlogs = filteredBlogs.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  const hasActiveFilters = query.trim() || category !== "all" || sort !== "latest";
+
+  const clearFilters = () => {
+    setQuery("");
+    setCategory("all");
+    setSort("latest");
+    setPage(1);
+  };
 
   return (
     <main className="bg-[#fbf8f3] text-[#1b1511]">
       <section className="site-container pb-10 pt-32 sm:pt-36">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-[#8a7765]">
-          Journal
-        </p>
-        <div className="mt-4 grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
-          <h1 className="text-5xl tracking-[-0.04em] sm:text-6xl">
+        <div className="border-b border-black/10 pb-6">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#9a8d82]">
+            Journal
+          </p>
+          <h1 className="mt-3 text-5xl tracking-[-0.04em] sm:text-6xl">
             Notes from the studio
           </h1>
-          <p className="max-w-2xl text-base leading-8 text-[#665b4f] lg:justify-self-end">
+          <p className="mt-4 max-w-2xl text-base leading-8 text-[#665b4f]">
             Stories on ceramic craft, material experiments, studio rituals, and the quiet details behind handmade earthware.
           </p>
         </div>
       </section>
 
       <section className="site-container pb-16">
-        <div className="mb-8 grid gap-4 rounded-[8px] border border-[#e8ddd1] bg-white p-4 shadow-sm md:grid-cols-[1fr_220px_180px]">
-          <label className="relative block">
-            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7765]" />
-            <Input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search blogs"
-              className="h-12 rounded-[8px] border-[#d9ccbc] bg-[#fcfaf7] pl-11 text-[#1b1511] focus-visible:ring-[#d7b68b]/30"
-            />
-          </label>
+        <div className="mb-10 rounded-[10px] bg-[#fcfaf7] p-4 shadow-sm md:p-5">
+          <div className="grid gap-4 lg:grid-cols-[1fr_220px_220px_auto] lg:items-end">
+            <label className="block">
+              <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a817a]">
+                Search
+              </span>
+              <span className="relative block">
+                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9a8d82]" />
+                <Input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search title, tag, or author"
+                  className="h-12 rounded-full border border-black/10 bg-white pl-11 pr-4 text-sm outline-none transition placeholder:text-[#a59b93] focus-visible:border-[#1b1511] focus-visible:ring-0"
+                />
+              </span>
+            </label>
 
-          <select
-            value={category}
-            onChange={(event) => setCategory(event.target.value)}
-            className="h-12 rounded-[8px] border border-[#d9ccbc] bg-[#fcfaf7] px-4 text-sm text-[#1b1511] outline-none transition focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
-          >
-            {categories.map((item) => (
-              <option key={item} value={item}>
-                {item === "all" ? "All categories" : item}
-              </option>
-            ))}
-          </select>
+            <label className="block">
+              <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a817a]">
+                Category
+              </span>
+              <select
+                value={category}
+                onChange={(event) => setCategory(event.target.value)}
+                className="h-12 w-full rounded-full border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#1b1511]"
+              >
+                {categories.map((item) => (
+                  <option key={item} value={item}>
+                    {item === "all" ? "All categories" : item}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-          <select
-            value={sort}
-            onChange={(event) => setSort(event.target.value as "latest" | "oldest")}
-            className="h-12 rounded-[8px] border border-[#d9ccbc] bg-[#fcfaf7] px-4 text-sm text-[#1b1511] outline-none transition focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
-          >
-            <option value="latest">Latest first</option>
-            <option value="oldest">Oldest first</option>
-          </select>
+            <label className="block">
+              <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a817a]">
+                Sort
+              </span>
+              <select
+                value={sort}
+                onChange={(event) => setSort(event.target.value as "latest" | "oldest")}
+                className="h-12 w-full rounded-full border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#1b1511]"
+              >
+                <option value="latest">Latest first</option>
+                <option value="oldest">Oldest first</option>
+              </select>
+            </label>
+
+            <button
+              type="button"
+              onClick={clearFilters}
+              disabled={!hasActiveFilters}
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:border-[#1b1511] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <X className="h-4 w-4" />
+              Clear
+            </button>
+          </div>
         </div>
 
         {loading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="rounded-[8px] border border-[#e8ddd1] bg-white p-4">
-                <Skeleton className="aspect-[4/3] rounded-[8px] bg-[#eee3d6]" />
+              <div key={index} className="rounded-[10px] bg-[#fffdf9] p-4 shadow-sm">
+                <Skeleton className="aspect-[4/3] rounded-[10px] bg-[#eee3d6]" />
                 <Skeleton className="mt-5 h-5 w-3/4 bg-[#eee3d6]" />
                 <Skeleton className="mt-3 h-4 w-full bg-[#eee3d6]" />
                 <Skeleton className="mt-2 h-4 w-2/3 bg-[#eee3d6]" />
@@ -135,7 +171,7 @@ export default function BlogListing({ blogs }: BlogListingProps) {
                   >
                     <Link
                       href={`/blog/${blog.slug}`}
-                      className="group block h-full overflow-hidden rounded-[8px] border border-[#e8ddd1] bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_55px_rgba(27,21,17,0.14)]"
+                      className="group block h-full overflow-hidden rounded-[10px] bg-[#fffdf9] shadow-sm transition-shadow hover:shadow-md"
                     >
                       <div className="relative aspect-[4/3] overflow-hidden bg-[#efe5d9]">
                         {blog.featured_image ? (
@@ -147,29 +183,34 @@ export default function BlogListing({ blogs }: BlogListingProps) {
                             className="object-cover transition duration-500 group-hover:scale-105"
                           />
                         ) : (
-                          <div className="flex h-full items-center justify-center text-sm text-[#8a7765]">
+                        <div className="flex h-full items-center justify-center text-sm text-[#8a7765]">
                             Studio Journal
                           </div>
                         )}
-                      </div>
-                      <div className="p-5">
-                        <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.16em] text-[#8a7765]">
-                          <span className="inline-flex items-center gap-1.5">
-                            <CalendarDays className="h-3.5 w-3.5" />
+                        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(27,21,17,0.02),rgba(27,21,17,0.08)_45%,rgba(27,21,17,0.42))] opacity-70 transition group-hover:opacity-90" />
+                        <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-3 text-white">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#ead7c3]">
+                            {blog.category}
+                          </p>
+                          <span className="text-[10px] font-semibold uppercase tracking-[0.18em]">
                             {formatBlogDate(blog.published_at)}
                           </span>
+                        </div>
+                      </div>
+                      <div className="p-5">
+                        <div className="flex flex-wrap items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a6b4e]">
                           <span className="inline-flex items-center gap-1.5">
                             <Tag className="h-3.5 w-3.5" />
-                            {blog.category}
+                            {normalizeBlogTags(blog.tags)[0] ?? "Studio"}
                           </span>
                         </div>
-                        <h2 className="mt-3 text-2xl leading-tight tracking-[-0.03em]">
+                        <h2 className="mt-3 text-xl leading-tight tracking-normal md:text-2xl">
                           {blog.title}
                         </h2>
-                        <p className="mt-3 text-sm leading-7 text-[#665b4f]">
+                        <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#7d746d]">
                           {blog.short_description}
                         </p>
-                        <p className="mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-[#1b1511]">
+                        <p className="mt-4 inline-flex h-10 items-center rounded-full border border-[#ded3c8] bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1b1511] transition group-hover:border-[#1b1511]">
                           Read article
                         </p>
                       </div>
@@ -181,12 +222,12 @@ export default function BlogListing({ blogs }: BlogListingProps) {
 
             {totalPages > 1 && (
               <div className="mt-10">
-                <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
               </div>
             )}
           </>
         ) : (
-          <div className="rounded-[8px] border border-dashed border-[#d7b68b] bg-white px-6 py-16 text-center">
+          <div className="rounded-[10px] border border-dashed border-[#d9ccbc] bg-[#fcfaf7] px-6 py-16 text-center">
             <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[#8a7765]">
               No stories found
             </p>

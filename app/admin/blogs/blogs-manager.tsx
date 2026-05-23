@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FileUploader } from "react-drag-drop-files";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Bold,
@@ -23,13 +22,13 @@ import {
   Quote,
   Search,
   Trash2,
-  UploadCloud,
   X,
 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
+import { ImageUploader } from "@/components/ui/image-uploader";
 import { Input } from "@/components/ui/input";
 import { Pagination } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -76,8 +75,8 @@ const emptyForm: FormState = {
 
 const PAGE_SIZE = 8;
 const inputClassName =
-  "mt-2 h-11 rounded-[8px] border-[#d9ccbc] bg-white text-[#1b1511] focus-visible:ring-[#d7b68b]/30";
-const labelClassName = "text-xs font-semibold uppercase tracking-[0.18em] text-[#8a7765]";
+  "mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
+const labelClassName = "text-sm font-medium text-[#352a21]";
 
 const toDateTimeLocal = (value: string | null) => {
   if (!value) return "";
@@ -96,9 +95,7 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [removeExistingImage, setRemoveExistingImage] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [saving, setSaving] = useState(false);
   const [loadingTable, setLoadingTable] = useState(false);
   const [viewBlog, setViewBlog] = useState<Blog | null>(null);
@@ -137,13 +134,6 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
     const timer = window.setTimeout(() => setLoadingTable(false), 220);
     return () => window.clearTimeout(timer);
   }, [query, categoryFilter, statusFilter, dateFilter, sort]);
-
-  useEffect(() => {
-    if (!imageFile) return;
-    const url = URL.createObjectURL(imageFile);
-    setImagePreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [imageFile]);
 
   useEffect(() => {
     if (editorRef.current && editorRef.current.innerHTML !== form.content) {
@@ -185,14 +175,13 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
   }, [blogs, categoryFilter, dateFilter, query, sort, statusFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filteredBlogs.length / PAGE_SIZE));
-  const visibleBlogs = filteredBlogs.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const currentPage = Math.min(page, totalPages);
+  const visibleBlogs = filteredBlogs.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const openCreateForm = () => {
     setForm(emptyForm);
     setImageFile(null);
-    setImagePreview(null);
     setRemoveExistingImage(false);
-    setUploadProgress(0);
     setIsFormOpen(true);
   };
 
@@ -213,9 +202,7 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
       featured_image: blog.featured_image,
     });
     setImageFile(null);
-    setImagePreview(null);
     setRemoveExistingImage(false);
-    setUploadProgress(0);
     setIsFormOpen(true);
   };
 
@@ -223,9 +210,7 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
     setIsFormOpen(false);
     setForm(emptyForm);
     setImageFile(null);
-    setImagePreview(null);
     setRemoveExistingImage(false);
-    setUploadProgress(0);
   };
 
   const updateTitle = (title: string) => {
@@ -258,14 +243,11 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
     if (!selectedFile) return;
     setImageFile(selectedFile);
     setRemoveExistingImage(false);
-    setUploadProgress(0);
   };
 
   const removeImage = () => {
     setImageFile(null);
-    setImagePreview(null);
     setRemoveExistingImage(true);
-    setUploadProgress(0);
   };
 
   const handleSubmit = async () => {
@@ -275,15 +257,7 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
     }
 
     setSaving(true);
-    setUploadProgress(imageFile ? 8 : 0);
     const toastId = toast.loading(editing ? "Updating blog..." : "Creating blog...");
-    let progressTimer: number | undefined;
-
-    if (imageFile) {
-      progressTimer = window.setInterval(() => {
-        setUploadProgress((value) => Math.min(value + 14, 92));
-      }, 180);
-    }
 
     try {
       const data = new FormData();
@@ -308,7 +282,6 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
       const result = await response.json();
       if (!response.ok) throw new Error(result?.error ?? "Unable to save blog.");
 
-      setUploadProgress(imageFile ? 100 : 0);
       setBlogs((current) =>
         editing
           ? current.map((blog) => (blog.id === result.blog.id ? result.blog : blog))
@@ -319,7 +292,6 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Unable to save blog.", { id: toastId });
     } finally {
-      if (progressTimer) window.clearInterval(progressTimer);
       setSaving(false);
     }
   };
@@ -377,7 +349,7 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
   return (
     <div className="px-6 py-8 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
-        <section className="rounded-[8px] bg-white p-6 shadow-sm sm:p-8">
+        <section className="rounded-[32px] bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-[#8a7765]">
@@ -407,7 +379,7 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 18 }}
-              className="mt-6 rounded-[8px] bg-white p-6 shadow-sm sm:p-8"
+              className="mt-6 rounded-[32px] bg-white p-6 shadow-sm sm:p-8"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -446,13 +418,13 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
                     <textarea
                       value={form.short_description}
                       onChange={(event) => setForm((current) => ({ ...current, short_description: event.target.value }))}
-                      className="mt-2 min-h-24 w-full rounded-[8px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
+                      className="mt-2 min-h-24 w-full rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
                     />
                   </label>
 
                   <div>
                     <span className={labelClassName}>Rich Text Content</span>
-                    <div className="mt-2 overflow-hidden rounded-[8px] border border-[#d9ccbc]">
+                    <div className="mt-2 overflow-hidden rounded-[32px] border border-[#d9ccbc]">
                       <div className="flex flex-wrap gap-1 border-b border-[#e8ddd1] bg-[#fcfaf7] p-2">
                         {[
                           { icon: Bold, label: "Bold", command: "bold" },
@@ -470,16 +442,16 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
                               type="button"
                               title={item.label}
                               onClick={() => runEditorCommand(item.command, item.value)}
-                              className="flex h-9 w-9 items-center justify-center rounded-[8px] text-[#665b4f] transition hover:bg-[#f5eee4] hover:text-[#1b1511]"
+                              className="flex h-9 w-9 items-center justify-center rounded-[32px] text-[#665b4f] transition hover:bg-[#f5eee4] hover:text-[#1b1511]"
                             >
                               <Icon className="h-4 w-4" />
                             </button>
                           );
                         })}
-                        <button type="button" title="Link" onClick={insertLink} className="flex h-9 w-9 items-center justify-center rounded-[8px] text-[#665b4f] transition hover:bg-[#f5eee4] hover:text-[#1b1511]">
+                        <button type="button" title="Link" onClick={insertLink} className="flex h-9 w-9 items-center justify-center rounded-[32px] text-[#665b4f] transition hover:bg-[#f5eee4] hover:text-[#1b1511]">
                           <Link2 className="h-4 w-4" />
                         </button>
-                        <button type="button" title="Image" onClick={insertImage} className="flex h-9 w-9 items-center justify-center rounded-[8px] text-[#665b4f] transition hover:bg-[#f5eee4] hover:text-[#1b1511]">
+                        <button type="button" title="Image" onClick={insertImage} className="flex h-9 w-9 items-center justify-center rounded-[32px] text-[#665b4f] transition hover:bg-[#f5eee4] hover:text-[#1b1511]">
                           <ImageIcon className="h-4 w-4" />
                         </button>
                       </div>
@@ -523,45 +495,25 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
                   </div>
                 </div>
 
-                <aside className="rounded-[8px] border border-[#e8ddd1] bg-[#fcfaf7] p-4">
-                  <span className={labelClassName}>Featured Image Upload</span>
-                  <div className="mt-2">
-                    <FileUploader
-                      handleChange={handleImageChange}
-                      name="featured_image"
-                      types={["JPG", "JPEG", "PNG", "WEBP", "AVIF"]}
-                      hoverTitle="Drop image"
-                    >
-                      <div className="flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-[8px] border border-dashed border-[#cbb9a4] bg-white p-5 text-center transition hover:border-[#b38d67] hover:bg-[#fffaf2]">
-                        <UploadCloud className="h-8 w-8 text-[#8a7765]" />
-                        <p className="mt-3 text-sm font-medium text-[#1b1511]">Drop or choose featured image</p>
-                        <p className="mt-1 text-xs text-[#8a7765]">JPG, PNG, WEBP, or AVIF</p>
-                      </div>
-                    </FileUploader>
-                  </div>
+                <aside className="rounded-[32px] border border-[#e8ddd1] bg-[#fcfaf7] p-4">
+                  <ImageUploader
+                    label="Featured Image"
+                    hint={form.featured_image && !removeExistingImage ? "Choose a new image to replace the current one" : "Used on blog cards and the article header"}
+                    file={imageFile}
+                    onChange={handleImageChange}
+                    onRemove={removeImage}
+                  />
 
-                  {(imagePreview || (form.featured_image && !removeExistingImage)) && (
-                    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="mt-4 overflow-hidden rounded-[8px] border border-[#e8ddd1] bg-white">
-                      <div className="relative flex aspect-[4/3] items-center justify-center">
-                        <Image src={imagePreview || form.featured_image || ""} alt="Featured preview" fill className="object-contain p-2" />
+                  {form.featured_image && !imageFile && !removeExistingImage && (
+                    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="mt-4 overflow-hidden rounded-[32px] border border-[#e8ddd1] bg-white">
+                      <div className="relative h-52 bg-[#f5eee4]">
+                        <Image src={form.featured_image} alt="Current featured image" fill className="object-contain" />
                       </div>
-                      <button type="button" onClick={removeImage} className="flex w-full items-center justify-center gap-2 border-t border-[#e8ddd1] px-3 py-2 text-sm text-red-600 transition hover:bg-red-50">
+                      <button type="button" onClick={removeImage} className="flex w-full items-center justify-center gap-2 border-t border-[#e8ddd1] px-3 py-2 text-sm text-[#7a4d1d] transition hover:bg-[#faf4ea]">
                         <X className="h-4 w-4" />
-                        Remove image
+                        Remove current image
                       </button>
                     </motion.div>
-                  )}
-
-                  {imageFile && (
-                    <div className="mt-4">
-                      <div className="flex items-center justify-between text-xs text-[#665b4f]">
-                        <span>Upload progress</span>
-                        <span>{uploadProgress}%</span>
-                      </div>
-                      <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#e8ddd1]">
-                        <div className="h-full rounded-full bg-[#1b1511] transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
-                      </div>
-                    </div>
                   )}
 
                   <div className="mt-5 grid gap-4">
@@ -570,7 +522,7 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
                       <select
                         value={form.status}
                         onChange={(event) => setForm((current) => ({ ...current, status: event.target.value as BlogStatus }))}
-                        className="mt-2 h-11 w-full rounded-[8px] border border-[#d9ccbc] bg-white px-3 text-sm text-[#1b1511] outline-none focus:ring-4 focus:ring-[#d7b68b]/20"
+                        className="mt-2 h-11 w-full rounded-[32px] border border-[#d9ccbc] bg-white px-3 text-sm text-[#1b1511] outline-none focus:ring-4 focus:ring-[#d7b68b]/20"
                       >
                         <option value="draft">Draft</option>
                         <option value="published">Published</option>
@@ -591,43 +543,63 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
           )}
         </AnimatePresence>
 
-        <section className="mt-6 rounded-[8px] bg-white p-4 shadow-sm sm:p-6">
-          <div className="grid gap-3 xl:grid-cols-[1fr_180px_160px_160px_160px]">
-            <label className="relative block">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a7765]" />
-              <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search blogs" className="h-11 rounded-[8px] border-[#d9ccbc] bg-[#fcfaf7] pl-11" />
-            </label>
-            <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)} className="h-11 rounded-[8px] border border-[#d9ccbc] bg-[#fcfaf7] px-3 text-sm">
+        <section className="mt-8 rounded-[32px] bg-white p-6 shadow-sm sm:p-8">
+          <div className="mb-6 grid gap-3 xl:grid-cols-[1fr_180px_160px_160px_160px_150px]">
+            <div className="flex items-center gap-3 rounded-full border border-[#d9ccbc] bg-[#fcfaf7] px-4 py-3">
+              <Search className="h-5 w-5 text-[#8a7765]" />
+              <input
+                type="text"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search title, slug, author, category, or tags..."
+                className="min-w-0 flex-1 bg-transparent text-sm text-[#1b1511] outline-none placeholder:text-[#a69280]"
+              />
+            </div>
+            <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)} className="h-12 rounded-full border border-[#d9ccbc] bg-[#fcfaf7] px-4 text-sm text-[#1b1511] outline-none">
               <option value="all">All categories</option>
               {categories.map((item) => <option key={item} value={item}>{item}</option>)}
             </select>
-            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="h-11 rounded-[8px] border border-[#d9ccbc] bg-[#fcfaf7] px-3 text-sm">
+            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="h-12 rounded-full border border-[#d9ccbc] bg-[#fcfaf7] px-4 text-sm text-[#1b1511] outline-none">
               <option value="all">All statuses</option>
               <option value="published">Published</option>
               <option value="draft">Draft</option>
             </select>
-            <select value={dateFilter} onChange={(event) => setDateFilter(event.target.value)} className="h-11 rounded-[8px] border border-[#d9ccbc] bg-[#fcfaf7] px-3 text-sm">
+            <select value={dateFilter} onChange={(event) => setDateFilter(event.target.value)} className="h-12 rounded-full border border-[#d9ccbc] bg-[#fcfaf7] px-4 text-sm text-[#1b1511] outline-none">
               <option value="all">Any date</option>
               <option value="7">Last 7 days</option>
               <option value="30">Last 30 days</option>
             </select>
-            <select value={sort} onChange={(event) => setSort(event.target.value as "latest" | "oldest" | "title")} className="h-11 rounded-[8px] border border-[#d9ccbc] bg-[#fcfaf7] px-3 text-sm">
+            <select value={sort} onChange={(event) => setSort(event.target.value as "latest" | "oldest" | "title")} className="h-12 rounded-full border border-[#d9ccbc] bg-[#fcfaf7] px-4 text-sm text-[#1b1511] outline-none">
               <option value="latest">Latest</option>
               <option value="oldest">Oldest</option>
               <option value="title">Title A-Z</option>
             </select>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setQuery("");
+                setCategoryFilter("all");
+                setStatusFilter("all");
+                setDateFilter("all");
+                setSort("latest");
+              }}
+              className="h-12 rounded-full border-[#d9ccbc] bg-transparent text-[#1b1511] hover:bg-[#f5eee4]"
+            >
+              Clear filters
+            </Button>
           </div>
 
-          <div className="mt-5 max-h-[620px] overflow-auto rounded-[8px] border border-[#e8ddd1]">
-            <table className="min-w-[980px] w-full border-collapse text-left text-sm">
-              <thead className="sticky top-0 z-10 bg-[#f5eee4] text-xs uppercase tracking-[0.16em] text-[#8a7765]">
+          <div className="max-h-[620px] overflow-auto rounded-[32px] border border-[#e8ddd1]">
+            <table className="w-full min-w-[980px] border-collapse text-left text-sm">
+              <thead className="sticky top-0 z-10 bg-[#fcfaf7] shadow-[0_1px_0_#e8ddd1]">
                 <tr>
-                  <th className="px-4 py-3 font-semibold">Blog</th>
-                  <th className="px-4 py-3 font-semibold">Category</th>
-                  <th className="px-4 py-3 font-semibold">Author</th>
-                  <th className="px-4 py-3 font-semibold">Status</th>
-                  <th className="px-4 py-3 font-semibold">Published</th>
-                  <th className="px-4 py-3 font-semibold">Actions</th>
+                  <th className="p-3 text-left text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Blog</th>
+                  <th className="p-3 text-left text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Category</th>
+                  <th className="p-3 text-left text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Author</th>
+                  <th className="p-3 text-left text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Status</th>
+                  <th className="p-3 text-left text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Published</th>
+                  <th className="p-3 text-center text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -644,10 +616,10 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
                   ))
                 ) : visibleBlogs.length ? (
                   visibleBlogs.map((blog) => (
-                    <tr key={blog.id} className="border-t border-[#e8ddd1] align-middle transition hover:bg-[#fcfaf7]">
-                      <td className="px-4 py-4">
+                    <tr key={blog.id} className="border-b border-[#e8ddd1] align-middle transition hover:bg-[#fcfaf7]">
+                      <td className="p-3">
                         <div className="flex items-center gap-3">
-                          <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-[8px] bg-[#efe5d9]">
+                          <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-[32px] border border-[#e8ddd1] bg-[#f5eee4]">
                             {blog.featured_image ? <Image src={blog.featured_image} alt={blog.title} fill className="object-cover" /> : null}
                           </div>
                           <div>
@@ -656,9 +628,9 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-4 text-[#665b4f]">{blog.category}</td>
-                      <td className="px-4 py-4 text-[#665b4f]">{blog.author}</td>
-                      <td className="px-4 py-4">
+                      <td className="p-3 text-[#665b4f]">{blog.category}</td>
+                      <td className="p-3 text-[#665b4f]">{blog.author}</td>
+                      <td className="p-3">
                         <button
                           type="button"
                           onClick={() => toggleStatus(blog)}
@@ -671,24 +643,24 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
                           {blog.status === "published" ? "Published" : "Draft"}
                         </button>
                       </td>
-                      <td className="px-4 py-4 text-[#665b4f]">
+                      <td className="p-3 text-[#665b4f]">
                         <span className="inline-flex items-center gap-2">
                           <CalendarDays className="h-4 w-4" />
                           {formatBlogDate(blog.published_at)}
                         </span>
                       </td>
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-2">
-                          <button type="button" title="View details" onClick={() => setViewBlog(blog)} className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f5eee4] text-[#1b1511] transition hover:bg-[#e8ddd1]">
+                      <td className="p-3">
+                        <div className="flex items-center justify-center gap-2">
+                          <button type="button" title="View details" onClick={() => setViewBlog(blog)} className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#d9ccbc] text-[#1b1511] transition hover:bg-[#f5eee4]">
                             <Eye className="h-4 w-4" />
                           </button>
-                          <Link href={`/blog/${blog.slug}`} target="_blank" title="Open public blog" className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f5eee4] text-[#1b1511] transition hover:bg-[#e8ddd1]">
+                          <Link href={`/blog/${blog.slug}`} target="_blank" title="Open public blog" className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#d9ccbc] text-[#1b1511] transition hover:bg-[#f5eee4]">
                             <Search className="h-4 w-4" />
                           </Link>
-                          <button type="button" title="Edit blog" onClick={() => openEditForm(blog)} className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f5eee4] text-[#1b1511] transition hover:bg-[#e8ddd1]">
+                          <button type="button" title="Edit blog" onClick={() => openEditForm(blog)} className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#d9ccbc] text-[#1b1511] transition hover:bg-[#f5eee4]">
                             <Pencil className="h-4 w-4" />
                           </button>
-                          <button type="button" title="Delete blog" onClick={() => setDeleteTarget(blog)} className="flex h-9 w-9 items-center justify-center rounded-full bg-red-50 text-red-600 transition hover:bg-red-100">
+                          <button type="button" title="Delete blog" onClick={() => setDeleteTarget(blog)} className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#d9ccbc] text-[#7a4d1d] transition hover:bg-[#faf4ea]">
                             <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
@@ -707,9 +679,12 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
             </table>
           </div>
 
-          {totalPages > 1 && (
-            <div className="mt-5">
-              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+          {filteredBlogs.length > 0 && totalPages > 1 && (
+            <div className="mt-6 flex flex-col gap-4 border-t border-[#e8ddd1] pt-6 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-[#665b4f]">
+                Showing {(currentPage - 1) * PAGE_SIZE + 1} to {Math.min(currentPage * PAGE_SIZE, filteredBlogs.length)} of {filteredBlogs.length} blogs
+              </p>
+              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
             </div>
           )}
         </section>
@@ -718,7 +693,7 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
       <AnimatePresence>
         {viewBlog && (
           <motion.div className="fixed inset-0 z-50 bg-black/40 p-4 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 18 }} className="mx-auto mt-10 max-h-[86vh] max-w-3xl overflow-auto rounded-[8px] bg-white p-6 shadow-xl">
+            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 18 }} className="mx-auto mt-10 max-h-[86vh] max-w-3xl overflow-auto rounded-[32px] bg-white p-6 shadow-xl">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">{viewBlog.category}</p>
@@ -730,7 +705,7 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
                 </button>
               </div>
               {viewBlog.featured_image && (
-                <div className="relative mt-5 aspect-[16/9] overflow-hidden rounded-[8px] bg-[#efe5d9]">
+                <div className="relative mt-5 aspect-[16/9] overflow-hidden rounded-[32px] bg-[#efe5d9]">
                   <Image src={viewBlog.featured_image} alt={viewBlog.title} fill className="object-contain" />
                 </div>
               )}

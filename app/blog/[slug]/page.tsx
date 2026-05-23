@@ -87,7 +87,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
             </div>
           </header>
 
-          <div className="mt-10 overflow-hidden rounded-[8px] bg-[#efe5d9]">
+          <div className="mt-10 overflow-hidden rounded-[10px] bg-[#efe5d9]">
             {blog.featured_image ? (
               <div className="relative aspect-[16/9]">
                 <Image
@@ -108,10 +108,10 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
           <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,760px)_260px] lg:items-start">
             <div
-              className="blog-content rounded-[8px] bg-white p-6 text-[#2a211a] shadow-sm sm:p-8"
+              className="blog-content rounded-[10px] bg-white p-6 text-[#2a211a] shadow-sm sm:p-8"
               dangerouslySetInnerHTML={{ __html: blog.content }}
             />
-            <aside className="rounded-[8px] border border-[#e8ddd1] bg-white p-5 lg:sticky lg:top-28">
+            <aside className="rounded-[10px] border border-[#e8ddd1] bg-white p-5 lg:sticky lg:top-28">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">
                 Tags
               </p>

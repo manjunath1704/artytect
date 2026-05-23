@@ -5,6 +5,7 @@ import Navbar from "@/app/components/home/navbar";
 import { getPublishedBlogs } from "@/lib/blogs";
 
 import BlogListing from "./blog-listing";
+import BlogHero from "../components/blog/hero";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,8 @@ export default async function BlogPage() {
 
   return (
     <>
-      <Navbar forceSolid />
+      <Navbar  />
+      <BlogHero/>
       <BlogListing blogs={blogs} />
       <Footer />
     </>
