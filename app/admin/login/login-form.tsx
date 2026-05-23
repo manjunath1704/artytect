@@ -46,23 +46,18 @@ const AdminLoginForm = () => {
   return (
     <main className="min-h-[100svh] bg-[linear-gradient(180deg,#f6efe4_0%,#efe4d5_100%)] px-6 py-12 sm:px-8 lg:px-10">
       <div className="mx-auto flex min-h-[calc(100svh-6rem)] max-w-7xl items-center justify-center">
-        <section className="grid w-full max-w-5xl gap-0 overflow-hidden border border-[#dbcbb8] bg-white shadow-[0_24px_90px_rgba(23,20,15,0.12)] lg:grid-cols-[1.05fr_0.95fr]">
+        <section className="grid w-full max-w-5xl gap-0 overflow-hidden rounded-[32px] bg-white shadow-md lg:grid-cols-[1.05fr_0.95fr]">
           <div className="hidden bg-[radial-gradient(circle_at_top_left,rgba(179,141,103,0.2),transparent_36%),linear-gradient(160deg,#1b1511,#3a2d24)] p-10 text-[#f7efe4] lg:flex lg:flex-col lg:justify-between">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-[#d7b68b]">
                 Admin access
               </p>
               <h1 className="mt-6 max-w-md text-5xl leading-[0.95] tracking-[-0.05em]">
-                Sign in to manage categories and content.
+                Sign in to manage content.
               </h1>
-              <p className="mt-5 max-w-md text-base leading-8 text-[#e8d8c7]">
-                Use your Supabase email and password account to open the protected admin
-                panel.
-              </p>
+             
             </div>
-            <div className="text-sm text-[#ccb9a6]">
-              Make sure Email/Password auth is enabled in Supabase before signing in.
-            </div>
+            
           </div>
 
           <div className="p-6 sm:p-10 lg:p-12">
@@ -73,9 +68,7 @@ const AdminLoginForm = () => {
               <h2 className="mt-4 text-4xl tracking-[-0.04em] text-[#1b1511]">
                 Welcome back
               </h2>
-              <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-                Sign in to access the admin panel and create new categories.
-              </p>
+            
 
               <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
                 <label className="block text-sm font-medium text-[#352a21]">
