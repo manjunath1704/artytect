@@ -7,6 +7,7 @@ import { Film, Loader2, Pencil, Plus, Sparkles, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { AppSelect, type SelectOption } from "@/components/ui/app-select";
 import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { createClient } from "@/lib/supabase/client";
@@ -40,6 +41,10 @@ type CraftedMomentsManagerProps = {
 
 const inputClassName =
   "mt-2 w-full rounded-2xl border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
+const mediaTypeOptions: SelectOption<"image" | "video">[] = [
+  { value: "image", label: "Image" },
+  { value: "video", label: "Video" },
+];
 
 const emptyItem = {
   type: "image" as "image" | "video",
@@ -447,18 +452,22 @@ export default function CraftedMomentsManager({
               <div className="grid gap-5 sm:grid-cols-2">
                 <label className="block text-sm font-medium text-[#352a21]">
                   Type
-                  <select
-                    value={itemForm.type}
-                    onChange={(event) => setItemForm((current) => ({
-                      ...current,
-                      type: event.target.value === "video" ? "video" : "image",
-                      posterFile: event.target.value === "image" ? null : current.posterFile,
-                    }))}
-                    className={inputClassName}
-                  >
-                    <option value="image">Image</option>
-                    <option value="video">Video</option>
-                  </select>
+                  <div className="mt-2">
+                    <AppSelect<SelectOption<"image" | "video">>
+                      instanceId="crafted-moment-type"
+                      value={mediaTypeOptions.find((option) => option.value === itemForm.type)}
+                      options={mediaTypeOptions}
+                      onChange={(option) => {
+                        const type = option?.value ?? "image";
+                        setItemForm((current) => ({
+                          ...current,
+                          type,
+                          posterFile: type === "image" ? null : current.posterFile,
+                        }));
+                      }}
+                      isSearchable={false}
+                    />
+                  </div>
                 </label>
                 <label className="block text-sm font-medium text-[#352a21]">
                   Label

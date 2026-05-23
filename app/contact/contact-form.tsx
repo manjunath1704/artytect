@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
+import { AppSelect, type SelectOption } from "@/components/ui/app-select";
+
 type ContactFormState = {
   name: string;
   email: string;
@@ -21,6 +23,7 @@ const initialForm: ContactFormState = {
 };
 
 const topics = ["Custom order", "Product question", "Collaboration", "Studio visit"];
+const topicOptions: SelectOption[] = topics.map((topic) => ({ value: topic, label: topic }));
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phonePattern = /^[+()\-\s\d]{7,20}$/;
 
@@ -143,20 +146,15 @@ export default function ContactForm() {
           <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]">
             Topic
           </span>
-          <select
+          <AppSelect
+            instanceId="contact-topic"
             name="topic"
-            required
-            value={form.subject}
-            onChange={(event) => updateField("subject", event.target.value)}
-            className={fieldClassName}
-            disabled={submitting}
-          >
-            {topics.map((topic) => (
-              <option key={topic} value={topic}>
-                {topic}
-              </option>
-            ))}
-          </select>
+            value={topicOptions.find((option) => option.value === form.subject)}
+            options={topicOptions}
+            onChange={(option) => updateField("subject", option?.value ?? "")}
+            isDisabled={submitting}
+            placeholder="Choose a topic"
+          />
         </label>
       </div>
 

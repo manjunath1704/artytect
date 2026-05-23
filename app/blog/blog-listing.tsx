@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Search, Tag, X } from "lucide-react";
 
+import { AppSelect, type SelectOption } from "@/components/ui/app-select";
 import { Input } from "@/components/ui/input";
 import { Pagination } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,6 +17,10 @@ type BlogListingProps = {
 };
 
 const PAGE_SIZE = 6;
+const sortOptions: SelectOption<"latest" | "oldest">[] = [
+  { value: "latest", label: "Latest first" },
+  { value: "oldest", label: "Oldest first" },
+];
 
 export default function BlogListing({ blogs }: BlogListingProps) {
   const [query, setQuery] = useState("");
@@ -27,6 +32,10 @@ export default function BlogListing({ blogs }: BlogListingProps) {
   const categories = useMemo(
     () => ["all", ...Array.from(new Set(blogs.map((blog) => blog.category))).sort()],
     [blogs],
+  );
+  const categoryOptions = useMemo<SelectOption[]>(
+    () => categories.map((item) => ({ value: item, label: item === "all" ? "All categories" : item })),
+    [categories],
   );
 
   useEffect(() => {
@@ -98,7 +107,7 @@ export default function BlogListing({ blogs }: BlogListingProps) {
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Search title, tag, or author"
-                  className="h-12 rounded-[10px] border border-[#d9ccbc] bg-[#fffdf9] pl-11 pr-4 text-sm outline-none transition placeholder:text-[#a59b93] focus-visible:border-[#1b1511] focus-visible:ring-0"
+                  className="h-12 rounded-[32px] border border-[#d9ccbc] bg-[#fffdf9] pl-11 pr-4 text-sm outline-none transition placeholder:text-[#a59b93] focus-visible:border-[#1b1511] focus-visible:ring-0"
                 />
               </span>
             </label>
@@ -107,31 +116,28 @@ export default function BlogListing({ blogs }: BlogListingProps) {
               <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a817a]">
                 Category
               </span>
-              <select
-                value={category}
-                onChange={(event) => setCategory(event.target.value)}
-                className="h-12 w-full rounded-[10px] border border-[#d9ccbc] bg-[#fffdf9] px-4 text-sm outline-none transition focus:border-[#1b1511]"
-              >
-                {categories.map((item) => (
-                  <option key={item} value={item}>
-                    {item === "all" ? "All categories" : item}
-                  </option>
-                ))}
-              </select>
+              <AppSelect
+                instanceId="blog-category"
+                value={categoryOptions.find((option) => option.value === category)}
+                options={categoryOptions}
+                onChange={(option) => setCategory(option?.value ?? "all")}
+                isClearable
+                placeholder="All categories"
+              />
             </label>
 
             <label className="block">
               <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a817a]">
                 Sort
               </span>
-              <select
-                value={sort}
-                onChange={(event) => setSort(event.target.value as "latest" | "oldest")}
-                className="h-12 w-full rounded-[10px] border border-[#d9ccbc] bg-[#fffdf9] px-4 text-sm outline-none transition focus:border-[#1b1511]"
-              >
-                <option value="latest">Latest first</option>
-                <option value="oldest">Oldest first</option>
-              </select>
+              <AppSelect<SelectOption<"latest" | "oldest">>
+                instanceId="blog-sort"
+                value={sortOptions.find((option) => option.value === sort)}
+                options={sortOptions}
+                onChange={(option) => setSort(option?.value ?? "latest")}
+                isClearable
+                placeholder="Latest first"
+              />
             </label>
 
             <button
@@ -158,8 +164,8 @@ export default function BlogListing({ blogs }: BlogListingProps) {
           {loading ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="rounded-[10px] bg-[#fffdf9] p-4 shadow-sm">
-                  <Skeleton className="aspect-[4/3] rounded-[10px] bg-[#eee3d6]" />
+                <div key={index} className="rounded-[32px] bg-[#fffdf9] p-4 shadow-sm">
+                  <Skeleton className="aspect-[4/3] rounded-[32px] bg-[#eee3d6]" />
                   <Skeleton className="mt-5 h-5 w-3/4 bg-[#eee3d6]" />
                   <Skeleton className="mt-3 h-4 w-full bg-[#eee3d6]" />
                   <Skeleton className="mt-2 h-4 w-2/3 bg-[#eee3d6]" />
@@ -181,7 +187,7 @@ export default function BlogListing({ blogs }: BlogListingProps) {
                     >
                       <Link
                         href={`/blog/${blog.slug}`}
-                        className="group block h-full overflow-hidden rounded-[32px] bg-[#fffdf9] shadow-sm transition-shadow duration-300 hover:shadow-md"
+                        className="group block h-full overflow-hidden rounded-[32px] bg-[#fbf6f2] shadow-md"
                       >
                         <div className="relative aspect-[4/3] overflow-hidden bg-[#efe5d9]">
                           {blog.featured_image ? (
@@ -214,7 +220,7 @@ export default function BlogListing({ blogs }: BlogListingProps) {
                               {normalizeBlogTags(blog.tags)[0] ?? "Studio"}
                             </span>
                           </div>
-                          <h3 className="mt-3 text-xl font-display uppercase leading-none tracking-normal md:text-2xl">
+                          <h3 className="mt-3 text-lg font-display leading-none tracking-normal md:text-xl">
                             {blog.title}
                           </h3>
                           <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#7d746d]">
@@ -238,7 +244,7 @@ export default function BlogListing({ blogs }: BlogListingProps) {
               )}
             </>
           ) : (
-            <div className="rounded-[10px] border border-dashed border-[#d9ccbc] bg-[#fcfaf7] px-6 py-16 text-center">
+            <div className="rounded-[32px] border border-dashed border-[#d9ccbc] bg-[#fcfaf7] px-6 py-16 text-center">
               <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[#8a7765]">
                 No stories found
               </p>

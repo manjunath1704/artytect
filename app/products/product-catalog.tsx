@@ -10,6 +10,7 @@ import {
 import { useMemo, useState } from "react";
 
 import ProductCard from "@/app/components/cards/product-card";
+import { AppSelect, type SelectOption } from "@/components/ui/app-select";
 import type { Product } from "@/lib/products";
 
 type ProductCatalogProps = {
@@ -21,14 +22,14 @@ type SortOption = "featured" | "price-asc" | "price-desc" | "name-asc";
 
 const pageSize = 15;
 
-const priceOptions: { label: string; value: PriceFilter }[] = [
+const priceOptions: SelectOption<PriceFilter>[] = [
   { label: "All prices", value: "all" },
   { label: "Under ₹1,500", value: "under-150" },
   { label: "₹1,500-₹2,500", value: "150-250" },
   { label: "Over ₹2,500", value: "over-250" },
 ];
 
-const sortOptions: { label: string; value: SortOption }[] = [
+const sortOptions: SelectOption<SortOption>[] = [
   { label: "Featured", value: "featured" },
   { label: "Price low to high", value: "price-asc" },
   { label: "Price high to low", value: "price-desc" },
@@ -45,6 +46,10 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
   const categories = useMemo(
     () => ["All", ...Array.from(new Set(products.map((product) => product.category)))],
     [products],
+  );
+  const categoryOptions = useMemo<SelectOption[]>(
+    () => categories.map((item) => ({ value: item, label: item })),
+    [categories],
   );
 
   const filteredProducts = useMemo(() => {
@@ -146,57 +151,42 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
               <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a817a]">
                 Category
               </span>
-              <select
-                value={category}
-                onChange={(event) =>
-                  updateFilters(() => setCategory(event.target.value))
-                }
-                className="h-12 w-full rounded-full border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#1b1511]"
-              >
-                {categories.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
+              <AppSelect
+                instanceId="product-category"
+                value={categoryOptions.find((option) => option.value === category)}
+                options={categoryOptions}
+                onChange={(option) => updateFilters(() => setCategory(option?.value ?? "All"))}
+                isClearable
+                placeholder="All"
+              />
             </label>
 
             <label className="block">
               <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a817a]">
                 Price
               </span>
-              <select
-                value={priceFilter}
-                onChange={(event) =>
-                  updateFilters(() => setPriceFilter(event.target.value as PriceFilter))
-                }
-                className="h-12 w-full rounded-full border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#1b1511]"
-              >
-                {priceOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+              <AppSelect<SelectOption<PriceFilter>>
+                instanceId="product-price"
+                value={priceOptions.find((option) => option.value === priceFilter)}
+                options={priceOptions}
+                onChange={(option) => updateFilters(() => setPriceFilter(option?.value ?? "all"))}
+                isClearable
+                placeholder="All prices"
+              />
             </label>
 
             <label className="block">
               <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a817a]">
                 Sort
               </span>
-              <select
-                value={sort}
-                onChange={(event) =>
-                  updateFilters(() => setSort(event.target.value as SortOption))
-                }
-                className="h-12 w-full rounded-full border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#1b1511]"
-              >
-                {sortOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+              <AppSelect<SelectOption<SortOption>>
+                instanceId="product-sort"
+                value={sortOptions.find((option) => option.value === sort)}
+                options={sortOptions}
+                onChange={(option) => updateFilters(() => setSort(option?.value ?? "featured"))}
+                isClearable
+                placeholder="Featured"
+              />
             </label>
 
             <button

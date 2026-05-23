@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, MessageSquareQuote } from "lucide-react";
 import { toast } from "sonner";
 
+import { AppSelect, type SelectOption } from "@/components/ui/app-select";
 import { Button } from "@/components/ui/button";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { createClient } from "@/lib/supabase/client";
@@ -25,6 +26,13 @@ type FieldErrors = Partial<Record<keyof Fields, string>>;
 
 const inputBase =
   "mt-2 w-full rounded-2xl border bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:ring-4 focus:ring-[#d7b68b]/20";
+const ratingOptions: SelectOption[] = [
+  { value: "5", label: "5 stars" },
+  { value: "4", label: "4 stars" },
+  { value: "3", label: "3 stars" },
+  { value: "2", label: "2 stars" },
+  { value: "1", label: "1 star" },
+];
 
 function inputCls(hasError: boolean) {
   return `${inputBase} ${
@@ -230,17 +238,17 @@ export default function CreateTestimonialsForm() {
             <div>
               <label className="block text-sm font-medium text-[#352a21]">
                 Rating <span className="text-[#b38d67]">*</span>
-                <select
-                  value={rating}
-                  onChange={(event) => setRating(event.target.value)}
-                  className={inputCls(!!errors.rating)}
-                >
-                  <option value="5">5 stars</option>
-                  <option value="4">4 stars</option>
-                  <option value="3">3 stars</option>
-                  <option value="2">2 stars</option>
-                  <option value="1">1 star</option>
-                </select>
+                <div className="mt-2">
+                  <AppSelect
+                    instanceId="create-testimonial-rating"
+                    value={ratingOptions.find((option) => option.value === rating)}
+                    options={ratingOptions}
+                    onChange={(option) => setRating(option?.value ?? "")}
+                    invalid={!!errors.rating}
+                    isSearchable={false}
+                    placeholder="Choose rating"
+                  />
+                </div>
               </label>
               <FieldError msg={errors.rating} />
             </div>

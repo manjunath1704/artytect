@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { AppSelect, type SelectOption } from "@/components/ui/app-select";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
 import { ImageUploader } from "@/components/ui/image-uploader";
@@ -74,6 +75,25 @@ const emptyForm: FormState = {
 };
 
 const PAGE_SIZE = 8;
+const publishStatusOptions: SelectOption<BlogStatus>[] = [
+  { value: "draft", label: "Draft" },
+  { value: "published", label: "Published" },
+];
+const statusFilterOptions: SelectOption[] = [
+  { value: "all", label: "All statuses" },
+  { value: "published", label: "Published" },
+  { value: "draft", label: "Draft" },
+];
+const dateFilterOptions: SelectOption[] = [
+  { value: "all", label: "Any date" },
+  { value: "7", label: "Last 7 days" },
+  { value: "30", label: "Last 30 days" },
+];
+const blogSortOptions: SelectOption<"latest" | "oldest" | "title">[] = [
+  { value: "latest", label: "Latest" },
+  { value: "oldest", label: "Oldest" },
+  { value: "title", label: "Title A-Z" },
+];
 const inputClassName =
   "mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
 const labelClassName = "text-sm font-medium text-[#352a21]";
@@ -144,6 +164,13 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
   const categories = useMemo(
     () => Array.from(new Set(blogs.map((blog) => blog.category).filter(Boolean))).sort(),
     [blogs],
+  );
+  const categoryFilterOptions = useMemo<SelectOption[]>(
+    () => [
+      { value: "all", label: "All categories" },
+      ...categories.map((item) => ({ value: item, label: item })),
+    ],
+    [categories],
   );
 
   const filteredBlogs = useMemo(() => {
@@ -519,14 +546,15 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
                   <div className="mt-5 grid gap-4">
                     <label>
                       <span className={labelClassName}>Publish Status</span>
-                      <select
-                        value={form.status}
-                        onChange={(event) => setForm((current) => ({ ...current, status: event.target.value as BlogStatus }))}
-                        className="mt-2 h-11 w-full rounded-[32px] border border-[#d9ccbc] bg-white px-3 text-sm text-[#1b1511] outline-none focus:ring-4 focus:ring-[#d7b68b]/20"
-                      >
-                        <option value="draft">Draft</option>
-                        <option value="published">Published</option>
-                      </select>
+                      <div className="mt-2">
+                        <AppSelect<SelectOption<BlogStatus>>
+                          instanceId="blog-publish-status"
+                          value={publishStatusOptions.find((option) => option.value === form.status)}
+                          options={publishStatusOptions}
+                          onChange={(option) => setForm((current) => ({ ...current, status: option?.value ?? "draft" }))}
+                          isSearchable={false}
+                        />
+                      </div>
                     </label>
                     <label>
                       <span className={labelClassName}>Published Date</span>
@@ -555,25 +583,38 @@ export default function BlogsManager({ initialUserEmail, initialBlogs }: BlogsMa
                 className="min-w-0 flex-1 bg-transparent text-sm text-[#1b1511] outline-none placeholder:text-[#a69280]"
               />
             </div>
-            <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)} className="h-12 rounded-full border border-[#d9ccbc] bg-[#fcfaf7] px-4 text-sm text-[#1b1511] outline-none">
-              <option value="all">All categories</option>
-              {categories.map((item) => <option key={item} value={item}>{item}</option>)}
-            </select>
-            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="h-12 rounded-full border border-[#d9ccbc] bg-[#fcfaf7] px-4 text-sm text-[#1b1511] outline-none">
-              <option value="all">All statuses</option>
-              <option value="published">Published</option>
-              <option value="draft">Draft</option>
-            </select>
-            <select value={dateFilter} onChange={(event) => setDateFilter(event.target.value)} className="h-12 rounded-full border border-[#d9ccbc] bg-[#fcfaf7] px-4 text-sm text-[#1b1511] outline-none">
-              <option value="all">Any date</option>
-              <option value="7">Last 7 days</option>
-              <option value="30">Last 30 days</option>
-            </select>
-            <select value={sort} onChange={(event) => setSort(event.target.value as "latest" | "oldest" | "title")} className="h-12 rounded-full border border-[#d9ccbc] bg-[#fcfaf7] px-4 text-sm text-[#1b1511] outline-none">
-              <option value="latest">Latest</option>
-              <option value="oldest">Oldest</option>
-              <option value="title">Title A-Z</option>
-            </select>
+            <AppSelect
+              instanceId="admin-blog-category-filter"
+              value={categoryFilterOptions.find((option) => option.value === categoryFilter)}
+              options={categoryFilterOptions}
+              onChange={(option) => setCategoryFilter(option?.value ?? "all")}
+              isClearable
+              placeholder="All categories"
+            />
+            <AppSelect
+              instanceId="admin-blog-status-filter"
+              value={statusFilterOptions.find((option) => option.value === statusFilter)}
+              options={statusFilterOptions}
+              onChange={(option) => setStatusFilter(option?.value ?? "all")}
+              isClearable
+              placeholder="All statuses"
+            />
+            <AppSelect
+              instanceId="admin-blog-date-filter"
+              value={dateFilterOptions.find((option) => option.value === dateFilter)}
+              options={dateFilterOptions}
+              onChange={(option) => setDateFilter(option?.value ?? "all")}
+              isClearable
+              placeholder="Any date"
+            />
+            <AppSelect<SelectOption<"latest" | "oldest" | "title">>
+              instanceId="admin-blog-sort"
+              value={blogSortOptions.find((option) => option.value === sort)}
+              options={blogSortOptions}
+              onChange={(option) => setSort(option?.value ?? "latest")}
+              isClearable
+              placeholder="Latest"
+            />
             <Button
               type="button"
               variant="outline"

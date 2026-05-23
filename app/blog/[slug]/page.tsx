@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, CalendarDays, Tag, UserRound } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Tag, UserRound } from "lucide-react";
 
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";

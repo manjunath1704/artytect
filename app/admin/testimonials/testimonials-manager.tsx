@@ -13,6 +13,8 @@ import { Pagination } from "@/components/ui/pagination";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
+import { AppSelect, type SelectOption } from "@/components/ui/app-select";
+
 const supabase = createClient();
 
 type TestimonialRow = {
@@ -41,6 +43,13 @@ type TestimonialsManagerProps = {
 
 const inputClassName =
   "mt-2 w-full border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
+const ratingOptions: SelectOption[] = [
+  { value: "5", label: "5 stars" },
+  { value: "4", label: "4 stars" },
+  { value: "3", label: "3 stars" },
+  { value: "2", label: "2 stars" },
+  { value: "1", label: "1 star" },
+];
 
 export default function TestimonialsManager({
   initialUserEmail,
@@ -414,13 +423,15 @@ export default function TestimonialsManager({
 
                 <label className="block text-sm font-medium text-[#352a21]">
                   Rating
-                  <select value={editRating} onChange={(event) => setEditRating(event.target.value)} className={inputClassName}>
-                    <option value="5">5 stars</option>
-                    <option value="4">4 stars</option>
-                    <option value="3">3 stars</option>
-                    <option value="2">2 stars</option>
-                    <option value="1">1 star</option>
-                  </select>
+                  <div className="mt-2">
+                    <AppSelect
+                      instanceId="edit-testimonial-rating"
+                      value={ratingOptions.find((option) => option.value === editRating)}
+                      options={ratingOptions}
+                      onChange={(option) => setEditRating(option?.value ?? "5")}
+                      isSearchable={false}
+                    />
+                  </div>
                 </label>
 
                 <label className="block text-sm font-medium text-[#352a21]">
