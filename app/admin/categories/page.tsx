@@ -14,6 +14,8 @@ type CategoryRow = {
   thumbnail_url: string;
   hover_thumbnail_url: string;
   thumbnail_alt: string;
+  parent_category_id: string | null;
+  created_at: string;
 };
 
 type CategoriesHeader = {
@@ -52,6 +54,8 @@ export default async function CategoriesPage() {
     category_thumbnail: string;
     category_hover_thumbnail: string;
     category_thumbnail_alt: string;
+    parent_category_id: string | null;
+    created_at: string;
   }) => ({
     id: String(cat.id),
     title: cat.category_name || '',
@@ -60,6 +64,8 @@ export default async function CategoriesPage() {
     thumbnail_url: cat.category_thumbnail || '',
     hover_thumbnail_url: cat.category_hover_thumbnail || cat.category_thumbnail || '',
     thumbnail_alt: cat.category_thumbnail_alt || '',
+    parent_category_id: cat.parent_category_id ? String(cat.parent_category_id) : null,
+    created_at: cat.created_at || '',
   }));
 
   return (

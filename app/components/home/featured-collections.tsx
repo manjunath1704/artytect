@@ -66,6 +66,7 @@ type CategoryRow = {
   description: string;
   thumbnail_url: string;
   hover_thumbnail_url: string;
+  parent_category_id: string | null;
 };
 
 type CollectionItem = {
@@ -112,15 +113,19 @@ const FeaturedCollections = ({
         return;
       }
 
-      const nextCollections = result.categories.map((category: CategoryRow) => ({
-        title: category.title,
-        description: category.description,
-        href: `/categories/${category.slug}`,
-        thumbnailSrc: category.thumbnail_url,
-        hoverThumbnailSrc: category.hover_thumbnail_url,
-      }));
+      const nextCollections = result.categories
+        .filter((category: CategoryRow) => !category.parent_category_id)
+        .map((category: CategoryRow) => ({
+          title: category.title,
+          description: category.description,
+          href: `/categories/${category.slug}`,
+          thumbnailSrc: category.thumbnail_url,
+          hoverThumbnailSrc: category.hover_thumbnail_url,
+        }));
 
-      setCollections(nextCollections);
+      if (nextCollections.length) {
+        setCollections(nextCollections);
+      }
     };
 
     void loadCategories();

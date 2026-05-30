@@ -8,13 +8,6 @@ import {
   getAdminClient,
 } from "@/lib/supabase/admin";
 
-const slugify = (value: string) =>
-  value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-
 const getAuthenticatedUser = async () => {
   const cookieStore = await cookies();
   const supabase = createServerClient(
@@ -55,6 +48,8 @@ export async function POST(request: Request) {
     const title = String(formData.get("title") ?? "").trim();
     const slug = String(formData.get("slug") ?? "").trim();
     const description = String(formData.get("description") ?? "").trim();
+    const categoryType = String(formData.get("categoryType") ?? "parent").trim();
+    const parentCategoryId = String(formData.get("parentCategoryId") ?? "").trim();
     const thumbnailAlt = String(formData.get("thumbnailAlt") ?? "").trim();
     const thumbnail = formData.get("thumbnail");
     const hoverThumbnail = formData.get("hoverThumbnail");
@@ -75,6 +70,42 @@ export async function POST(request: Request) {
 
     const timestamp = Date.now();
     const supabase = getAdminClient();
+
+    if (categoryType !== "parent" && categoryType !== "child") {
+      return NextResponse.json(
+        { error: "Category type must be Parent Category or Child Category." },
+        { status: 400 },
+      );
+    }
+
+    if (categoryType === "child") {
+      if (!parentCategoryId) {
+        return NextResponse.json(
+          { error: "Select a parent category for child categories." },
+          { status: 400 },
+        );
+      }
+
+      const { data: parentCategory, error: parentError } = await supabase
+        .from("categories")
+        .select("id, parent_category_id")
+        .eq("id", parentCategoryId)
+        .maybeSingle();
+
+      if (parentError || !parentCategory) {
+        return NextResponse.json(
+          { error: "Selected parent category does not exist." },
+          { status: 400 },
+        );
+      }
+
+      if (parentCategory.parent_category_id) {
+        return NextResponse.json(
+          { error: "Child categories cannot be used as parent categories." },
+          { status: 400 },
+        );
+      }
+    }
 
     await ensureCategoryThumbnailsBucket();
 
@@ -111,6 +142,7 @@ export async function POST(request: Request) {
         category_thumbnail: thumbnail_url,
         category_hover_thumbnail: hover_thumbnail_url,
         category_thumbnail_alt: thumbnailAlt,
+        parent_category_id: categoryType === "child" ? parentCategoryId : null,
       })
       .select()
       .single();
@@ -129,6 +161,7 @@ export async function POST(request: Request) {
           description: insertedCategory.category_description,
           thumbnail_url: insertedCategory.category_thumbnail,
           hover_thumbnail_url: insertedCategory.category_hover_thumbnail,
+          parent_category_id: insertedCategory.parent_category_id,
         },
       },
       { status: 201 },

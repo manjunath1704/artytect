@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { ImageUploader } from "@/components/ui/image-uploader";
+import { AppSelect, type SelectOption } from "@/components/ui/app-select";
 import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
@@ -16,6 +17,8 @@ type Fields = {
   title:        string;
   slug:         string;
   description:  string;
+  categoryType: "parent" | "child";
+  parentCategoryId: string;
   thumbnailAlt: string;
   thumbnail:    File | null;
   hoverThumbnail: File | null;
@@ -39,6 +42,9 @@ function validate(fields: Fields): FieldErrors {
   if (!fields.description.trim())
     errors.description = "Description is required.";
 
+  if (fields.categoryType === "child" && !fields.parentCategoryId)
+    errors.parentCategoryId = "Select a parent category.";
+
   if (!fields.thumbnailAlt.trim())
     errors.thumbnailAlt = "Alt text is required.";
 
@@ -50,6 +56,20 @@ function validate(fields: Fields): FieldErrors {
 
   return errors;
 }
+
+type ParentCategoryOption = {
+  id: string;
+  title: string;
+};
+
+type CreateCategoriesFormProps = {
+  parentCategories: ParentCategoryOption[];
+};
+
+const categoryTypeOptions: SelectOption<"parent" | "child">[] = [
+  { value: "parent", label: "Parent Category" },
+  { value: "child", label: "Child Category" },
+];
 
 // ─── shared input style ───────────────────────────────────────────────────────
 const inputBase =
@@ -70,7 +90,7 @@ function FieldError({ msg }: { msg?: string }) {
 }
 
 // ─── component ────────────────────────────────────────────────────────────────
-const CreateCategoriesForm = () => {
+const CreateCategoriesForm = ({ parentCategories }: CreateCategoriesFormProps) => {
   const router = useRouter();
 
   const [checkingSession, setCheckingSession] = useState(true);
@@ -80,6 +100,8 @@ const CreateCategoriesForm = () => {
   const [title,           setTitle]           = useState("");
   const [slug,            setSlug]            = useState("");
   const [description,     setDescription]     = useState("");
+  const [categoryType,    setCategoryType]    = useState<"parent" | "child">("parent");
+  const [parentCategoryId, setParentCategoryId] = useState("");
   const [thumbnailAlt,    setThumbnailAlt]    = useState("");
   const [thumbnailFile,   setThumbnailFile]   = useState<File | null>(null);
   const [hoverFile,       setHoverFile]       = useState<File | null>(null);
@@ -106,8 +128,8 @@ const CreateCategoriesForm = () => {
   // ── live re-validation after first submit ────────────────────────────────
   useEffect(() => {
     if (!submitted) return;
-    setErrors(validate({ title, slug, description, thumbnailAlt, thumbnail: thumbnailFile, hoverThumbnail: hoverFile }));
-  }, [title, slug, description, thumbnailAlt, thumbnailFile, hoverFile, submitted]);
+    setErrors(validate({ title, slug, description, categoryType, parentCategoryId, thumbnailAlt, thumbnail: thumbnailFile, hoverThumbnail: hoverFile }));
+  }, [title, slug, description, categoryType, parentCategoryId, thumbnailAlt, thumbnailFile, hoverFile, submitted]);
 
   // ── auto-generate slug from title ────────────────────────────────────────
   const handleTitleChange = (value: string) => {
@@ -131,7 +153,7 @@ const CreateCategoriesForm = () => {
     setSubmitted(true);
 
     const fields: Fields = {
-      title, slug, description, thumbnailAlt,
+      title, slug, description, categoryType, parentCategoryId, thumbnailAlt,
       thumbnail: thumbnailFile,
       hoverThumbnail: hoverFile,
     };
@@ -153,6 +175,10 @@ const CreateCategoriesForm = () => {
       formData.append("title",           title.trim());
       formData.append("slug",            slug.trim());
       formData.append("description",     description.trim());
+      formData.append("categoryType",    categoryType);
+      if (categoryType === "child") {
+        formData.append("parentCategoryId", parentCategoryId);
+      }
       formData.append("thumbnailAlt",    thumbnailAlt.trim());
       formData.append("thumbnail",       thumbnailFile!);
       formData.append("hoverThumbnail",  hoverFile!);
@@ -174,6 +200,8 @@ const CreateCategoriesForm = () => {
       setTitle("");
       setSlug("");
       setDescription("");
+      setCategoryType("parent");
+      setParentCategoryId("");
       setThumbnailAlt("");
       setThumbnailFile(null);
       setHoverFile(null);
@@ -201,6 +229,11 @@ const CreateCategoriesForm = () => {
       </div>
     );
   }
+
+  const parentOptions: SelectOption[] = parentCategories.map((category) => ({
+    value: category.id,
+    label: category.title,
+  }));
 
   // ── render ───────────────────────────────────────────────────────────────
   return (
@@ -268,6 +301,47 @@ const CreateCategoriesForm = () => {
                 />
               </label>
               <FieldError msg={errors.description} />
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-[#352a21]">
+                  Category Type <span className="text-[#b38d67]">*</span>
+                </label>
+                <div className="mt-2">
+                  <AppSelect<SelectOption<"parent" | "child">>
+                    instanceId="create-category-type"
+                    value={categoryTypeOptions.find((option) => option.value === categoryType)}
+                    options={categoryTypeOptions}
+                    onChange={(option) => {
+                      const nextType = option?.value ?? "parent";
+                      setCategoryType(nextType);
+                      if (nextType === "parent") setParentCategoryId("");
+                    }}
+                    isSearchable={false}
+                  />
+                </div>
+              </div>
+
+              {categoryType === "child" && (
+                <div>
+                  <label className="block text-sm font-medium text-[#352a21]">
+                    Parent Category <span className="text-[#b38d67]">*</span>
+                  </label>
+                  <div className="mt-2">
+                    <AppSelect
+                      instanceId="create-parent-category"
+                      value={parentOptions.find((option) => option.value === parentCategoryId) ?? null}
+                      options={parentOptions}
+                      onChange={(option) => setParentCategoryId(option?.value ?? "")}
+                      placeholder="Select parent category"
+                      invalid={!!errors.parentCategoryId}
+                      noOptionsMessage={() => "No parent categories found"}
+                    />
+                  </div>
+                  <FieldError msg={errors.parentCategoryId} />
+                </div>
+              )}
             </div>
 
             {/* Alt text */}

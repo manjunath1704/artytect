@@ -8,6 +8,8 @@ type CategoryListItem = {
   description: string;
   thumbnailUrl: string;
   hoverThumbnailUrl: string;
+  parentCategoryId: string | null;
+  createdAt: string;
 };
 
 export async function GET() {
@@ -19,7 +21,7 @@ export async function GET() {
 
     const { data: categoriesData, error } = await supabase
       .from('categories')
-      .select('*')
+      .select('id, category_name, category_slug, category_description, category_thumbnail, category_hover_thumbnail, parent_category_id, created_at')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -34,6 +36,8 @@ export async function GET() {
       category_description: string;
       category_thumbnail: string;
       category_hover_thumbnail: string;
+      parent_category_id: string | null;
+      created_at: string;
     }) => ({
       id: String(cat.id),
       title: cat.category_name || '',
@@ -41,6 +45,8 @@ export async function GET() {
       description: cat.category_description || '',
       thumbnailUrl: cat.category_thumbnail || '',
       hoverThumbnailUrl: cat.category_hover_thumbnail || cat.category_thumbnail || '',
+      parentCategoryId: cat.parent_category_id ? String(cat.parent_category_id) : null,
+      createdAt: cat.created_at || '',
     }));
 
     return NextResponse.json({
@@ -51,6 +57,8 @@ export async function GET() {
         description: category.description,
         thumbnail_url: category.thumbnailUrl,
         hover_thumbnail_url: category.hoverThumbnailUrl,
+        parent_category_id: category.parentCategoryId,
+        created_at: category.createdAt,
       })),
     });
   } catch (error) {

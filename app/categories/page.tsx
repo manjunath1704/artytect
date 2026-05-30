@@ -9,56 +9,70 @@ import Navbar from "@/app/components/home/navbar";
 import CategoryCardMicro from "../components/cards/category-card-micro";
 
 type CategoryItem = {
+  id: string;
   title: string;
   slug: string;
   description: string;
   thumbnailSrc: string;
   hoverThumbnailSrc: string;
+  parentCategoryId: string | null;
   count?: number;
 };
 
 const fallbackCategories: CategoryItem[] = [
   {
+    id: "bowls",
     title: "Bowls",
     slug: "bowls",
     description: "Everyday forms with soft handles and warm glazes for slow mornings.",
     thumbnailSrc: "/images/bowl-a.avif",
     hoverThumbnailSrc: "/images/bowl-b.avif",
+    parentCategoryId: null,
   },
   {
+    id: "vases",
     title: "Vases",
     slug: "vases",
     description: "Low, balanced silhouettes that work beautifully for serving and display.",
     thumbnailSrc: "/images/vase-a.avif",
     hoverThumbnailSrc: "/images/vase-b.avif",
+    parentCategoryId: null,
   },
   {
+    id: "mugs",
     title: "Mugs",
     slug: "mugs",
     description: "Tall statement pieces with clean necks and tactile surface variation.",
     thumbnailSrc: "/images/mug-a.avif",
     hoverThumbnailSrc: "/images/mug-b.avif",
+    parentCategoryId: null,
   },
   {
+    id: "planters",
     title: "Planters",
     slug: "planters",
     description: "Quiet sculptural accents that bring texture to shelves and tabletops.",
     thumbnailSrc: "/images/planter-a.avif",
     hoverThumbnailSrc: "/images/planter-b.avif",
+    parentCategoryId: null,
   },
   {
+    id: "plates",
     title: "Plates",
     slug: "plates",
     description: "Simple ceramic plates with warm material character for hosting and layering.",
     thumbnailSrc: "/images/plate-a.avif",
     hoverThumbnailSrc: "/images/plate-b.avif",
+    parentCategoryId: null,
   },
   {
+    id: "deep-plates",
     title: "Deep plates",
     slug: "deep-plates",
     description: "Deep serving forms with a quiet sculptural profile for soups and grains.",
     thumbnailSrc: "/images/deep-a.avif",
     hoverThumbnailSrc: "/images/deep-b.avif",
+    parentCategoryId: null,
   },
   
 ];
@@ -70,6 +84,7 @@ type CategoryRow = {
   description: string;
   thumbnail_url: string;
   hover_thumbnail_url: string;
+  parent_category_id: string | null;
 };
 
 export default function CategoriesPage() {
@@ -92,11 +107,13 @@ export default function CategoriesPage() {
         }
 
         const nextCategories = result.categories.map((category: CategoryRow) => ({
+          id: category.id,
           title: category.title,
           slug: category.slug,
           description: category.description,
           thumbnailSrc: category.thumbnail_url,
           hoverThumbnailSrc: category.hover_thumbnail_url,
+          parentCategoryId: category.parent_category_id,
         }));
 
         setCategories(nextCategories);
@@ -118,6 +135,15 @@ export default function CategoriesPage() {
 
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 500], [0, 120]);
+  const parentCategories = categories.filter((category) => !category.parentCategoryId);
+  const childrenByParentId = categories.reduce<Map<string, CategoryItem[]>>((groups, category) => {
+    if (!category.parentCategoryId) return groups;
+    const children = groups.get(category.parentCategoryId) ?? [];
+    children.push(category);
+    groups.set(category.parentCategoryId, children);
+    return groups;
+  }, new Map());
+
   return (
     <>
       <Navbar  />
@@ -219,8 +245,9 @@ export default function CategoriesPage() {
             </div>
           ) : (
             <div className="space-y-10">
-              {categories.map((category, index) => {
+              {parentCategories.map((category, index) => {
                 const isEven = index % 2 === 0;
+                const children = childrenByParentId.get(category.id) ?? [];
 
                 return (
                   <motion.section
@@ -293,6 +320,19 @@ export default function CategoriesPage() {
                               {category.description}
                             </p>
 
+                            {children.length > 0 && (
+                              <div className="mt-7 flex flex-wrap gap-2">
+                                {children.map((child) => (
+                                  <span
+                                    key={child.id}
+                                    className="rounded-full border border-[#d9cfc6] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#5f544b]"
+                                  >
+                                    {child.title}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+
                             {/* Explore link */}
                             <div className="mt-10 inline-flex items-center gap-3 border-b border-[#1b1511] pb-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#1b1511] transition-opacity duration-300 group-hover:opacity-60">
                               <span>Explore categories</span>
@@ -312,8 +352,8 @@ export default function CategoriesPage() {
 
        <div className="site-container grid gap-3 grid-cols-2 py-10 md:hidden">
        {
-            categories.map((category, index) => (
-              <div key={index}>
+            parentCategories.map((category, index) => (
+              <div key={category.id}>
                 <CategoryCardMicro
                     title={category.title}
                     description={category.description}

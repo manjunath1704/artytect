@@ -13,7 +13,9 @@ model Category {
   description       String
   thumbnailUrl      String   @map("thumbnail_url")
   hoverThumbnailUrl String   @map("hover_thumbnail_url")
+  parentCategoryId  String?  @map("parent_category_id") @db.Uuid
   createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   @@map("categories")
 }

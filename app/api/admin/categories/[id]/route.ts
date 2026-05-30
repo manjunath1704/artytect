@@ -52,6 +52,8 @@ export async function PUT(
     const title = String(formData.get("title") ?? "").trim();
     const slug = String(formData.get("slug") ?? "").trim();
     const description = String(formData.get("description") ?? "").trim();
+    const categoryType = String(formData.get("categoryType") ?? "parent").trim();
+    const parentCategoryId = String(formData.get("parentCategoryId") ?? "").trim();
     const thumbnailAlt = String(formData.get("thumbnailAlt") ?? "").trim();
     const thumbnail = formData.get("thumbnail");
     const hoverThumbnail = formData.get("hoverThumbnail");
@@ -66,12 +68,73 @@ export async function PUT(
     const supabase = getAdminClient();
     const timestamp = Date.now();
 
+    if (categoryType !== "parent" && categoryType !== "child") {
+      return NextResponse.json(
+        { error: "Category type must be Parent Category or Child Category." },
+        { status: 400 },
+      );
+    }
+
+    if (categoryType === "child") {
+      if (!parentCategoryId) {
+        return NextResponse.json(
+          { error: "Select a parent category for child categories." },
+          { status: 400 },
+        );
+      }
+
+      if (parentCategoryId === id) {
+        return NextResponse.json(
+          { error: "A category cannot be its own parent." },
+          { status: 400 },
+        );
+      }
+
+      const [{ data: parentCategory, error: parentError }, { count: childCount, error: childError }] = await Promise.all([
+        supabase
+          .from("categories")
+          .select("id, parent_category_id")
+          .eq("id", parentCategoryId)
+          .maybeSingle(),
+        supabase
+          .from("categories")
+          .select("id", { count: "exact", head: true })
+          .eq("parent_category_id", id),
+      ]);
+
+      if (parentError || !parentCategory) {
+        return NextResponse.json(
+          { error: "Selected parent category does not exist." },
+          { status: 400 },
+        );
+      }
+
+      if (childError) {
+        throw new Error(childError.message);
+      }
+
+      if (parentCategory.parent_category_id) {
+        return NextResponse.json(
+          { error: "Child categories cannot be used as parent categories." },
+          { status: 400 },
+        );
+      }
+
+      if ((childCount ?? 0) > 0) {
+        return NextResponse.json(
+          { error: "A category with children cannot become a child category." },
+          { status: 400 },
+        );
+      }
+    }
+
     // Prepare update data
     const updateData: {
       category_name: string;
       category_slug: string;
       category_description: string;
       category_thumbnail_alt: string;
+      parent_category_id: string | null;
       category_thumbnail?: string;
       category_hover_thumbnail?: string;
     } = {
@@ -79,6 +142,7 @@ export async function PUT(
       category_slug: slug,
       category_description: description,
       category_thumbnail_alt: thumbnailAlt,
+      parent_category_id: categoryType === "child" ? parentCategoryId : null,
     };
 
     // Upload new thumbnail if provided
@@ -148,6 +212,7 @@ export async function PUT(
           thumbnail_url: updatedCategory.category_thumbnail,
           hover_thumbnail_url: updatedCategory.category_hover_thumbnail,
           thumbnail_alt: updatedCategory.category_thumbnail_alt,
+          parent_category_id: updatedCategory.parent_category_id,
         },
       },
       { status: 200 },
@@ -185,6 +250,22 @@ export async function DELETE(
     if (fetchError || !category) {
       console.error('Category fetch error:', fetchError);
       throw new Error('Category not found.');
+    }
+
+    const { count: childCount, error: childCountError } = await supabase
+      .from("categories")
+      .select("id", { count: "exact", head: true })
+      .eq("parent_category_id", id);
+
+    if (childCountError) {
+      throw new Error(childCountError.message);
+    }
+
+    if ((childCount ?? 0) > 0) {
+      return NextResponse.json(
+        { error: "Delete child categories before deleting this parent category." },
+        { status: 400 },
+      );
     }
 
     // Delete images from storage if they exist

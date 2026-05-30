@@ -1,15 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
 import { ArrowUpRight } from "lucide-react";
+
+import ProductCard from "@/app/components/cards/product-card";
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
-import WhatsAppButton from "@/components/whatsapp-button";
-import { prisma } from "@/lib/prisma";
 import { products as catalogProducts } from "@/lib/products";
-import { formatPrice, getProductOrderMessage } from "@/lib/whatsapp";
-import { motion, useScroll, useTransform } from "framer-motion";
-import ProductCard from "@/app/components/cards/product-card";
 
 type CategoryPageProps = {
   params: Promise<{
@@ -18,93 +16,120 @@ type CategoryPageProps = {
 };
 
 type CategoryCatalog = {
+  id: string;
   title: string;
   slug: string;
   description: string;
   thumbnailSrc: string;
   heroSrc: string;
+  parentCategoryId: string | null;
 };
 
 const fallbackCategories: CategoryCatalog[] = [
   {
+    id: "bowls",
     title: "Bowls",
     slug: "bowls",
     description:
       "Ceramic bowls in soft silhouettes, made for breakfast rituals, shared meals, and everyday serving.",
     thumbnailSrc: "/images/bowl-a.avif",
     heroSrc: "/images/bowl-b.avif",
+    parentCategoryId: null,
   },
   {
+    id: "vases",
     title: "Vases",
     slug: "vases",
     description:
       "Balanced vessels with quiet profiles, natural surfaces, and enough presence to stand beautifully alone.",
     thumbnailSrc: "/images/vase-a.avif",
     heroSrc: "/images/vase-b.avif",
+    parentCategoryId: null,
   },
   {
+    id: "mugs",
     title: "Mugs",
     slug: "mugs",
     description:
       "Comforting hand-held forms with earthy finishes, built for slow mornings and warm drinks.",
     thumbnailSrc: "/images/mug-a.avif",
     heroSrc: "/images/mug-b.avif",
+    parentCategoryId: null,
   },
   {
+    id: "planters",
     title: "Planters",
     slug: "planters",
     description:
       "Grounded ceramic planters that bring texture and calm to shelves, tabletops, and sunlit corners.",
     thumbnailSrc: "/images/planter-a.avif",
     heroSrc: "/images/planter-b.avif",
+    parentCategoryId: null,
   },
   {
+    id: "plates",
     title: "Plates",
     slug: "plates",
     description:
       "Simple ceramic plates with warm material character, made for hosting, layering, and daily use.",
     thumbnailSrc: "/images/plate-a.avif",
     heroSrc: "/images/plate-b.avif",
+    parentCategoryId: null,
   },
   {
+    id: "deep-plates",
     title: "Deep plates",
     slug: "deep-plates",
     description:
       "Deep serving forms with a quiet sculptural profile for soups, grains, salads, and shared dishes.",
     thumbnailSrc: "/images/deep-a.avif",
     heroSrc: "/images/deep-b.avif",
+    parentCategoryId: null,
   },
 ];
 
-async function getCategory(slug: string): Promise<CategoryCatalog | null> {
-  const fallbackCategory = fallbackCategories.find((category) => category.slug === slug);
+type CategoryDbRow = {
+  id: string;
+  category_name: string | null;
+  category_slug: string | null;
+  category_description: string | null;
+  category_thumbnail: string | null;
+  category_hover_thumbnail: string | null;
+  parent_category_id: string | null;
+};
 
+function mapCategory(row: CategoryDbRow): CategoryCatalog {
+  return {
+    id: String(row.id),
+    title: row.category_name || "",
+    slug: row.category_slug || "",
+    description: row.category_description || "",
+    thumbnailSrc: row.category_thumbnail || "",
+    heroSrc: row.category_hover_thumbnail || row.category_thumbnail || "",
+    parentCategoryId: row.parent_category_id ? String(row.parent_category_id) : null,
+  };
+}
+
+async function getCategories(): Promise<CategoryCatalog[]> {
   try {
-    const category = await prisma.category.findUnique({
-      where: { slug },
-      select: {
-        title: true,
-        slug: true,
-        description: true,
-        thumbnailUrl: true,
-        hoverThumbnailUrl: true,
-      },
-    });
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    );
 
-    if (category) {
-      return {
-        title: category.title,
-        slug: category.slug,
-        description: category.description,
-        thumbnailSrc: category.thumbnailUrl,
-        heroSrc: category.hoverThumbnailUrl || category.thumbnailUrl,
-      };
+    const { data, error } = await supabase
+      .from("categories")
+      .select("id, category_name, category_slug, category_description, category_thumbnail, category_hover_thumbnail, parent_category_id")
+      .order("created_at", { ascending: false });
+
+    if (error || !data?.length) {
+      return fallbackCategories;
     }
-  } catch {
-    return fallbackCategory ?? null;
-  }
 
-  return fallbackCategory ?? null;
+    return data.map((category) => mapCategory(category as CategoryDbRow));
+  } catch {
+    return fallbackCategories;
+  }
 }
 
 function toSlug(value: string) {
@@ -116,31 +141,36 @@ function toSlug(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-function getCategoryProducts(category: CategoryCatalog) {
-  return catalogProducts.filter(
-    (product) => toSlug(product.category) === category.slug,
-  );
+function getCategoryProducts(categories: CategoryCatalog[]) {
+  const slugs = new Set(categories.map((category) => category.slug));
+  return catalogProducts.filter((product) => slugs.has(toSlug(product.category)));
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
-  const category = await getCategory(slug);
+  const categories = await getCategories();
+  const category = categories.find((item) => item.slug === slug);
 
   if (!category) {
     notFound();
   }
 
-  const products = getCategoryProducts(category);
+  const childCategories = categories
+    .filter((item) => item.parentCategoryId === category.id)
+    .sort((a, b) => a.title.localeCompare(b.title));
+  const parentCategory = category.parentCategoryId
+    ? categories.find((item) => item.id === category.parentCategoryId) ?? null
+    : null;
+  const productCategories = category.parentCategoryId ? [category] : [category, ...childCategories];
+  const products = getCategoryProducts(productCategories);
 
   return (
     <>
       <Navbar />
       <main className="bg-[#f5f0eb] text-[#1b1511]">
-
-        {/* ── Hero ─────────────────────────────────────────────────── */}
         <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#1f1a16] text-white">
           <Image
-            src={category.heroSrc}
+            src={category.heroSrc || category.thumbnailSrc}
             alt={category.title}
             fill
             priority
@@ -148,7 +178,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             className="object-cover"
           />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(27,21,17,0.88),rgba(27,21,17,0.52),rgba(27,21,17,0.24))]" />
-          {/* <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#f5f0eb] to-transparent" /> */}
 
           <div className="site-container relative flex min-h-[calc(100vh-5rem)] items-end pb-12 pt-20 md:pb-16">
             <div className="grid w-full gap-10 lg:grid-cols-[1fr_340px] lg:items-end">
@@ -157,8 +186,16 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                   href="/categories"
                   className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.34em] text-[#e9d8c4] transition-opacity hover:opacity-70"
                 >
-                  ← Back to categories
+                  Back to categories
                 </Link>
+                {parentCategory && (
+                  <Link
+                    href={`/categories/${parentCategory.slug}`}
+                    className="mt-5 inline-flex rounded-full border border-white/25 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#ead7c3] transition hover:border-white/60"
+                  >
+                    {parentCategory.title}
+                  </Link>
+                )}
                 <h1 className="mt-5 text-4xl font-display uppercase leading-[1] tracking-normal sm:text-5xl lg:text-6xl">
                   {category.title}
                 </h1>
@@ -167,7 +204,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 </p>
               </div>
 
-              <div className="overflow-hidden rounded-[32px] shadow-sm bg-[#1a1410]/60 p-5 backdrop-blur-md">
+              <div className="overflow-hidden rounded-[32px] bg-[#1a1410]/60 p-5 shadow-sm backdrop-blur-md">
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
                     <p className="text-3xl font-display">{products.length}</p>
@@ -176,19 +213,20 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                     </p>
                   </div>
                   <div>
-                    <p className="text-3xl font-display">WA</p>
+                    <p className="text-3xl font-display">{childCategories.length}</p>
                     <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#e6d3c1]">
-                      Order
+                      Subcategories
                     </p>
                   </div>
                 </div>
                 <div className="mt-5 border-t border-white/15 pt-4 text-xs leading-6 text-[#ead7c3]">
                   <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#e9d8c4]">
-                    Handcrafted collection
+                    {category.parentCategoryId ? "Child category" : "Parent category"}
                   </p>
                   <p>
-                    Each piece is shaped by hand with calm lines and tactile finishes
-                    for your daily rituals.
+                    {category.parentCategoryId
+                      ? "Browse pieces curated within this subcategory."
+                      : "Browse this parent collection and its child categories."}
                   </p>
                 </div>
                 <Link
@@ -203,41 +241,77 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </div>
         </section>
 
-        {/* ── Product grid ─────────────────────────────────────────── */}
+        {childCategories.length > 0 && (
+          <section className="py-14 md:py-20">
+            <div className="site-container">
+              <div className="mb-8 border-b border-[#d9cfc6] pb-5">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[#9a6b4e]">
+                  Subcategories
+                </p>
+                <h2 className="mt-3 font-display text-3xl uppercase leading-none text-[#1b1511] md:text-4xl">
+                  Explore {category.title}
+                </h2>
+              </div>
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {childCategories.map((child) => (
+                  <Link
+                    key={child.id}
+                    href={`/categories/${child.slug}`}
+                    className="group grid gap-4 rounded-[24px] border border-[#d9cfc6] bg-[#faf6f2] p-4 transition hover:border-[#1b1511]"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden rounded-[18px] bg-[#e4d9d0]">
+                      <Image
+                        src={child.thumbnailSrc}
+                        alt={child.title}
+                        fill
+                        sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                        className="object-cover transition duration-700 group-hover:scale-105"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-2xl uppercase leading-none text-[#1b1511]">
+                        {child.title}
+                      </h3>
+                      <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#6b5f55]">
+                        {child.description}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         <section id="products" className="py-14 md:py-20">
           <div className="site-container">
-
-            {/* Toolbar */}
             <div className="mb-10 flex flex-wrap items-center justify-between gap-4 border-b border-[#d9cfc6] pb-5">
               <div className="flex flex-wrap items-center gap-6 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7a6e65]">
-                <span>Filter</span>
+                <span>{category.parentCategoryId ? "Child Category" : "Parent Category"}</span>
                 <span className="h-3 w-px bg-[#c4b5a8]" />
-                <span>Artist</span>
-                <span className="h-3 w-px bg-[#c4b5a8]" />
-                <span>Color</span>
+                <span>{parentCategory?.title ?? category.title}</span>
               </div>
               <div className="flex flex-wrap items-center gap-6 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7a6e65]">
                 <span>{products.length} pieces</span>
                 <span className="h-3 w-px bg-[#c4b5a8]" />
-                <span>Sort by default</span>
+                <span>{productCategories.length} categories</span>
               </div>
             </div>
 
             {products.length ? (
               <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
                 {products.map((product) => (
-                 <article key={product.id}>
-                   <ProductCard product={product}/>
-                 </article>
+                  <article key={product.id}>
+                    <ProductCard product={product} />
+                  </article>
                 ))}
               </div>
             ) : (
-              /* Empty state */
               <div className="rounded-[32px] border border-[#d9cfc6] bg-[#faf6f2] px-8 py-16 text-center shadow-sm">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[#9a6b4e]">
                   Coming soon
                 </p>
-                <h2 className="mt-4 font-display text-3xl uppercase leading-none tracking-[-0.03em] text-[#1b1511] md:text-4xl">
+                <h2 className="mt-4 font-display text-3xl uppercase leading-none tracking-normal text-[#1b1511] md:text-4xl">
                   No pieces in this collection yet
                 </h2>
                 <p className="mx-auto mt-4 max-w-sm text-sm leading-7 text-[#7a6e65]">
@@ -252,12 +326,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 </Link>
               </div>
             )}
-
           </div>
         </section>
-
-     
-
       </main>
       <Footer />
     </>
