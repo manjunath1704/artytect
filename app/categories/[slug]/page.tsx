@@ -257,9 +257,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                   <Link
                     key={child.id}
                     href={`/categories/${child.slug}`}
-                    className="group grid gap-4 rounded-[24px] border border-[#d9cfc6] bg-[#faf6f2] p-4 transition hover:border-[#1b1511]"
+                    className="group grid rounded-[32px] shadow-sm bg-[#faf6f2] transition overflow-hidden"
                   >
-                    <div className="relative aspect-[4/3] overflow-hidden rounded-[18px] bg-[#e4d9d0]">
+                    <div className="relative aspect-[1/1] overflow-hidden  bg-[#e4d9d0]">
                       <Image
                         src={child.thumbnailSrc}
                         alt={child.title}
@@ -267,15 +267,16 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                         sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
                         className="object-cover transition duration-700 group-hover:scale-105"
                       />
-                    </div>
-                    <div>
-                      <h3 className="font-display text-2xl uppercase leading-none text-[#1b1511]">
+                      <div className="p-4 absolute start-4 bottom-4 end-4 rounded-[18px] bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-10 shadow-md border border-white/30">
+                      <h3 className="font-display text-3xl leading-none text-white">
                         {child.title}
                       </h3>
-                      <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#6b5f55]">
+                      <p className=" line-clamp-2 text-sm leading-6 text-white">
                         {child.description}
                       </p>
                     </div>
+                    </div>
+                    
                   </Link>
                 ))}
               </div>
@@ -299,11 +300,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             </div>
 
             {products.length ? (
-              <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-2 gap-3 md:gap-7 lg:grid-cols-2 xl:grid-cols-3">
                 {products.map((product) => (
-                  <article key={product.id}>
-                    <ProductCard product={product} />
-                  </article>
+                  <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             ) : (
