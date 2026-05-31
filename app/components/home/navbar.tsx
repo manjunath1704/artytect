@@ -10,7 +10,7 @@ const navItems = [
   { label: "Home", href: "/" },
   { label: "Categories", href: "/categories" },
   { label: "Products", href: "/products" },
-  { label: "Classes", href: "/classes" },
+  //{ label: "Classes", href: "/classes" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ];
@@ -82,9 +82,9 @@ const Navbar = ({
       return pathname.startsWith("/products");
     }
 
-    if (href === "/classes") {
-      return pathname.startsWith("/classes");
-    }
+    // if (href === "/classes") {
+    //   return pathname.startsWith("/classes");
+    // }
 
     if (href === "/blog") {
       return pathname.startsWith("/blog");

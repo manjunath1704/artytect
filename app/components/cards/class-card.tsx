@@ -40,11 +40,11 @@ export default function ClassCard({
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,17,13,0.18),rgba(23,17,13,0.2)_34%,rgba(23,17,13,0.9))]" />
           
-          <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-[#17110d]/62 p-4 text-white backdrop-blur-[2px]">
+          <div className="absolute inset-x-2 bottom-2 rounded-2xl bg-[#17110d]/62 p-2 text-white backdrop-blur-[2px]">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#ead7c3]">
               {classItem.level}
             </p>
-            <h3 className="mt-2 text-3xl font-display uppercase leading-none tracking-normal">
+            <h3 className="mt-2 text-2xl font-display  leading-1 tracking-normal">
               {classItem.title}
             </h3>
           </div>
@@ -52,7 +52,7 @@ export default function ClassCard({
       </Link>
 
       <div className="p-4">
-        <div className="grid grid-cols-3 rounded-2xl shadow-md bg-[#faf7f4] py-3 text-center text-[#5d5148]">
+        <div className="grid grid-cols-3 rounded-2xl shadow-md bg-[#faf7f4] py-2 text-center text-[#5d5148]">
           <div className="border-r border-[#e2d6ca] px-2">
             <Clock className="mx-auto h-4 w-4 text-[#9a6b4e]" />
             <p className="mt-1.5 text-xs">{classItem.duration}</p>
