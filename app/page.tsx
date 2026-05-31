@@ -46,6 +46,28 @@ type HeroSectionData = {
   content: HeroSectionContent;
 };
 
+type SectionVisibility = {
+  hero: boolean;
+  categories: boolean;
+  featured_products: boolean;
+  featured_classes: boolean;
+  about: boolean;
+  process: boolean;
+  testimonials: boolean;
+  crafted_moments: boolean;
+};
+
+const defaultVisibility: SectionVisibility = {
+  hero: true,
+  categories: true,
+  featured_products: true,
+  featured_classes: true,
+  about: true,
+  process: true,
+  testimonials: true,
+  crafted_moments: true,
+};
+
 function getPublicSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -284,8 +306,37 @@ async function getCraftedMoments(): Promise<CraftedMomentsData> {
   };
 }
 
+async function getSectionVisibility(): Promise<SectionVisibility> {
+  const supabase = getPublicSupabaseClient();
+
+  if (!supabase) {
+    return defaultVisibility;
+  }
+
+  const { data, error } = await supabase
+    .from("public_section_visibility")
+    .select("section_key, is_visible");
+
+  if (error) {
+    console.error("Error fetching public section visibility:", error);
+    return defaultVisibility;
+  }
+
+  return (data ?? []).reduce<SectionVisibility>(
+    (visibility, section) => {
+      const key = section.section_key as keyof SectionVisibility;
+      if (key in visibility) {
+        visibility[key] = Boolean(section.is_visible);
+      }
+      return visibility;
+    },
+    { ...defaultVisibility },
+  );
+}
+
 export default async function Page() {
-  const [heroSection, categoriesSection, processSection, testimonialsSection, craftedMoments] = await Promise.all([
+  const [visibility, heroSection, categoriesSection, processSection, testimonialsSection, craftedMoments] = await Promise.all([
+    getSectionVisibility(),
     getHeroSection(),
     getCategoriesSection(),
     getProcessSection(),
@@ -297,20 +348,24 @@ export default async function Page() {
     <>
       <Navbar />
       <main>
-        <Hero content={heroSection.content} />
-        <FeaturedCollections header={categoriesSection.header} />
-        <FeaturedProductsSection />
-        <FeaturedClassesSection />
-        <AboutSection/>
-        <CraftsmanshipProcess
-          header={processSection.header}
-          steps={processSection.steps}
-        />
-        <TestimonialsSection header={testimonialsSection.header}/>
-        <GalleryApp
-          header={craftedMoments.header}
-          items={craftedMoments.items}
-        />
+        {visibility.hero && <Hero content={heroSection.content} />}
+        {visibility.categories && <FeaturedCollections header={categoriesSection.header} />}
+        {visibility.featured_products && <FeaturedProductsSection />}
+        {visibility.featured_classes && <FeaturedClassesSection />}
+        {visibility.about && <AboutSection />}
+        {visibility.process && (
+          <CraftsmanshipProcess
+            header={processSection.header}
+            steps={processSection.steps}
+          />
+        )}
+        {visibility.testimonials && <TestimonialsSection header={testimonialsSection.header} />}
+        {visibility.crafted_moments && (
+          <GalleryApp
+            header={craftedMoments.header}
+            items={craftedMoments.items}
+          />
+        )}
       </main>
       <Footer />
     </>
