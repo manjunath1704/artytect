@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Check, Minus, PackageCheck, Plus, Ruler, ShieldCheck, Sparkles } from "lucide-react";
+import { Check, Minus, PackageCheck, Plus, Ruler, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import AddToCartButton from "@/components/cart/add-to-cart-button";
@@ -23,6 +23,8 @@ const tabs: { id: ProductTab; label: string }[] = [
 
 export default function ProductDetailView({ product }: ProductDetailViewProps) {
   const [selectedImage, setSelectedImage] = useState(product.images[0]);
+  const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] ?? "S");
+  const [selectedColor, setSelectedColor] = useState(product.colors?.[0] ?? "Natural");
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<ProductTab>("description");
   const whatsappMessage = useMemo(() => getProductOrderMessage(product), [product]);
@@ -193,6 +195,54 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                   })}
                 </div>
 
+                <div className="mt-8 grid gap-6 border-t border-[#eadfd4] pt-6 sm:grid-cols-2">
+                  <div>
+                    <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]">
+                      Size
+                    </p>
+                    <div className="grid grid-cols-4 gap-2">
+                      {(product.sizes?.length ? product.sizes : ["S", "M", "L", "XL"]).map((size) => (
+                        <button
+                          key={size}
+                          type="button"
+                          onClick={() => setSelectedSize(size)}
+                          className={[
+                            "h-11 rounded-full border text-xs font-semibold transition",
+                            selectedSize === size
+                              ? "border-[#1b1511] bg-[#1b1511] text-white"
+                              : "border-[#ded3c8] bg-white text-[#1b1511] hover:border-[#1b1511]",
+                          ].join(" ")}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]">
+                      Color
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {(product.colors?.length ? product.colors : ["Natural"]).map((color) => (
+                        <button
+                          key={color}
+                          type="button"
+                          onClick={() => setSelectedColor(color)}
+                          className={[
+                            "h-11 rounded-full border px-4 text-xs font-semibold transition",
+                            selectedColor === color
+                              ? "border-[#1b1511] bg-[#1b1511] text-white"
+                              : "border-[#ded3c8] bg-white text-[#1b1511] hover:border-[#1b1511]",
+                          ].join(" ")}
+                        >
+                          {color}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
                 <div className="mt-8 border-t border-[#eadfd4] pt-6">
                   <label
                     htmlFor="product-quantity"
@@ -220,9 +270,10 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                       </output>
                       <button
                         type="button"
-                        className="flex items-center justify-center text-[#7d746d] transition hover:bg-[#f7f2ec] hover:text-[#171717]"
+                        className="flex items-center justify-center text-[#7d746d] transition hover:bg-[#f7f2ec] hover:text-[#171717] disabled:cursor-not-allowed disabled:opacity-35"
                         aria-label="Increase quantity"
-                        onClick={() => setQuantity((value) => value + 1)}
+                        disabled={product.quantity ? quantity >= product.quantity : false}
+                        onClick={() => setQuantity((value) => Math.min(product.quantity || value + 1, value + 1))}
                       >
                         <Plus className="h-3.5 w-3.5" />
                       </button>
@@ -237,6 +288,8 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                     <AddToCartButton
                       product={product}
                       quantity={quantity}
+                      size={selectedSize}
+                      color={selectedColor}
                       className="inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-full border border-[#ded3c8] bg-white px-8 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] shadow-md transition hover:border-[#1b1511] hover:bg-[#faf6f2]"
                     />
                   </div>
@@ -273,6 +326,32 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
           </div>
           <div className="mt-7 rounded-[32px] shadow-md bg-[#fbf8f4] p-6 md:p-8">
             {tabContent}
+            {activeTab === "information" && product.measurementTable?.length ? (
+              <div className="mt-8 overflow-x-auto">
+                <table className="w-full min-w-[520px] border-collapse text-left text-sm">
+                  <thead className="text-[10px] uppercase tracking-[0.2em] text-[#8a7765]">
+                    <tr>
+                      <th className="border-b border-[#ded3c8] py-3">Measurement</th>
+                      <th className="border-b border-[#ded3c8] py-3">S</th>
+                      <th className="border-b border-[#ded3c8] py-3">M</th>
+                      <th className="border-b border-[#ded3c8] py-3">L</th>
+                      <th className="border-b border-[#ded3c8] py-3">XL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {product.measurementTable.map((row) => (
+                      <tr key={row.label} className="text-[#665b4f]">
+                        <td className="border-b border-[#eadfd4] py-3 font-semibold text-[#1b1511]">{row.label}</td>
+                        <td className="border-b border-[#eadfd4] py-3">{row.s}</td>
+                        <td className="border-b border-[#eadfd4] py-3">{row.m}</td>
+                        <td className="border-b border-[#eadfd4] py-3">{row.l}</td>
+                        <td className="border-b border-[#eadfd4] py-3">{row.xl}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : null}
           </div>
         </div>
       </section>

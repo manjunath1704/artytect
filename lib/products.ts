@@ -1,5 +1,6 @@
 export type Product = {
   id: string;
+  slug?: string;
   name: string;
   featured: boolean;
   category: string;
@@ -13,7 +14,87 @@ export type Product = {
   dimensions: string;
   materials: string;
   images: string[];
+  thumbnail?: string;
+  colors?: string[];
+  sizes?: string[];
+  quantity?: number;
+  measurementTable?: MeasurementRow[];
+  status?: "draft" | "published";
+  createdAt?: string;
+  updatedAt?: string;
 };
+
+export type MeasurementRow = {
+  label: string;
+  s: string;
+  m: string;
+  l: string;
+  xl: string;
+};
+
+export type ProductRow = {
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  description: string | null;
+  short_description: string | null;
+  price: number | string;
+  compare_at_price: number | string | null;
+  quantity: number | null;
+  sizes: string[] | null;
+  colors: string[] | null;
+  measurement_table: MeasurementRow[] | null;
+  thumbnail_url: string | null;
+  gallery_urls: string[] | null;
+  status: "draft" | "published";
+  sku: string | null;
+  tags: string[] | null;
+  dimensions: string | null;
+  materials: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export const fixedSizes = ["S", "M", "L", "XL"];
+
+export function slugifyProductName(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "");
+}
+
+export function mapProductRow(row: ProductRow): Product {
+  const thumbnail = row.thumbnail_url || row.gallery_urls?.[0] || "/images/bowl-a.avif";
+  const gallery = row.gallery_urls?.length ? row.gallery_urls : [thumbnail];
+
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    featured: row.status === "published",
+    category: row.category,
+    sku: row.sku || row.slug,
+    price: Number(row.price),
+    compareAtPrice: row.compare_at_price ? Number(row.compare_at_price) : undefined,
+    tags: row.tags || [],
+    shortDescription: row.short_description || row.description || "",
+    description: row.description || "",
+    dimensions: row.dimensions || "See measurement table",
+    materials: row.materials || "Handcrafted ceramic",
+    images: [thumbnail, ...gallery.filter((image) => image !== thumbnail)],
+    thumbnail,
+    colors: row.colors || [],
+    sizes: row.sizes?.length ? row.sizes : fixedSizes,
+    quantity: row.quantity ?? 0,
+    measurementTable: row.measurement_table || [],
+    status: row.status,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
 
 export const products: Product[] = [
   {

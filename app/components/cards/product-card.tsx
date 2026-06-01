@@ -27,11 +27,11 @@ export default function ProductCard({
         className,
       )}
     >
-      <Link href={`/products/${product.id}`} className="block">
+      <Link href={`/products/${product.slug ?? product.id}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-[#eee6dc]">
          
           <Image
-            src={product.images[1]}
+            src={product.images[1] ?? product.images[0]}
             alt={product.name}
             fill
             sizes={imageSizes}
@@ -76,6 +76,19 @@ export default function ProductCard({
           {product.shortDescription}
         </p>
 
+        <div className="mt-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7d746d]">
+          {(product.colors ?? []).slice(0, 4).map((color) => (
+            <span key={color} className="rounded-full bg-[#faf6f2] px-2.5 py-1">
+              {color}
+            </span>
+          ))}
+          {(product.sizes ?? []).slice(0, 4).map((size) => (
+            <span key={size} className="rounded-full border border-[#ded3c8] px-2.5 py-1">
+              {size}
+            </span>
+          ))}
+        </div>
+
         <div className="hidden lg:flex mt-3 items-center gap-2 rounded-2xl shadow-md bg-[#faf6f2] px-3 py-2 text-xs text-[#6f6259]">
           <Ruler className="h-3.5 w-3.5 text-[#9a6b4e]" />
           <span className="line-clamp-1">{product.dimensions}</span>
@@ -89,7 +102,7 @@ export default function ProductCard({
             Add to cart
           </AddToCartButton>
           <Link
-            href={`/products/${product.id}`}
+            href={`/products/${product.slug ?? product.id}`}
             className="lg:inline-flex h-11 hidden  items-center justify-center rounded-full border border-[#ded3c8] bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511]"
           >
             View

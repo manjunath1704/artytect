@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
+import { getProductBySlug, getRelatedPublishedProducts } from "@/lib/product-queries";
 import { isPublicPageVisible } from "@/lib/public-page-visibility";
-import { getProduct, getRelatedProducts } from "@/lib/products";
 import { formatPrice } from "@/lib/whatsapp";
 import ProductDetailView from "./product-detail-view";
 
@@ -17,19 +18,38 @@ type ProductPageProps = {
 
 export const dynamic = "force-dynamic";
 
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getProductBySlug(slug);
+
+  if (!product) {
+    return { title: "Product not found | Studio Haritham" };
+  }
+
+  return {
+    title: `${product.name} | Studio Haritham`,
+    description: product.shortDescription || product.description,
+    openGraph: {
+      title: product.name,
+      description: product.shortDescription || product.description,
+      images: product.images[0] ? [{ url: product.images[0], alt: product.name }] : undefined,
+    },
+  };
+}
+
 export default async function ProductPage({ params }: ProductPageProps) {
   if (!(await isPublicPageVisible("products"))) {
     notFound();
   }
 
   const { slug } = await params;
-  const product = getProduct(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();
   }
 
-  const relatedProducts = getRelatedProducts(product.id);
+  const relatedProducts = await getRelatedPublishedProducts(product);
 
   return (
     <>
@@ -60,7 +80,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               {relatedProducts.map((relatedProduct) => (
                 <Link
                   key={relatedProduct.id}
-                  href={`/products/${relatedProduct.id}`}
+                  href={`/products/${relatedProduct.slug ?? relatedProduct.id}`}
                   className="group block overflow-hidden rounded-[32px] shadow-sm bg-[#fffdf9]"
                 >
                   <div className="relative aspect-[0.95/1] overflow-hidden bg-[#eee6dc]">
@@ -70,7 +90,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                       </span>
                     ) : null} */}
                     <Image
-                      src={relatedProduct.images[1]}
+                      src={relatedProduct.images[1] ?? relatedProduct.images[0]}
                       alt={relatedProduct.name}
                       fill
                       sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(100vw - 48px)"

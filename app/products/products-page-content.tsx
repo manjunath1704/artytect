@@ -2,10 +2,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles } from "lucide-react";
-import { products } from "@/lib/products";
+import type { Product } from "@/lib/products";
 import ProductCatalog from "./product-catalog";
 import { motion, useScroll, useTransform } from "framer-motion";
-export default function ProductsPageContent() {
+
+type ProductsPageContentProps = {
+  products: Product[];
+};
+
+export default function ProductsPageContent({ products }: ProductsPageContentProps) {
   const { scrollY } = useScroll();
 
   const y = useTransform(scrollY, [0, 500], [0, 120]);

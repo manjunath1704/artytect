@@ -135,8 +135,8 @@ const NavbarClient = ({
               </Link>
             );
           })}
-           <button
-          type="button"
+           <Link
+          href="/cart"
           className={[
             "relative hidden h-11 w-11 items-center justify-center rounded-full border transition md:inline-flex",
             showSolid
@@ -153,7 +153,7 @@ const NavbarClient = ({
               {totalQuantity > 99 ? "99+" : totalQuantity}
             </span>
           )}
-        </button>
+        </Link>
         </nav>
 
        
@@ -202,8 +202,9 @@ const NavbarClient = ({
             ].join(" ")}
           >
             <nav className="grid gap-1">
-              <button
-                type="button"
+              <Link
+                href="/cart"
+                onClick={() => setIsOpen(false)}
                 className={[
                   "mb-2 flex items-center justify-between rounded-full px-3 py-3 text-sm font-medium tracking-[0.08em] transition",
                   showSolid
@@ -219,7 +220,7 @@ const NavbarClient = ({
                 <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#9a6b4e] px-2 text-xs font-bold text-white">
                   {totalQuantity > 99 ? "99+" : totalQuantity}
                 </span>
-              </button>
+              </Link>
               {navItems.map((item) => {
                 const isActive = isActiveItem(item.href);
 

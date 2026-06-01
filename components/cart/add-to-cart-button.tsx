@@ -9,6 +9,8 @@ import type { Product } from "@/lib/products";
 type AddToCartButtonProps = {
   product: Product;
   quantity?: number;
+  size?: string;
+  color?: string;
   className?: string;
   children?: React.ReactNode;
 };
@@ -16,6 +18,8 @@ type AddToCartButtonProps = {
 export default function AddToCartButton({
   product,
   quantity = 1,
+  size,
+  color,
   className,
   children = "Add to cart",
 }: AddToCartButtonProps) {
@@ -26,7 +30,7 @@ export default function AddToCartButton({
       type="button"
       className={className}
       onClick={() => {
-        addItem(product, quantity);
+        addItem(product, quantity, { size, color });
         toast.success(`${product.name} added to cart.`);
       }}
     >

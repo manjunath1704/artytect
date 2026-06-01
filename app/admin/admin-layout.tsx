@@ -19,6 +19,8 @@ import {
   Package,
   Plus,
   Route,
+  Settings,
+  ShoppingBag,
   Sparkles,
   Users,
   X,
@@ -54,6 +56,9 @@ const BREADCRUMBS: Record<string, { label: string; parent?: string }> = {
   "/admin/process": { label: "Process", parent: "/admin" },
   "/admin/crafted-moments": { label: "Crafted Moments", parent: "/admin" },
   "/admin/blogs": { label: "Blogs", parent: "/admin" },
+  "/admin/products": { label: "Products", parent: "/admin" },
+  "/admin/orders": { label: "Orders", parent: "/admin" },
+  "/admin/settings": { label: "Settings", parent: "/admin" },
   "/admin/public-visibility": { label: "Public Visibility", parent: "/admin" },
 };
 
@@ -107,7 +112,9 @@ const NAV: NavItem[] = [
   { title: "Crafted Moments", href: "/admin/crafted-moments", icon: Sparkles, children: [] },
   { title: "Public Visibility", href: "/admin/public-visibility", icon: Eye, children: [] },
   { title: "Blogs", href: "/admin/blogs", icon: Newspaper, children: [] },
-  { title: "Products", href: "#", icon: Package, disabled: true, children: [] },
+  { title: "Products", href: "/admin/products", icon: Package, children: [] },
+  { title: "Orders", href: "/admin/orders", icon: ShoppingBag, children: [] },
+  { title: "Settings", href: "/admin/settings", icon: Settings, children: [] },
   { title: "Classes",  href: "#", icon: Users,   disabled: true, children: [] },
 ];
 

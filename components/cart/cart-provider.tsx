@@ -14,16 +14,24 @@ import type { Product } from "@/lib/products";
 
 type CartItem = {
   id: string;
+  productId: string;
+  slug: string;
   name: string;
   price: number;
   image: string;
+  size: string;
+  color: string;
   quantity: number;
 };
 
 type CartContextValue = {
   items: CartItem[];
   totalQuantity: number;
-  addItem: (product: Product, quantity?: number) => void;
+  subtotal: number;
+  addItem: (product: Product, quantity?: number, options?: { size?: string; color?: string }) => void;
+  updateQuantity: (id: string, quantity: number) => void;
+  removeItem: (id: string) => void;
+  clearCart: () => void;
 };
 
 const CART_STORAGE_KEY = "haritham-cart";
@@ -45,9 +53,15 @@ function readStoredCart(): CartItem[] {
         typeof item.name === "string" &&
         typeof item.price === "number" &&
         typeof item.image === "string" &&
+        typeof item.size === "string" &&
+        typeof item.color === "string" &&
         typeof item.quantity === "number" &&
         item.quantity > 0,
-    );
+    ).map((item) => ({
+      ...item,
+      productId: item.productId || item.id.split("::")[0],
+      slug: item.slug || item.id,
+    }));
   } catch {
     return [];
   }
@@ -64,15 +78,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items]);
 
-  const addItem = useCallback((product: Product, quantity = 1) => {
+  const addItem = useCallback((product: Product, quantity = 1, options?: { size?: string; color?: string }) => {
     const safeQuantity = Math.max(1, Math.floor(quantity));
+    const selectedSize = options?.size || product.sizes?.[0] || "S";
+    const selectedColor = options?.color || product.colors?.[0] || "Natural";
+    const cartId = `${product.id}::${selectedSize}::${selectedColor}`;
 
     setItems((currentItems) => {
-      const existingItem = currentItems.find((item) => item.id === product.id);
+      const existingItem = currentItems.find((item) => item.id === cartId);
 
       if (existingItem) {
         return currentItems.map((item) =>
-          item.id === product.id
+          item.id === cartId
             ? { ...item, quantity: item.quantity + safeQuantity }
             : item,
         );
@@ -81,18 +98,39 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return [
         ...currentItems,
         {
-          id: product.id,
+          id: cartId,
+          productId: product.id,
+          slug: product.slug ?? product.id,
           name: product.name,
           price: product.price,
           image: product.images[0],
+          size: selectedSize,
+          color: selectedColor,
           quantity: safeQuantity,
         },
       ];
     });
   }, []);
 
+  const updateQuantity = useCallback((id: string, quantity: number) => {
+    const safeQuantity = Math.max(1, Math.floor(quantity));
+    setItems((currentItems) =>
+      currentItems.map((item) => (item.id === id ? { ...item, quantity: safeQuantity } : item)),
+    );
+  }, []);
+
+  const removeItem = useCallback((id: string) => {
+    setItems((currentItems) => currentItems.filter((item) => item.id !== id));
+  }, []);
+
+  const clearCart = useCallback(() => setItems([]), []);
+
   const totalQuantity = useMemo(
     () => items.reduce((total, item) => total + item.quantity, 0),
+    [items],
+  );
+  const subtotal = useMemo(
+    () => items.reduce((total, item) => total + item.price * item.quantity, 0),
     [items],
   );
 
@@ -100,9 +138,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     () => ({
       items,
       totalQuantity,
+      subtotal,
       addItem,
+      updateQuantity,
+      removeItem,
+      clearCart,
     }),
-    [addItem, items, totalQuantity],
+    [addItem, clearCart, items, removeItem, subtotal, totalQuantity, updateQuantity],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
