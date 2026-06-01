@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Check, Minus, PackageCheck, Plus, Ruler, ShieldCheck, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import AddToCartButton from "@/components/cart/add-to-cart-button";
 import WhatsAppButton from "@/components/whatsapp-button";
 import type { Product } from "@/lib/products";
 import { formatPrice, getProductOrderMessage } from "@/lib/whatsapp";
@@ -233,6 +234,11 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                     >
                       Order via WhatsApp
                     </WhatsAppButton>
+                    <AddToCartButton
+                      product={product}
+                      quantity={quantity}
+                      className="inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-full border border-[#ded3c8] bg-white px-8 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] shadow-md transition hover:border-[#1b1511] hover:bg-[#faf6f2]"
+                    />
                   </div>
                 </div>
               </div>

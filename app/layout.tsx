@@ -4,6 +4,8 @@ import "@fontsource/lato/400.css";
 import "@fontsource/lato/700.css";
 import "@fontsource/dm-serif-display/400.css";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/components/auth/auth-provider";
+import { CartProvider } from "@/components/cart/cart-provider";
 import WhatsAppFloatingButton from "./components/whatsapp-floating-button";
 import "./globals.css";
 
@@ -45,9 +47,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased">
-        {children}
-        <WhatsAppFloatingButton />
-        <Toaster position="top-right" richColors closeButton />
+        <AuthProvider>
+          <CartProvider>
+            {children}
+            <WhatsAppFloatingButton />
+            <Toaster position="top-right" richColors closeButton />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

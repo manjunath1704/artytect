@@ -2,7 +2,11 @@ import { redirect } from "next/navigation";
 
 import { AdminLayout } from "../admin-layout";
 import { createClient } from "@/lib/supabase/server";
-import VisibilityManager, { type PublicSectionVisibility } from "./visibility-manager";
+import { PUBLIC_PAGE_DEFAULTS } from "@/lib/public-page-visibility";
+import VisibilityManager, {
+  type PublicPageVisibility,
+  type PublicSectionVisibility,
+} from "./visibility-manager";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +34,11 @@ export default async function PublicVisibilityPage() {
     .select("section_key, label, is_visible, sort_order")
     .order("sort_order", { ascending: true });
 
+  const { data: pageVisibilityData, error: pageVisibilityError } = await supabase
+    .from("public_page_visibility")
+    .select("page_key, label, path, is_visible, sort_order")
+    .order("sort_order", { ascending: true });
+
   const sections: PublicSectionVisibility[] =
     error || !visibilityData?.length
       ? DEFAULT_SECTIONS
@@ -40,9 +49,20 @@ export default async function PublicVisibilityPage() {
           sort_order: Number(section.sort_order || 0),
         }));
 
+  const pages: PublicPageVisibility[] =
+    pageVisibilityError || !pageVisibilityData?.length
+      ? PUBLIC_PAGE_DEFAULTS
+      : pageVisibilityData.map((page) => ({
+          page_key: page.page_key,
+          label: page.label,
+          path: page.path,
+          is_visible: Boolean(page.is_visible),
+          sort_order: Number(page.sort_order || 0),
+        }));
+
   return (
     <AdminLayout userEmail={data.user.email ?? ""}>
-      <VisibilityManager initialSections={sections} />
+      <VisibilityManager initialSections={sections} initialPages={pages} />
     </AdminLayout>
   );
 }

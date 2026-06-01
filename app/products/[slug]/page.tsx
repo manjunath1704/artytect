@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
-import { getProduct, getRelatedProducts, products } from "@/lib/products";
+import { isPublicPageVisible } from "@/lib/public-page-visibility";
+import { getProduct, getRelatedProducts } from "@/lib/products";
 import { formatPrice } from "@/lib/whatsapp";
 import ProductDetailView from "./product-detail-view";
 
@@ -14,13 +15,13 @@ type ProductPageProps = {
   }>;
 };
 
-export function generateStaticParams() {
-  return products.map((product) => ({
-    slug: product.id,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export default async function ProductPage({ params }: ProductPageProps) {
+  if (!(await isPublicPageVisible("products"))) {
+    notFound();
+  }
+
   const { slug } = await params;
   const product = getProduct(slug);
 

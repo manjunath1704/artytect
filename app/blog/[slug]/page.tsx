@@ -8,6 +8,7 @@ import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
 import { formatBlogDate, getPublishedBlogBySlug, getPublishedBlogs } from "@/lib/blogs";
 import { normalizeBlogTags } from "@/lib/blog-utils";
+import { isPublicPageVisible } from "@/lib/public-page-visibility";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -16,6 +17,12 @@ type PageProps = {
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  if (!(await isPublicPageVisible("blog"))) {
+    return {
+      title: "Blog not found | Studio Haritham",
+    };
+  }
+
   const { slug } = await params;
   const blog = await getPublishedBlogBySlug(slug);
 
@@ -46,6 +53,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function BlogDetailPage({ params }: PageProps) {
+  if (!(await isPublicPageVisible("blog"))) {
+    notFound();
+  }
+
   const { slug } = await params;
   const blog = await getPublishedBlogBySlug(slug);
 

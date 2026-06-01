@@ -40,6 +40,8 @@ export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const isAdminRoute = pathname.startsWith("/admin")
   const isAdminLoginRoute = pathname === "/admin/login"
+  const isAuthPage = ["/login", "/signup", "/forgot-password"].includes(pathname)
+  const isProtectedRoute = pathname.startsWith("/account")
   const copyCookies = (response: NextResponse) => {
     supabaseResponse.cookies.getAll().forEach((cookie) => {
       const { name, value, ...options } = cookie
@@ -58,6 +60,20 @@ export async function updateSession(request: NextRequest) {
   if (isAdminLoginRoute && user) {
     const url = request.nextUrl.clone()
     url.pathname = "/admin"
+    return copyCookies(NextResponse.redirect(url))
+  }
+
+  if (isProtectedRoute && !user) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/login"
+    url.searchParams.set("next", pathname)
+    return copyCookies(NextResponse.redirect(url))
+  }
+
+  if (isAuthPage && user) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/account"
+    url.search = ""
     return copyCookies(NextResponse.redirect(url))
   }
 

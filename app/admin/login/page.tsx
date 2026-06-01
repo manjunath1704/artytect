@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import Navbar from "@/app/components/home/navbar";
 import AdminLoginForm from "./login-form";
 import { createClient } from "@/lib/supabase/server";
 
@@ -11,6 +12,10 @@ export default async function AdminLoginPage() {
     redirect("/admin");
   }
 
-  return <AdminLoginForm />;
+  return (
+    <>
+      <Navbar forceSolid />
+      <AdminLoginForm />
+    </>
+  );
 }
-

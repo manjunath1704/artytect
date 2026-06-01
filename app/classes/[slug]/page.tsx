@@ -7,6 +7,7 @@ import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
 import WhatsAppButton from "@/components/whatsapp-button";
 import { getClass, potteryClasses } from "@/lib/classes";
+import { isPublicPageVisible } from "@/lib/public-page-visibility";
 import { formatPrice, getClassBookingMessage } from "@/lib/whatsapp";
 
 type ClassPageProps = {
@@ -15,13 +16,13 @@ type ClassPageProps = {
   }>;
 };
 
-export function generateStaticParams() {
-  return potteryClasses.map((classItem) => ({
-    slug: classItem.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export default async function ClassPage({ params }: ClassPageProps) {
+  if (!(await isPublicPageVisible("classes"))) {
+    notFound();
+  }
+
   const { slug } = await params;
   const classItem = getClass(slug);
 

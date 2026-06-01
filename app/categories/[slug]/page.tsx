@@ -7,6 +7,7 @@ import { ArrowUpRight } from "lucide-react";
 import ProductCard from "@/app/components/cards/product-card";
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
+import { isPublicPageVisible } from "@/lib/public-page-visibility";
 import { products as catalogProducts } from "@/lib/products";
 
 type CategoryPageProps = {
@@ -147,6 +148,10 @@ function getCategoryProducts(categories: CategoryCatalog[]) {
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
+  if (!(await isPublicPageVisible("categories"))) {
+    notFound();
+  }
+
   const { slug } = await params;
   const categories = await getCategories();
   const category = categories.find((item) => item.slug === slug);

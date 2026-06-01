@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { Mail, MapPin, Phone } from "lucide-react";
+import { notFound } from "next/navigation";
 
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
+import { isPublicPageVisible } from "@/lib/public-page-visibility";
 import ContactMap from "../components/contact-map";
 import ContactForm from "./contact-form";
 
@@ -27,7 +29,13 @@ const contactMethods = [
   // },
 ];
 
-export default function ContactPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ContactPage() {
+  if (!(await isPublicPageVisible("contact"))) {
+    notFound();
+  }
+
   return (
     <>
       <Navbar transparentTone="dark" />

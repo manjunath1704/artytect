@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Ruler, Sparkles } from "lucide-react";
 
+import AddToCartButton from "@/components/cart/add-to-cart-button";
 import WhatsAppButton from "@/components/whatsapp-button";
 import type { Product } from "@/lib/products";
 import { cn } from "@/lib/utils";
@@ -81,13 +82,17 @@ export default function ProductCard({
           <span className="line-clamp-1">{product.dimensions}</span>
         </div>
 
-        <div className="mt-3 grid grid-cols-[1fr_auto] gap-3">
+        <div className="mt-3 grid grid-cols-[1fr_auto] gap-3 lg:grid-cols-[1fr_auto_auto]">
           <WhatsAppButton
             message={getProductOrderMessage(product)}
             className="h-11 rounded-full px-4"
           >
             Order Now
           </WhatsAppButton>
+          <AddToCartButton
+            product={product}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#ded3c8] bg-white text-[#1b1511] transition hover:border-[#1b1511] hover:bg-[#faf6f2] [&_span]:sr-only"
+          />
           <Link
             href={`/products/${product.id}`}
             className="lg:inline-flex h-11 hidden  items-center justify-center rounded-full border border-[#ded3c8] bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511]"
