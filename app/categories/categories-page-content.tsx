@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import CategoryCardMicro from "../components/cards/category-card-micro";
+import ProductCard from "../components/cards/product-card";
 
 type CategoryItem = {
   id: string;
@@ -15,6 +16,19 @@ type CategoryItem = {
   hoverThumbnailSrc: string;
   parentCategoryId: string | null;
   count?: number;
+};
+
+type Product = {
+  id: string;
+  slug: string;
+  name: string;
+  category: string;
+  price: number;
+  compareAtPrice?: number;
+  thumbnail: string;
+  colors: string[];
+  sizes: string[];
+  badge?: string;
 };
 
 const fallbackCategories: CategoryItem[] = [
@@ -87,34 +101,56 @@ type CategoryRow = {
 
 export default function CategoriesPageContent() {
   const [categories, setCategories] = useState<CategoryItem[]>(fallbackCategories);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
 
-    const loadCategories = async () => {
+    const loadData = async () => {
       try {
-        const response = await fetch("/api/categories");
-        const result = (await response.json().catch(() => null)) as
+        // Load categories
+        const categoriesResponse = await fetch("/api/categories");
+        const categoriesResult = (await categoriesResponse.json().catch(() => null)) as
           | { categories?: CategoryRow[] }
           | null;
 
-        if (!isMounted || !response.ok || !result?.categories?.length) {
-          setIsLoading(false);
-          return;
+        if (isMounted && categoriesResponse.ok && categoriesResult?.categories?.length) {
+          const nextCategories = categoriesResult.categories.map((category: CategoryRow) => ({
+            id: category.id,
+            title: category.title,
+            slug: category.slug,
+            description: category.description,
+            thumbnailSrc: category.thumbnail_url,
+            hoverThumbnailSrc: category.hover_thumbnail_url,
+            parentCategoryId: category.parent_category_id,
+          }));
+          setCategories(nextCategories);
         }
 
-        const nextCategories = result.categories.map((category: CategoryRow) => ({
-          id: category.id,
-          title: category.title,
-          slug: category.slug,
-          description: category.description,
-          thumbnailSrc: category.thumbnail_url,
-          hoverThumbnailSrc: category.hover_thumbnail_url,
-          parentCategoryId: category.parent_category_id,
-        }));
+        // Load products
+        const productsResponse = await fetch("/api/admin/products");
+        const productsResult = (await productsResponse.json().catch(() => null)) as
+          | { products?: any[] }
+          | null;
 
-        setCategories(nextCategories);
+        if (isMounted && productsResponse.ok && productsResult?.products?.length) {
+          const nextProducts = productsResult.products
+            .filter((p: any) => p.status === "published")
+            .map((p: any) => ({
+              id: p.id,
+              slug: p.slug,
+              name: p.name,
+              category: p.category,
+              price: Number(p.price),
+              compareAtPrice: p.compare_at_price ? Number(p.compare_at_price) : undefined,
+              thumbnail: p.thumbnail_url || (Array.isArray(p.gallery_urls) ? p.gallery_urls[0] : "") || "/images/bowl-a.avif",
+              colors: Array.isArray(p.colors) ? p.colors : [],
+              sizes: Array.isArray(p.sizes) ? p.sizes : ["S", "M", "L", "XL"],
+              badge: p.badge,
+            }));
+          setProducts(nextProducts);
+        }
       } catch {
         // Keep fallback
       } finally {
@@ -124,7 +160,7 @@ export default function CategoriesPageContent() {
       }
     };
 
-    void loadCategories();
+    void loadData();
 
     return () => {
       isMounted = false;
@@ -362,6 +398,31 @@ export default function CategoriesPageContent() {
             ))
            }
        </div>
+
+       {/* ── All Products ──────────────────────────────────────────── */}
+       {products.length > 0 && (
+         <section className="border-t border-[#d9cfc6] bg-white py-16 md:py-20">
+           <div className="site-container">
+             <div className="mb-10 text-center">
+               <p className="text-[10px] font-semibold uppercase tracking-[0.36em] text-[#9a6b4e]">
+                 Our Collection
+               </p>
+               <h2 className="mt-3 font-display text-4xl uppercase leading-none tracking-normal sm:text-5xl">
+                 All Products
+               </h2>
+               <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-[#6b5f55]">
+                 Discover our full range of handcrafted ceramic pieces across all categories
+               </p>
+             </div>
+
+             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+               {products.map((product) => (
+                 <ProductCard key={product.id} product={product} />
+               ))}
+             </div>
+           </div>
+         </section>
+       )}
       </main>
   );
 }

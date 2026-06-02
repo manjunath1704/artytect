@@ -66,6 +66,7 @@ const emptyForm = {
   name: "",
   slug: "",
   category: "",
+  subcategory: "",
   description: "",
   short_description: "",
   price: "",
@@ -99,20 +100,49 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
 
   // ── fetch categories from API ─────────────────────────────────────────────
   const [categoryOptions, setCategoryOptions] = useState<SelectOption[]>([]);
+  const [subcategoryOptions, setSubcategoryOptions] = useState<SelectOption[]>([]);
+  const [allCategories, setAllCategories] = useState<{ id: string; title: string; slug: string; parent_category_id: string | null }[]>([]);
 
   useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
-      .then((data: { categories: { id: string; title: string; slug: string }[] }) => {
+      .then((data: { categories: { id: string; title: string; slug: string; parent_category_id: string | null }[] }) => {
+        const categories = data.categories ?? [];
+        setAllCategories(categories);
+        
+        // Parent categories (no parent_category_id)
+        const parents = categories.filter((cat) => !cat.parent_category_id);
         setCategoryOptions(
-          (data.categories ?? []).map((cat) => ({
-            value: cat.title,   // product.category stores the display name
+          parents.map((cat) => ({
+            value: cat.title,
             label: cat.title,
           }))
         );
       })
       .catch(() => {/* silently ignore — category select will just be empty */});
   }, []);
+
+  // Update subcategories when category changes
+  useEffect(() => {
+    if (!form.category) {
+      setSubcategoryOptions([]);
+      return;
+    }
+    
+    const selectedParent = allCategories.find((cat) => cat.title === form.category);
+    if (!selectedParent) {
+      setSubcategoryOptions([]);
+      return;
+    }
+    
+    const children = allCategories.filter((cat) => cat.parent_category_id === selectedParent.id);
+    setSubcategoryOptions(
+      children.map((cat) => ({
+        value: cat.title,
+        label: cat.title,
+      }))
+    );
+  }, [form.category, allCategories]);
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -376,14 +406,39 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                     instanceId="product-form-category"
                     value={categoryOptions.find((opt) => opt.value === form.category) ?? null}
                     options={categoryOptions}
-                    onChange={(opt) =>
-                      setForm((current) => ({ ...current, category: opt?.value ?? "" }))
-                    }
+                    onChange={(opt) => {
+                      setForm((current) => ({ ...current, category: opt?.value ?? "", subcategory: "" }));
+                    }}
                     placeholder={categoryOptions.length ? "Select category…" : "Loading…"}
                     isClearable
                   />
                 </div>
               </label>
+
+              {/* Subcategory — shown only when category is selected */}
+              <label className="block">
+                <span className="text-sm font-medium text-[#352a21]">Subcategory (Optional)</span>
+                <div className="mt-2">
+                  <AppSelect
+                    instanceId="product-form-subcategory"
+                    value={subcategoryOptions.find((opt) => opt.value === form.subcategory) ?? null}
+                    options={subcategoryOptions}
+                    onChange={(opt) =>
+                      setForm((current) => ({ ...current, subcategory: opt?.value ?? "" }))
+                    }
+                    placeholder={
+                      !form.category
+                        ? "Select category first"
+                        : subcategoryOptions.length
+                        ? "Select subcategory…"
+                        : "No subcategories"
+                    }
+                    isDisabled={!form.category || !subcategoryOptions.length}
+                    isClearable
+                  />
+                </div>
+              </label>
+
               <label className="block">
                 <span className="text-sm font-medium text-[#352a21]">Publish status</span>
                 <select value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value }))} className={inputClassName}>

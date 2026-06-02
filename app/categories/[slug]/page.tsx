@@ -1,14 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
 import { ArrowUpRight } from "lucide-react";
 
 import ProductCard from "@/app/components/cards/product-card";
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
 import { isPublicPageVisible } from "@/lib/public-page-visibility";
-import { products as catalogProducts } from "@/lib/products";
+import { createClient } from "@/lib/supabase/server";
+import { mapProductRow, type ProductRow } from "@/lib/products";
 
 type CategoryPageProps = {
   params: Promise<{
@@ -113,10 +113,7 @@ function mapCategory(row: CategoryDbRow): CategoryCatalog {
 
 async function getCategories(): Promise<CategoryCatalog[]> {
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    );
+    const supabase = await createClient();
 
     const { data, error } = await supabase
       .from("categories")
@@ -133,18 +130,25 @@ async function getCategories(): Promise<CategoryCatalog[]> {
   }
 }
 
-function toSlug(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/&/g, "and")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
+async function getCategoryProducts(categoryTitles: string[]) {
+  try {
+    const supabase = await createClient();
+    
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("status", "published")
+      .in("category", categoryTitles)
+      .order("created_at", { ascending: false });
 
-function getCategoryProducts(categories: CategoryCatalog[]) {
-  const slugs = new Set(categories.map((category) => category.slug));
-  return catalogProducts.filter((product) => slugs.has(toSlug(product.category)));
+    if (error || !data?.length) {
+      return [];
+    }
+
+    return data.map((row) => mapProductRow(row as ProductRow));
+  } catch {
+    return [];
+  }
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
@@ -167,7 +171,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     ? categories.find((item) => item.id === category.parentCategoryId) ?? null
     : null;
   const productCategories = category.parentCategoryId ? [category] : [category, ...childCategories];
-  const products = getCategoryProducts(productCategories);
+  const categoryTitles = productCategories.map((cat) => cat.title);
+  const products = await getCategoryProducts(categoryTitles);
 
   return (
     <>
