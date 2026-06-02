@@ -1,18 +1,22 @@
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
+import { getAdminClient } from "@/lib/supabase/admin";
 import CheckoutContent from "./checkout-content";
 
 export const dynamic = "force-dynamic";
 
 export default async function CheckoutPage() {
-  // Fetch payment QR via API (bypasses RLS issues)
+  // Fetch payment QR directly using admin client (bypasses RLS)
   let qrUrl = "";
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/payment-qr`, {
-      cache: "no-store",
-    });
-    const result = await response.json();
-    qrUrl = result.url || "";
+    const supabase = getAdminClient();
+    const { data } = await supabase
+      .from("admin_settings")
+      .select("value")
+      .eq("key", "payment_qr")
+      .maybeSingle();
+    
+    qrUrl = (data?.value as { url?: string } | null)?.url ?? "";
   } catch (error) {
     console.error("Error fetching payment QR:", error);
   }
