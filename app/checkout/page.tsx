@@ -1,22 +1,26 @@
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
-import { createClient } from "@/lib/supabase/server";
 import CheckoutContent from "./checkout-content";
 
 export const dynamic = "force-dynamic";
 
 export default async function CheckoutPage() {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("admin_settings")
-    .select("value")
-    .eq("key", "payment_qr")
-    .maybeSingle();
+  // Fetch payment QR via API (bypasses RLS issues)
+  let qrUrl = "";
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/payment-qr`, {
+      cache: "no-store",
+    });
+    const result = await response.json();
+    qrUrl = result.url || "";
+  } catch (error) {
+    console.error("Error fetching payment QR:", error);
+  }
 
   return (
     <>
       <Navbar transparentTone="dark" />
-      <CheckoutContent paymentQrUrl={(data?.value as { url?: string } | null)?.url ?? ""} />
+      <CheckoutContent paymentQrUrl={qrUrl} />
       <Footer />
     </>
   );

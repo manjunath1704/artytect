@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
 
 import ProductCard from "@/app/components/cards/product-card";
-import { products } from "@/lib/products";
+import type { Product } from "@/lib/products";
 import {
   type CarouselApi,
   Carousel,
@@ -19,10 +19,12 @@ import SectionHeader from "./section-header";
 import ViewMoreLink from "./view-more-link";
 
 type FeaturedProductsSectionProps = {
+  products?: Product[];
   isLoading?: boolean;
 };
 
 export default function FeaturedProductsSection({
+  products = [],
   isLoading = false,
 }: FeaturedProductsSectionProps) {
   const featuredProducts = products.filter((item) => item.featured);
@@ -82,7 +84,7 @@ export default function FeaturedProductsSection({
               <CarouselContent>
                 {featuredProducts.map((product) => (
                   <CarouselItem
-                    key={product.id}
+                    key={`${product.id}-${product.slug ?? product.id}`}
                     className="basis-[100%] sm:basis-1/2 lg:basis-1/3 xl:basis-1/3"
                   >
                     <ProductCard

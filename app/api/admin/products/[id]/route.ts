@@ -57,7 +57,6 @@ export async function PUT(request: Request, { params }: ProductRouteProps) {
         thumbnail_url: thumbnailUrl,
         gallery_urls: [...existingGallery, ...newGalleryUrls],
         status: formData.get("status") === "published" ? "published" : "draft",
-        updated_at: new Date().toISOString(),
       })
       .eq("id", id)
       .select()

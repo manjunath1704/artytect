@@ -21,6 +21,7 @@ import GalleryApp, {
 } from "./components/home/gallery";
 import Footer from "./components/home/footer";
 import { createClient } from "@supabase/supabase-js";
+import { getPublishedProducts } from "@/lib/product-queries";
 
 export const dynamic = "force-dynamic";
 
@@ -335,13 +336,14 @@ async function getSectionVisibility(): Promise<SectionVisibility> {
 }
 
 export default async function Page() {
-  const [visibility, heroSection, categoriesSection, processSection, testimonialsSection, craftedMoments] = await Promise.all([
+  const [visibility, heroSection, categoriesSection, processSection, testimonialsSection, craftedMoments, featuredProducts] = await Promise.all([
     getSectionVisibility(),
     getHeroSection(),
     getCategoriesSection(),
     getProcessSection(),
     getTestimonialsSection(),
     getCraftedMoments(),
+    getPublishedProducts(),
   ]);
 
   return (
@@ -350,7 +352,7 @@ export default async function Page() {
       <main>
         {visibility.hero && <Hero content={heroSection.content} />}
         {visibility.categories && <FeaturedCollections header={categoriesSection.header} />}
-        {visibility.featured_products && <FeaturedProductsSection />}
+        {visibility.featured_products && <FeaturedProductsSection products={featuredProducts} />}
         {visibility.featured_classes && <FeaturedClassesSection />}
         {visibility.about && <AboutSection />}
         {visibility.process && (

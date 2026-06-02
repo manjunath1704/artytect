@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { mapProductRow, products as fallbackProducts, type Product, type ProductRow } from "@/lib/products";
 
 const productSelect =
-  "id,name,slug,category,description,short_description,price,compare_at_price,quantity,sizes,colors,measurement_table,thumbnail_url,gallery_urls,status,sku,tags,dimensions,materials,created_at,updated_at";
+  "id,name,slug,category,description,short_description,price,compare_at_price,quantity,sizes,colors,measurement_table,thumbnail_url,gallery_urls,status,sku,tags,dimensions,materials,created_at";
 
 export async function getPublishedProducts(): Promise<Product[]> {
   const supabase = await createClient();

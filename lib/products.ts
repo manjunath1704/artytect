@@ -25,11 +25,10 @@ export type Product = {
 };
 
 export type MeasurementRow = {
-  label: string;
-  s: string;
-  m: string;
-  l: string;
-  xl: string;
+  label:  string;
+  height: string;
+  width:  string;
+  length: string;
 };
 
 export type ProductRow = {
@@ -53,7 +52,7 @@ export type ProductRow = {
   dimensions: string | null;
   materials: string | null;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 };
 
 export const fixedSizes = ["S", "M", "L", "XL"];
@@ -66,9 +65,52 @@ export function slugifyProductName(value: string) {
     .replace(/(^-|-$)+/g, "");
 }
 
+/** Safely coerce a Supabase array field to a real JS array */
+function safeArray<T = string>(value: unknown): T[] {
+  if (Array.isArray(value)) return value as T[];
+  if (value == null) return [];
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+      return trimmed
+        .slice(1, -1)
+        .split(",")
+        .map((s) => s.trim().replace(/^"|"$/g, "") as unknown as T)
+        .filter(Boolean);
+    }
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) return parsed as T[];
+    } catch { /* fall through */ }
+    if (trimmed) return [trimmed as unknown as T];
+  }
+  return [];
+}
+
+/** Safely parse JSONB measurement_table — handles string, array, or null */
+function safeMeasurementTable(value: unknown): import("./products").MeasurementRow[] {
+  let arr: unknown[] = [];
+
+  if (Array.isArray(value)) {
+    arr = value;
+  } else if (typeof value === "string" && value.trim()) {
+    try { arr = JSON.parse(value); } catch { arr = []; }
+  }
+
+  return arr
+    .filter((row): row is Record<string, string> => typeof row === "object" && row !== null)
+    .map((row) => ({
+      label:  String(row.label  ?? ""),
+      height: String(row.height ?? row.h ?? ""),
+      width:  String(row.width  ?? row.w ?? ""),
+      length: String(row.length ?? row.l ?? ""),
+    }));
+}
+
 export function mapProductRow(row: ProductRow): Product {
-  const thumbnail = row.thumbnail_url || row.gallery_urls?.[0] || "/images/bowl-a.avif";
-  const gallery = row.gallery_urls?.length ? row.gallery_urls : [thumbnail];
+  const galleryArr = safeArray<string>(row.gallery_urls);
+  const thumbnail  = row.thumbnail_url || galleryArr[0] || "/images/bowl-a.avif";
+  const gallery    = galleryArr.length ? galleryArr : [thumbnail];
 
   return {
     id: row.id,
@@ -79,17 +121,17 @@ export function mapProductRow(row: ProductRow): Product {
     sku: row.sku || row.slug,
     price: Number(row.price),
     compareAtPrice: row.compare_at_price ? Number(row.compare_at_price) : undefined,
-    tags: row.tags || [],
+    tags: safeArray<string>(row.tags),
     shortDescription: row.short_description || row.description || "",
     description: row.description || "",
     dimensions: row.dimensions || "See measurement table",
     materials: row.materials || "Handcrafted ceramic",
     images: [thumbnail, ...gallery.filter((image) => image !== thumbnail)],
     thumbnail,
-    colors: row.colors || [],
-    sizes: row.sizes?.length ? row.sizes : fixedSizes,
+    colors: safeArray<string>(row.colors),
+    sizes: safeArray<string>(row.sizes).length ? safeArray<string>(row.sizes) : fixedSizes,
     quantity: row.quantity ?? 0,
-    measurementTable: row.measurement_table || [],
+    measurementTable: safeMeasurementTable(row.measurement_table),
     status: row.status,
     createdAt: row.created_at,
     updatedAt: row.updated_at,

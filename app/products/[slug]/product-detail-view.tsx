@@ -5,102 +5,139 @@ import { Check, Minus, PackageCheck, Plus, Ruler, ShieldCheck } from "lucide-rea
 import { useMemo, useState } from "react";
 
 import AddToCartButton from "@/components/cart/add-to-cart-button";
-import WhatsAppButton from "@/components/whatsapp-button";
 import type { Product } from "@/lib/products";
-import { formatPrice, getProductOrderMessage } from "@/lib/whatsapp";
+import { formatPrice } from "@/lib/whatsapp";
 
 type ProductDetailViewProps = {
   product: Product;
 };
 
-type ProductTab = "description" | "information" | "reviews";
+type ProductTab = "description" | "information";
 
 const tabs: { id: ProductTab; label: string }[] = [
-  { id: "description", label: "Description" },
-  { id: "information", label: "Additional information" },
-  { id: "reviews", label: "Reviews (0)" },
+  { id: "description",  label: "Description" },
+  { id: "information",  label: "Additional information" },
 ];
 
 export default function ProductDetailView({ product }: ProductDetailViewProps) {
   const [selectedImage, setSelectedImage] = useState(product.images[0]);
-  const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] ?? "S");
+  const [selectedSize,  setSelectedSize]  = useState(product.sizes?.[0] ?? "S");
   const [selectedColor, setSelectedColor] = useState(product.colors?.[0] ?? "Natural");
-  const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<ProductTab>("description");
-  const whatsappMessage = useMemo(() => getProductOrderMessage(product), [product]);
+  const [quantity,      setQuantity]      = useState(1);
+  const [activeTab,     setActiveTab]     = useState<ProductTab>("description");
+
+  // Dimensions for the currently selected size
+  const selectedSizeDimensions = useMemo(
+    () => product.measurementTable?.find((row) => row.label === selectedSize) ?? null,
+    [product.measurementTable, selectedSize],
+  );
+
+  // Format selected size dimensions for display
+  const formattedDimensions = useMemo(() => {
+    if (!selectedSizeDimensions) return product.dimensions;
+    
+    const parts: string[] = [];
+    if (selectedSizeDimensions.height) parts.push(`H: ${selectedSizeDimensions.height}`);
+    if (selectedSizeDimensions.width) parts.push(`W: ${selectedSizeDimensions.width}`);
+    if (selectedSizeDimensions.length) parts.push(`L: ${selectedSizeDimensions.length}`);
+    
+    return parts.length > 0 ? parts.join(" × ") : product.dimensions;
+  }, [selectedSizeDimensions, product.dimensions]);
+
+
 
   const tabContent = useMemo(() => {
     if (activeTab === "information") {
       return (
-        <dl className="grid max-w-3xl gap-4 text-sm text-[#9a8d82] sm:grid-cols-2">
-          <div>
-            <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
-              Material
-            </dt>
-            <dd className="mt-2">Stoneware ceramic with a hand-finished glaze.</dd>
-          </div>
-          <div>
-            <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
-              Care
-            </dt>
-            <dd className="mt-2">Dishwasher safe. Hand wash recommended for longevity.</dd>
-          </div>
-          <div>
-            <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
-              Dimensions
-            </dt>
-            <dd className="mt-2">{product.dimensions}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
-              Materials
-            </dt>
-            <dd className="mt-2">{product.materials}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
-              Category
-            </dt>
-            <dd className="mt-2">{product.category}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">
-              SKU
-            </dt>
-            <dd className="mt-2">{product.sku}</dd>
-          </div>
-        </dl>
+        <>
+          <dl className="grid max-w-3xl gap-4 text-sm text-[#9a8d82] sm:grid-cols-2">
+            <div>
+              <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">Material</dt>
+              <dd className="mt-2">Stoneware ceramic with a hand-finished glaze.</dd>
+            </div>
+            <div>
+              <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">Care</dt>
+              <dd className="mt-2">Dishwasher safe. Hand wash recommended for longevity.</dd>
+            </div>
+            <div>
+              <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">Dimensions (Size {selectedSize})</dt>
+              <dd className="mt-2">{formattedDimensions}</dd>
+            </div>
+            <div>
+              <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">Materials</dt>
+              <dd className="mt-2">{product.materials}</dd>
+            </div>
+            <div>
+              <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">Category</dt>
+              <dd className="mt-2">{product.category}</dd>
+            </div>
+            <div>
+              <dt className="font-semibold uppercase tracking-[0.18em] text-[#171717]">SKU</dt>
+              <dd className="mt-2">{product.sku}</dd>
+            </div>
+          </dl>
+
+          {/* Full measurement table for all sizes */}
+          {product.measurementTable?.length ? (
+            <div className="mt-8 overflow-x-auto">
+              <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]">
+                Dimensions by size
+              </p>
+              <table className="w-full min-w-[400px] border-collapse text-left text-sm">
+                <thead className="text-[10px] uppercase tracking-[0.2em] text-[#8a7765]">
+                  <tr>
+                    <th className="border-b border-[#ded3c8] py-3 pr-4">Size</th>
+                    <th className="border-b border-[#ded3c8] py-3 pr-4">Height</th>
+                    <th className="border-b border-[#ded3c8] py-3 pr-4">Width</th>
+                    <th className="border-b border-[#ded3c8] py-3">Length</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {product.measurementTable.map((row) => (
+                    <tr
+                      key={row.label}
+                      className={`text-[#665b4f] transition ${
+                        row.label === selectedSize ? "bg-[#f5eee4]" : ""
+                      }`}
+                    >
+                      <td className="border-b border-[#eadfd4] py-3 pr-4 font-semibold text-[#1b1511]">
+                        {row.label}
+                        {row.label === selectedSize && (
+                          <span className="ml-2 text-[9px] uppercase tracking-wider text-[#9a6b4e]">
+                            selected
+                          </span>
+                        )}
+                      </td>
+                      <td className="border-b border-[#eadfd4] py-3 pr-4">{row.height || "—"}</td>
+                      <td className="border-b border-[#eadfd4] py-3 pr-4">{row.width  || "—"}</td>
+                      <td className="border-b border-[#eadfd4] py-3">{row.length || "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : null}
+        </>
       );
     }
 
-    if (activeTab === "reviews") {
-      return (
-        <p className="max-w-5xl text-sm leading-7 text-[#9a8d82]">
-          No reviews yet. Be the first to share how this piece settled into your
-          home.
-        </p>
-      );
-    }
-
+    // description tab
     return (
       <p className="max-w-5xl text-sm leading-7 text-[#9a8d82]">
         {product.description}
       </p>
     );
-  }, [activeTab, product]);
+  }, [activeTab, product, selectedSize]);
 
   return (
     <>
       <section className="bg-[#fbf8f4] pb-12 pt-28 md:pb-16 md:pt-32 lg:pb-20">
         <div className="site-container">
           <div className="grid gap-12 lg:grid-cols-[1.12fr_0.88fr] lg:gap-16 xl:gap-20">
+
+            {/* ── Images ── */}
             <div className="grid gap-4 lg:sticky lg:top-28 lg:self-start">
-              <div className="relative aspect-[1.02/1] overflow-hidden bg-[#eee6dc] rounded-[32px] ">
-                {/* {product.badge ? (
-                  <span className="absolute right-5 top-5 z-10 border border-white/45 bg-[#1b1511]/75 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-white backdrop-blur">
-                    {product.badge}
-                  </span>
-                ) : null} */}
+              <div className="relative aspect-[1.02/1] overflow-hidden rounded-[32px] bg-[#eee6dc]">
                 <Image
                   src={selectedImage}
                   alt={product.name}
@@ -114,15 +151,14 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
               <div className="grid grid-cols-4 gap-3">
                 {product.images.map((image, index) => {
                   const isSelected = selectedImage === image;
-
                   return (
                     <button
-                      key={image}
+                      key={`img-${index}`}
                       type="button"
                       className={[
-                        "relative aspect-square overflow-hidden shadow-sm bg-[#f7f2ec] transition rounded-[32px]",
+                        "relative aspect-square overflow-hidden rounded-[32px] bg-[#f7f2ec] shadow-sm transition",
                         isSelected
-                          ? "border-4 border-[#9D6745]/60 opacity-100 shadow-lg "
+                          ? "border-4 border-[#9D6745]/60 opacity-100 shadow-lg"
                           : "border-transparent opacity-70 hover:opacity-100",
                       ].join(" ")}
                       aria-label={`Show ${product.name} view ${index + 1}`}
@@ -142,59 +178,52 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
               </div>
             </div>
 
+            {/* ── Info panel ── */}
             <div>
-              <div className="shadow-sm rounded-[32px] bg-[#fffdf9] p-6 md:p-8">
-                <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9a6b4e]">
-                  
+              <div className="rounded-[32px] bg-[#fffdf9] p-6 shadow-sm md:p-8">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9a6b4e]">
                   {product.category}
                 </p>
-                <h1 className="mt-4 text-4xl font-display uppercase leading-none tracking-normal sm:text-5xl">
+                <h1 className="mt-4 font-display text-4xl uppercase leading-none tracking-normal sm:text-5xl">
                   {product.name}
                 </h1>
+
+                {/* Price */}
                 <p className="mt-5 text-xl text-[#9a8d82]">
                   {product.compareAtPrice ? (
                     <>
-                      <span className="mr-3 line-through">
-                        {formatPrice(product.compareAtPrice)}
-                      </span>
-                      <span className="font-semibold text-[#1b1511]">
-                        {formatPrice(product.price)}
-                      </span>
+                      <span className="mr-3 line-through">{formatPrice(product.compareAtPrice)}</span>
+                      <span className="font-semibold text-[#1b1511]">{formatPrice(product.price)}</span>
                     </>
                   ) : (
-                    <span className="font-semibold text-[#1b1511]">
-                      {formatPrice(product.price)}
-                    </span>
+                    <span className="font-semibold text-[#1b1511]">{formatPrice(product.price)}</span>
                   )}
                 </p>
 
-                <p className="mt-8 text-sm leading-8 text-[#6f6259]">
-                  {product.shortDescription}
-                </p>
+                <p className="mt-8 text-sm leading-8 text-[#6f6259]">{product.shortDescription}</p>
 
+                {/* Spec cards */}
                 <div className="mt-8 grid gap-3 sm:grid-cols-2">
                   {[
-                    { label: "Dimensions", value: product.dimensions, icon: Ruler },
-                    { label: "Materials", value: product.materials, icon: PackageCheck },
-                    { label: "SKU", value: product.sku, icon: ShieldCheck },
-                    { label: "Tags", value: product.tags.join(", "), icon: Check },
+                    { label: "Dimensions", value: formattedDimensions, icon: Ruler },
+                    { label: "Materials",  value: product.materials,  icon: PackageCheck },
+                    { label: "SKU",        value: product.sku,        icon: ShieldCheck },
+                    { label: "Tags",       value: product.tags.join(", "), icon: Check },
                   ].map((item) => {
                     const Icon = item.icon;
-
                     return (
-                      <div key={item.label} className="rounded-[32px] shadow-md bg-[#fbf8f4] p-4">
+                      <div key={item.label} className="rounded-[32px] bg-[#fbf8f4] p-4 shadow-md">
                         <Icon className="h-4 w-4 text-[#9a6b4e]" />
                         <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7765]">
                           {item.label}
                         </p>
-                        <p className="mt-2 text-sm leading-6 text-[#1b1511]">
-                          {item.value}
-                        </p>
+                        <p className="mt-2 text-sm leading-6 text-[#1b1511]">{item.value}</p>
                       </div>
                     );
                   })}
                 </div>
 
+                {/* Size + Color selectors */}
                 <div className="mt-8 grid gap-6 border-t border-[#eadfd4] pt-6 sm:grid-cols-2">
                   <div>
                     <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7765]">
@@ -217,6 +246,38 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                         </button>
                       ))}
                     </div>
+
+                    {/* Selected size dimensions box */}
+                    {selectedSizeDimensions && (
+                      <div className="mt-4 rounded-2xl border border-[#e8ddd1] bg-[#f5eee4] px-4 py-3">
+                        <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a6b4e]">
+                          Size {selectedSize} dimensions
+                        </p>
+                        <div className="flex flex-wrap gap-4 text-sm text-[#1b1511]">
+                          {selectedSizeDimensions.height && (
+                            <span>
+                              <span className="text-[10px] uppercase tracking-wider text-[#8a7765]">H </span>
+                              {selectedSizeDimensions.height}
+                            </span>
+                          )}
+                          {selectedSizeDimensions.width && (
+                            <span>
+                              <span className="text-[10px] uppercase tracking-wider text-[#8a7765]">W </span>
+                              {selectedSizeDimensions.width}
+                            </span>
+                          )}
+                          {selectedSizeDimensions.length && (
+                            <span>
+                              <span className="text-[10px] uppercase tracking-wider text-[#8a7765]">L </span>
+                              {selectedSizeDimensions.length}
+                            </span>
+                          )}
+                          {!selectedSizeDimensions.height && !selectedSizeDimensions.width && !selectedSizeDimensions.length && (
+                            <span className="text-[#a69280]">No dimensions available for this size</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div>
@@ -224,9 +285,9 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                       Color
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {(product.colors?.length ? product.colors : ["Natural"]).map((color) => (
+                      {(product.colors?.length ? product.colors : ["Natural"]).map((color, i) => (
                         <button
-                          key={color}
+                          key={`color-${i}`}
                           type="button"
                           onClick={() => setSelectedColor(color)}
                           className={[
@@ -243,6 +304,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                   </div>
                 </div>
 
+                {/* Quantity + Add to cart */}
                 <div className="mt-8 border-t border-[#eadfd4] pt-6">
                   <label
                     htmlFor="product-quantity"
@@ -251,13 +313,13 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                     Quantity
                   </label>
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                    <div className="grid h-14 w-full grid-cols-[48px_56px_48px] border border-[#ded3c8] overflow-hidden shadow-md rounded-[32px] bg-white sm:w-[152px]">
+                    <div className="grid h-14 w-full grid-cols-[48px_56px_48px] overflow-hidden rounded-[32px] border border-[#ded3c8] bg-white shadow-md sm:w-[152px]">
                       <button
                         type="button"
                         className="flex items-center justify-center text-[#7d746d] transition hover:bg-[#f7f2ec] hover:text-[#171717] disabled:cursor-not-allowed disabled:opacity-35"
                         aria-label="Decrease quantity"
                         disabled={quantity === 1}
-                        onClick={() => setQuantity((value) => Math.max(1, value - 1))}
+                        onClick={() => setQuantity((v) => Math.max(1, v - 1))}
                       >
                         <Minus className="h-3.5 w-3.5" />
                       </button>
@@ -273,24 +335,18 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                         className="flex items-center justify-center text-[#7d746d] transition hover:bg-[#f7f2ec] hover:text-[#171717] disabled:cursor-not-allowed disabled:opacity-35"
                         aria-label="Increase quantity"
                         disabled={product.quantity ? quantity >= product.quantity : false}
-                        onClick={() => setQuantity((value) => Math.min(product.quantity || value + 1, value + 1))}
+                        onClick={() => setQuantity((v) => Math.min(product.quantity || v + 1, v + 1))}
                       >
                         <Plus className="h-3.5 w-3.5" />
                       </button>
                     </div>
 
-                    <WhatsAppButton
-                      message={whatsappMessage}
-                      className="h-14 flex-1 px-10"
-                    >
-                      Order via WhatsApp
-                    </WhatsAppButton>
                     <AddToCartButton
                       product={product}
                       quantity={quantity}
                       size={selectedSize}
                       color={selectedColor}
-                      className="inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-full border border-[#ded3c8] bg-white px-8 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] shadow-md transition hover:border-[#1b1511] hover:bg-[#faf6f2]"
+                      className="inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-full bg-[#1b1511] px-8 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-md transition hover:bg-[#2a211a]"
                     />
                   </div>
                 </div>
@@ -300,12 +356,12 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
         </div>
       </section>
 
+      {/* ── Tabs section ── */}
       <section className="border-y border-[#ded3c8] bg-white py-12">
         <div className="site-container">
           <div className="flex flex-wrap gap-8 border-b border-[#ded3c8] text-[11px] font-semibold uppercase tracking-[0.24em]">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
-
               return (
                 <button
                   key={tab.id}
@@ -324,43 +380,12 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
               );
             })}
           </div>
-          <div className="mt-7 rounded-[32px] shadow-md bg-[#fbf8f4] p-6 md:p-8">
+
+          <div className="mt-7 rounded-[32px] bg-[#fbf8f4] p-6 shadow-md md:p-8">
             {tabContent}
-            {activeTab === "information" && product.measurementTable?.length ? (
-              <div className="mt-8 overflow-x-auto">
-                <table className="w-full min-w-[520px] border-collapse text-left text-sm">
-                  <thead className="text-[10px] uppercase tracking-[0.2em] text-[#8a7765]">
-                    <tr>
-                      <th className="border-b border-[#ded3c8] py-3">Measurement</th>
-                      <th className="border-b border-[#ded3c8] py-3">S</th>
-                      <th className="border-b border-[#ded3c8] py-3">M</th>
-                      <th className="border-b border-[#ded3c8] py-3">L</th>
-                      <th className="border-b border-[#ded3c8] py-3">XL</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {product.measurementTable.map((row) => (
-                      <tr key={row.label} className="text-[#665b4f]">
-                        <td className="border-b border-[#eadfd4] py-3 font-semibold text-[#1b1511]">{row.label}</td>
-                        <td className="border-b border-[#eadfd4] py-3">{row.s}</td>
-                        <td className="border-b border-[#eadfd4] py-3">{row.m}</td>
-                        <td className="border-b border-[#eadfd4] py-3">{row.l}</td>
-                        <td className="border-b border-[#eadfd4] py-3">{row.xl}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : null}
           </div>
         </div>
       </section>
-
-      <div className="fixed inset-x-4 bottom-4 z-[70] md:hidden">
-        <WhatsAppButton message={whatsappMessage} className="h-14 w-full">
-          Order via WhatsApp
-        </WhatsAppButton>
-      </div>
     </>
   );
 }

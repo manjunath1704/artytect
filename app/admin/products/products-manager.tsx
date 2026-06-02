@@ -1,12 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Loader2, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppSelect, type SelectOption } from "@/components/ui/app-select";
 import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
+import { GalleryUploader } from "@/components/ui/gallery-uploader";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { Pagination } from "@/components/ui/pagination";
 import { fixedSizes, mapProductRow, slugifyProductName, type MeasurementRow, type ProductRow } from "@/lib/products";
@@ -14,6 +15,37 @@ import { formatPrice } from "@/lib/whatsapp";
 
 const inputClassName =
   "mt-2 w-full rounded-[24px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20";
+
+/**
+ * Supabase can return postgres array fields as:
+ *  - a real JS array  → use as-is
+ *  - a JSON string    → parse it
+ *  - a PG literal     → "{val1,val2}" → split on commas
+ *  - null / undefined → return []
+ */
+function toArray<T = string>(value: unknown): T[] {
+  if (Array.isArray(value)) return value as T[];
+  if (value == null) return [];
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    // PostgreSQL array literal: {val1,"val2"}
+    if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+      return trimmed
+        .slice(1, -1)
+        .split(",")
+        .map((s) => s.trim().replace(/^"|"$/g, "") as unknown as T)
+        .filter(Boolean);
+    }
+    // JSON array string
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) return parsed as T[];
+    } catch { /* fall through */ }
+    // Single non-empty value
+    if (trimmed) return [trimmed as unknown as T];
+  }
+  return [];
+}
 
 const statusOptions: SelectOption[] = [
   { value: "all", label: "All status" },
@@ -43,8 +75,10 @@ const emptyForm = {
   thumbnail_url: "",
   gallery_urls: [] as string[],
   measurement_table: [
-    { label: "Chest", s: "", m: "", l: "", xl: "" },
-    { label: "Length", s: "", m: "", l: "", xl: "" },
+    { label: "S",  height: "", width: "", length: "" },
+    { label: "M",  height: "", width: "", length: "" },
+    { label: "L",  height: "", width: "", length: "" },
+    { label: "XL", height: "", width: "", length: "" },
   ] as MeasurementRow[],
 };
 
@@ -62,6 +96,23 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
   const [deleteTarget, setDeleteTarget] = useState<ProductRow | null>(null);
   const [deleting, setDeleting] = useState(false);
   const pageSize = 10;
+
+  // ── fetch categories from API ─────────────────────────────────────────────
+  const [categoryOptions, setCategoryOptions] = useState<SelectOption[]>([]);
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data: { categories: { id: string; title: string; slug: string }[] }) => {
+        setCategoryOptions(
+          (data.categories ?? []).map((cat) => ({
+            value: cat.title,   // product.category stores the display name
+            label: cat.title,
+          }))
+        );
+      })
+      .catch(() => {/* silently ignore — category select will just be empty */});
+  }, []);
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -102,11 +153,13 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
       short_description: product.short_description ?? "",
       price: String(product.price),
       quantity: String(product.quantity ?? 0),
-      colors: (product.colors ?? []).join(", "),
+      colors: toArray(product.colors).join(", "),
       status: product.status,
       thumbnail_url: product.thumbnail_url ?? "",
-      gallery_urls: product.gallery_urls ?? [],
-      measurement_table: product.measurement_table?.length ? product.measurement_table : emptyForm.measurement_table,
+      gallery_urls: toArray(product.gallery_urls),
+      measurement_table: product.measurement_table?.length
+        ? product.measurement_table
+        : emptyForm.measurement_table,
     });
     setThumbnail(null);
     setGallery([]);
@@ -261,18 +314,76 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
             </div>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               {[
-                ["name", "Product name"],
-                ["slug", "Slug"],
-                ["category", "Category"],
-                ["price", "Price"],
-                ["quantity", "Quantity"],
-                ["colors", "Colors"],
-              ].map(([key, label]) => (
+                ["name", "Product name", "text"],
+                ["slug", "Slug", "text"],
+                ["colors", "Colors (comma separated)", "text"],
+              ].map(([key, label, type]) => (
                 <label key={key} className="block">
                   <span className="text-sm font-medium text-[#352a21]">{label}</span>
-                  <input value={form[key as keyof typeof form] as string} onChange={(event) => setForm((current) => ({ ...current, [key]: event.target.value, slug: key === "name" && !current.id ? slugifyProductName(event.target.value) : current.slug }))} className={inputClassName} />
+                  <input
+                    type={type}
+                    value={form[key as keyof typeof form] as string}
+                    onChange={(event) =>
+                      setForm((current) => ({
+                        ...current,
+                        [key]: event.target.value,
+                        slug:
+                          key === "name" && !current.id
+                            ? slugifyProductName(event.target.value)
+                            : current.slug,
+                      }))
+                    }
+                    className={inputClassName}
+                  />
                 </label>
               ))}
+
+              {/* Price — numbers only */}
+              <label className="block">
+                <span className="text-sm font-medium text-[#352a21]">Price (₹)</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.price}
+                  onChange={(e) => setForm((c) => ({ ...c, price: e.target.value }))}
+                  onKeyDown={(e) => { if (["-", "e", "E", "+"].includes(e.key)) e.preventDefault(); }}
+                  className={inputClassName}
+                  placeholder="0"
+                />
+              </label>
+
+              {/* Quantity — integers only */}
+              <label className="block">
+                <span className="text-sm font-medium text-[#352a21]">Quantity</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={form.quantity}
+                  onChange={(e) => setForm((c) => ({ ...c, quantity: e.target.value }))}
+                  onKeyDown={(e) => { if (["-", "e", "E", "+", "."].includes(e.key)) e.preventDefault(); }}
+                  className={inputClassName}
+                  placeholder="0"
+                />
+              </label>
+
+              {/* Category — driven by /api/categories */}
+              <label className="block">
+                <span className="text-sm font-medium text-[#352a21]">Category</span>
+                <div className="mt-2">
+                  <AppSelect
+                    instanceId="product-form-category"
+                    value={categoryOptions.find((opt) => opt.value === form.category) ?? null}
+                    options={categoryOptions}
+                    onChange={(opt) =>
+                      setForm((current) => ({ ...current, category: opt?.value ?? "" }))
+                    }
+                    placeholder={categoryOptions.length ? "Select category…" : "Loading…"}
+                    isClearable
+                  />
+                </div>
+              </label>
               <label className="block">
                 <span className="text-sm font-medium text-[#352a21]">Publish status</span>
                 <select value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value }))} className={inputClassName}>
@@ -295,24 +406,56 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
             </div>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              <ImageUploader label="Thumbnail image" file={thumbnail} onChange={setThumbnail} onRemove={() => setThumbnail(null)} hint={form.thumbnail_url ? "Current image is kept unless changed." : undefined} required={!form.id} />
-              <label className="block">
-                <span className="text-sm font-medium text-[#352a21]">Product gallery images</span>
-                <input type="file" multiple accept="image/*" onChange={(event) => setGallery(Array.from(event.target.files ?? []))} className={inputClassName} />
-                <p className="mt-2 text-xs text-[#8a7765]">{gallery.length ? `${gallery.length} image(s) ready` : `${form.gallery_urls.length} existing image(s)`}</p>
-              </label>
+              <ImageUploader
+                label="Thumbnail image"
+                file={thumbnail}
+                onChange={setThumbnail}
+                onRemove={() => setThumbnail(null)}
+                hint={form.thumbnail_url ? "Current image kept unless replaced." : undefined}
+                required={!form.id}
+              />
+              <GalleryUploader
+                label="Product gallery"
+                hint="All product images shown in the detail view"
+                files={gallery}
+                onChange={setGallery}
+                existingUrls={form.gallery_urls}
+                onRemoveExisting={(url) =>
+                  setForm((c) => ({ ...c, gallery_urls: c.gallery_urls.filter((u) => u !== url) }))
+                }
+              />
             </div>
 
             <div className="mt-6">
               <h3 className="text-sm font-semibold uppercase tracking-[0.2em]">Measurement table</h3>
               <div className="mt-3 overflow-x-auto">
-                <table className="w-full min-w-[640px] text-sm">
+                <table className="w-full min-w-[540px] text-sm">
+                  <thead>
+                    <tr>
+                      {["Size", "Height", "Width", "Length"].map((col) => (
+                        <th key={col} className="px-1 pb-2 text-left text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8a7765]">
+                          {col}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
                   <tbody>
                     {form.measurement_table.map((row, index) => (
                       <tr key={index}>
-                        {(["label", "s", "m", "l", "xl"] as const).map((key) => (
+                        {/* Size label — fixed, read-only */}
+                        <td className="p-1">
+                          <div className="flex h-[42px] w-full items-center rounded-2xl border border-[#e8ddd1] bg-[#fcfaf7] px-3 text-sm font-semibold text-[#1b1511]">
+                            {row.label}
+                          </div>
+                        </td>
+                        {(["height", "width", "length"] as const).map((key) => (
                           <td key={key} className="p-1">
-                            <input value={row[key]} onChange={(event) => updateMeasurement(index, key, event.target.value)} placeholder={key.toUpperCase()} className="w-full rounded-2xl border border-[#d9ccbc] px-3 py-2 outline-none" />
+                            <input
+                              value={row[key]}
+                              onChange={(event) => updateMeasurement(index, key, event.target.value)}
+                              placeholder={`e.g. 10 cm`}
+                              className="w-full rounded-2xl border border-[#d9ccbc] px-3 py-2 outline-none focus:border-[#b38d67]"
+                            />
                           </td>
                         ))}
                       </tr>

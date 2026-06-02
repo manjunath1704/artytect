@@ -77,13 +77,13 @@ export default function ProductCard({
         </p>
 
         <div className="mt-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7d746d]">
-          {(product.colors ?? []).slice(0, 4).map((color) => (
-            <span key={color} className="rounded-full bg-[#faf6f2] px-2.5 py-1">
+          {(product.colors ?? []).slice(0, 4).map((color, i) => (
+            <span key={`color-${i}-${color}`} className="rounded-full bg-[#faf6f2] px-2.5 py-1">
               {color}
             </span>
           ))}
-          {(product.sizes ?? []).slice(0, 4).map((size) => (
-            <span key={size} className="rounded-full border border-[#ded3c8] px-2.5 py-1">
+          {(product.sizes ?? []).slice(0, 4).map((size, i) => (
+            <span key={`size-${i}-${size}`} className="rounded-full border border-[#ded3c8] px-2.5 py-1">
               {size}
             </span>
           ))}
