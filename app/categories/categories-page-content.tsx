@@ -6,7 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import CategoryCardMicro from "../components/cards/category-card-micro";
 import ProductCard from "../components/cards/product-card";
-import type { ProductRow } from "@/lib/products";
+import { mapProductRow, type Product, type ProductRow } from "@/lib/products";
 
 type CategoryItem = {
   id: string;
@@ -17,19 +17,6 @@ type CategoryItem = {
   hoverThumbnailSrc: string;
   parentCategoryId: string | null;
   count?: number;
-};
-
-type Product = {
-  id: string;
-  slug: string;
-  name: string;
-  category: string;
-  price: number;
-  compareAtPrice?: number;
-  thumbnail: string;
-  colors: string[];
-  sizes: string[];
-  badge?: string;
 };
 
 const fallbackCategories: CategoryItem[] = [
@@ -138,18 +125,7 @@ export default function CategoriesPageContent() {
         if (isMounted && productsResponse.ok && productsResult?.products?.length) {
           const nextProducts = productsResult.products
             .filter((p: ProductRow) => p.status === "published")
-            .map((p: ProductRow) => ({
-              id: p.id,
-              slug: p.slug,
-              name: p.name,
-              category: p.category,
-              price: Number(p.price),
-              compareAtPrice: p.compare_at_price ? Number(p.compare_at_price) : undefined,
-              thumbnail: p.thumbnail_url || (Array.isArray(p.gallery_urls) ? p.gallery_urls[0] : "") || "/images/bowl-a.avif",
-              colors: Array.isArray(p.colors) ? p.colors : [],
-              sizes: Array.isArray(p.sizes) ? p.sizes : ["S", "M", "L", "XL"],
-              badge: p.badge,
-            }));
+            .map((p: ProductRow) => mapProductRow(p));
           setProducts(nextProducts);
         }
       } catch {

@@ -127,7 +127,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
         {product.description}
       </p>
     );
-  }, [activeTab, product, selectedSize]);
+  }, [activeTab, product, selectedSize, formattedDimensions]);
 
   return (
     <>

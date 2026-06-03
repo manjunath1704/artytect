@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import ClassCard from "@/app/components/cards/class-card";
 import { potteryClasses } from "@/lib/classes";
@@ -97,21 +97,19 @@ export default function ClassesPageContent() {
 
             <div className="hidden md:block mt-10">
             <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3 ">
-              {potteryClasses.map((classItem, index) => (
+              {potteryClasses.map((classItem) => (
                 <ClassCard
                   key={classItem.slug}
                   classItem={classItem}
-                  index={index + 1}
                 />
               ))}
             </div>
             </div>
             <div className="grid gap-3 grid-cols-2 py-10 md:hidden">
-              {potteryClasses.map((classItem, index) => (
+              {potteryClasses.map((classItem) => (
                 <ClassCardMicro
                   key={classItem.slug}
                   classItem={classItem}
-                  index={index + 1}
                 />
               ))}
             </div>

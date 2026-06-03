@@ -2,12 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Clock, Users } from "lucide-react";
 
 import WhatsAppButton from "@/components/whatsapp-button";
 import type { PotteryClass } from "@/lib/classes";
 import { cn } from "@/lib/utils";
-import { formatPrice, getClassBookingMessage } from "@/lib/whatsapp";
+import { getClassBookingMessage } from "@/lib/whatsapp";
 
 type ClassCardMicroProps = {
   classItem: PotteryClass;
@@ -18,10 +17,9 @@ type ClassCardMicroProps = {
 
 export default function ClassCardMicro({
   classItem,
-  index,
   className,
   imageSizes = "(min-width: 768px) 31vw, calc(100vw - 48px)",
-}: ClassCardMicroProps) {
+}: Omit<ClassCardMicroProps, 'index'>) {
   return (
     <article
       className={cn(

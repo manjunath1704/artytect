@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, Check, Clock, Sparkles, Users } from "lucide-react";
+import { ArrowUpRight, Check, Clock, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import Footer from "@/app/components/home/footer";

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import type { Product } from "@/lib/products";
 import ProductCatalog from "./product-catalog";
 import { motion, useScroll, useTransform } from "framer-motion";

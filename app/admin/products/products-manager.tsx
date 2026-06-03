@@ -73,6 +73,7 @@ const emptyForm = {
   quantity: "",
   colors: "",
   status: "draft",
+  is_featured: false,
   thumbnail_url: "",
   gallery_urls: [] as string[],
   measurement_table: [
@@ -180,12 +181,14 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
       name: product.name,
       slug: product.slug,
       category: product.category,
+      subcategory: "", // TODO: Add subcategory to ProductRow type if stored in DB
       description: product.description ?? "",
       short_description: product.short_description ?? "",
       price: String(product.price),
       quantity: String(product.quantity ?? 0),
       colors: toArray(product.colors).join(", "),
       status: product.status,
+      is_featured: product.is_featured ?? false,
       thumbnail_url: product.thumbnail_url ?? "",
       gallery_urls: toArray(product.gallery_urls),
       measurement_table: product.measurement_table?.length
@@ -229,6 +232,7 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
       formData.append("quantity", form.quantity || "0");
       formData.append("colors", form.colors);
       formData.append("status", form.status);
+      formData.append("is_featured", String(form.is_featured));
       formData.append("measurement_table", JSON.stringify(form.measurement_table));
       formData.append("thumbnail_url", form.thumbnail_url);
       formData.append("existing_gallery", JSON.stringify(form.gallery_urls));
@@ -447,6 +451,21 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                   <option value="published">Published</option>
                 </select>
               </label>
+
+              {/* Featured checkbox */}
+              <label className="flex items-center gap-3 rounded-2xl border border-[#d9ccbc] bg-[#faf6f2] px-4 py-4">
+                <input
+                  type="checkbox"
+                  checked={form.is_featured}
+                  onChange={(e) => setForm((c) => ({ ...c, is_featured: e.target.checked }))}
+                  className="h-5 w-5 rounded border-[#d9ccbc] text-[#1b1511] focus:ring-2 focus:ring-[#b38d67] focus:ring-offset-0"
+                />
+                <div>
+                  <span className="block text-sm font-medium text-[#352a21]">Featured Product</span>
+                  <span className="text-xs text-[#665b4f]">Show on homepage featured section</span>
+                </div>
+              </label>
+
               <div className="text-sm text-[#665b4f]">
                 <span className="font-medium text-[#352a21]">Sizes</span>
                 <div className="mt-2 flex gap-2">{fixedSizes.map((size) => <span key={size} className="rounded-full border border-[#d9ccbc] px-3 py-2">{size}</span>)}</div>

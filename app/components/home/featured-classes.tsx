@@ -32,7 +32,6 @@ export default function FeaturedClassesSection({
                   >
                     <ClassCard
                       classItem={classItem}
-                      index={index + 1}
                       imageSizes="(min-width: 1280px) 30vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 88vw"
                     />
                   </div>

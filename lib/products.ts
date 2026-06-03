@@ -47,6 +47,7 @@ export type ProductRow = {
   thumbnail_url: string | null;
   gallery_urls: string[] | null;
   status: "draft" | "published";
+  is_featured: boolean | null;
   sku: string | null;
   tags: string[] | null;
   dimensions: string | null;
@@ -116,7 +117,7 @@ export function mapProductRow(row: ProductRow): Product {
     id: row.id,
     slug: row.slug,
     name: row.name,
-    featured: row.status === "published",
+    featured: row.is_featured ?? false,
     category: row.category,
     sku: row.sku || row.slug,
     price: Number(row.price),

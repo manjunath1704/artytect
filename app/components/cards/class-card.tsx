@@ -18,10 +18,9 @@ type ClassCardProps = {
 
 export default function ClassCard({
   classItem,
-  index,
   className,
   imageSizes = "(min-width: 768px) 31vw, calc(100vw - 48px)",
-}: ClassCardProps) {
+}: Omit<ClassCardProps, 'index'>) {
   return (
     <article
       className={cn(

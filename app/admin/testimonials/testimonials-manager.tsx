@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, MessageSquareQuote, Pencil, Plus, Search, Star, Trash2, X } from "lucide-react";
+import { Loader2, Pencil, Plus, Search, Star, Trash2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";

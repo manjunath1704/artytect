@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Ruler, Sparkles } from "lucide-react";
+import { Ruler } from "lucide-react";
 
 import AddToCartButton from "@/components/cart/add-to-cart-button";
 import type { Product } from "@/lib/products";
