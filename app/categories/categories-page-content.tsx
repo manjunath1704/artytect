@@ -6,6 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import CategoryCardMicro from "../components/cards/category-card-micro";
 import ProductCard from "../components/cards/product-card";
+import type { ProductRow } from "@/lib/products";
 
 type CategoryItem = {
   id: string;
@@ -131,13 +132,13 @@ export default function CategoriesPageContent() {
         // Load products
         const productsResponse = await fetch("/api/admin/products");
         const productsResult = (await productsResponse.json().catch(() => null)) as
-          | { products?: any[] }
+          | { products?: ProductRow[] }
           | null;
 
         if (isMounted && productsResponse.ok && productsResult?.products?.length) {
           const nextProducts = productsResult.products
-            .filter((p: any) => p.status === "published")
-            .map((p: any) => ({
+            .filter((p: ProductRow) => p.status === "published")
+            .map((p: ProductRow) => ({
               id: p.id,
               slug: p.slug,
               name: p.name,

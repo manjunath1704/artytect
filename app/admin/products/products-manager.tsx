@@ -99,6 +99,7 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
   const pageSize = 10;
 
   // ── fetch categories from API ─────────────────────────────────────────────
+  // Loads parent categories and subcategories dynamically
   const [categoryOptions, setCategoryOptions] = useState<SelectOption[]>([]);
   const [subcategoryOptions, setSubcategoryOptions] = useState<SelectOption[]>([]);
   const [allCategories, setAllCategories] = useState<{ id: string; title: string; slug: string; parent_category_id: string | null }[]>([]);
