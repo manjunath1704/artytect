@@ -10,6 +10,7 @@ import Select, {
 export type SelectOption<Value extends string = string> = {
   value: Value;
   label: string;
+  isDisabled?: boolean;
 };
 
 type AppSelectProps<
@@ -142,19 +143,24 @@ export function AppSelect<
       option: (base, state) => ({
         ...base,
         borderRadius: 8,
-        color: state.isSelected ? "#1b1511" : "#5f544b",
+        color: state.isDisabled
+          ? "#a69280"
+          : state.isSelected
+            ? "#1b1511"
+            : "#5f544b",
         backgroundColor: state.isSelected
           ? "#ead7c3"
           : state.isFocused
             ? "#f5eee4"
             : "transparent",
-        cursor: "pointer",
+        cursor: state.isDisabled ? "not-allowed" : "pointer",
         fontSize: 14,
+        fontWeight: state.isDisabled ? 600 : 400,
         lineHeight: 1.45,
         padding: "10px 12px",
         transition: "background-color 120ms ease, color 120ms ease",
         ":active": {
-          backgroundColor: "#ead7c3",
+          backgroundColor: state.isDisabled ? "transparent" : "#ead7c3",
         },
       }),
       noOptionsMessage: (base) => ({

@@ -65,8 +65,7 @@ const emptyForm = {
   id: "",
   name: "",
   slug: "",
-  category: "",
-  subcategory: "",
+  category: "", // This will store the child category title
   description: "",
   short_description: "",
   price: "",
@@ -102,49 +101,50 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
   // ── fetch categories from API ─────────────────────────────────────────────
   // Loads parent categories and subcategories dynamically
   const [categoryOptions, setCategoryOptions] = useState<SelectOption[]>([]);
-  const [subcategoryOptions, setSubcategoryOptions] = useState<SelectOption[]>([]);
-  const [allCategories, setAllCategories] = useState<{ id: string; title: string; slug: string; parent_category_id: string | null }[]>([]);
 
   useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
       .then((data: { categories: { id: string; title: string; slug: string; parent_category_id: string | null }[] }) => {
         const categories = data.categories ?? [];
-        setAllCategories(categories);
         
-        // Parent categories (no parent_category_id)
+        // Build hierarchical category options
+        // Group categories by parent
         const parents = categories.filter((cat) => !cat.parent_category_id);
-        setCategoryOptions(
-          parents.map((cat) => ({
-            value: cat.title,
-            label: cat.title,
-          }))
-        );
+        const childrenMap = new Map<string, typeof categories>();
+        
+        categories.forEach((cat) => {
+          if (cat.parent_category_id) {
+            const siblings = childrenMap.get(cat.parent_category_id) || [];
+            siblings.push(cat);
+            childrenMap.set(cat.parent_category_id, siblings);
+          }
+        });
+        
+        // Create flat list with indented child categories
+        const options: SelectOption[] = [];
+        parents.forEach((parent) => {
+          // Add parent as optgroup label (disabled)
+          options.push({
+            value: `parent-${parent.id}`,
+            label: parent.title,
+            isDisabled: true,
+          });
+          
+          // Add children as selectable options
+          const children = childrenMap.get(parent.id) || [];
+          children.forEach((child) => {
+            options.push({
+              value: child.title, // Store child category title
+              label: `  └─ ${child.title}`, // Indented display
+            });
+          });
+        });
+        
+        setCategoryOptions(options);
       })
       .catch(() => {/* silently ignore — category select will just be empty */});
   }, []);
-
-  // Update subcategories when category changes
-  useEffect(() => {
-    if (!form.category) {
-      setSubcategoryOptions([]);
-      return;
-    }
-    
-    const selectedParent = allCategories.find((cat) => cat.title === form.category);
-    if (!selectedParent) {
-      setSubcategoryOptions([]);
-      return;
-    }
-    
-    const children = allCategories.filter((cat) => cat.parent_category_id === selectedParent.id);
-    setSubcategoryOptions(
-      children.map((cat) => ({
-        value: cat.title,
-        label: cat.title,
-      }))
-    );
-  }, [form.category, allCategories]);
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -181,7 +181,6 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
       name: product.name,
       slug: product.slug,
       category: product.category,
-      subcategory: "", // TODO: Add subcategory to ProductRow type if stored in DB
       description: product.description ?? "",
       short_description: product.short_description ?? "",
       price: String(product.price),
@@ -403,43 +402,24 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                 />
               </label>
 
-              {/* Category — driven by /api/categories */}
-              <label className="block">
-                <span className="text-sm font-medium text-[#352a21]">Category</span>
+              {/* Category — hierarchical selection with child categories only */}
+              <label className="block sm:col-span-2">
+                <span className="text-sm font-medium text-[#352a21]">Category (Child Category)</span>
+                <p className="mt-1 text-xs text-[#665b4f]">Select a child category. Parent categories are for grouping only.</p>
                 <div className="mt-2">
                   <AppSelect
                     instanceId="product-form-category"
                     value={categoryOptions.find((opt) => opt.value === form.category) ?? null}
                     options={categoryOptions}
                     onChange={(opt) => {
-                      setForm((current) => ({ ...current, category: opt?.value ?? "", subcategory: "" }));
+                      // Prevent selecting parent categories (disabled options)
+                      if (opt && !opt.isDisabled) {
+                        setForm((current) => ({ ...current, category: opt.value }));
+                      }
                     }}
-                    placeholder={categoryOptions.length ? "Select category…" : "Loading…"}
+                    placeholder={categoryOptions.length ? "Select child category…" : "Loading…"}
                     isClearable
-                  />
-                </div>
-              </label>
-
-              {/* Subcategory — shown only when category is selected */}
-              <label className="block">
-                <span className="text-sm font-medium text-[#352a21]">Subcategory (Optional)</span>
-                <div className="mt-2">
-                  <AppSelect
-                    instanceId="product-form-subcategory"
-                    value={subcategoryOptions.find((opt) => opt.value === form.subcategory) ?? null}
-                    options={subcategoryOptions}
-                    onChange={(opt) =>
-                      setForm((current) => ({ ...current, subcategory: opt?.value ?? "" }))
-                    }
-                    placeholder={
-                      !form.category
-                        ? "Select category first"
-                        : subcategoryOptions.length
-                        ? "Select subcategory…"
-                        : "No subcategories"
-                    }
-                    isDisabled={!form.category || !subcategoryOptions.length}
-                    isClearable
+                    isOptionDisabled={(option) => option.isDisabled === true}
                   />
                 </div>
               </label>

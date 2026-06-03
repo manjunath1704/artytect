@@ -90,6 +90,7 @@ export async function POST(request: Request) {
         thumbnail_url: thumbnailUrl,
         gallery_urls: galleryUrls,
         status: formData.get("status") === "published" ? "published" : "draft",
+        is_featured: formData.get("is_featured") === "true",
       })
       .select()
       .single();
