@@ -6,7 +6,7 @@ const NAV_ITEMS: NavbarItem[] = [
   { key: "home", label: "Home", href: "/" },
   { key: "categories", label: "Categories", href: "/categories" },
   { key: "products", label: "Products", href: "/products" },
-  { key: "classes", label: "Classes", href: "/classes" },
+  //{ key: "classes", label: "Classes", href: "/classes" },
   { key: "blog", label: "Blog", href: "/blog" },
   { key: "contact", label: "Contact", href: "/contact" },
 ];

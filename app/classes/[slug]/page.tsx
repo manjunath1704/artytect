@@ -110,7 +110,16 @@ export default async function ClassPage({ params }: ClassPageProps) {
         <section className="py-12 md:py-16 lg:py-20">
           <div className="site-container">
             <div className="grid gap-10 lg:grid-cols-[1fr_380px] lg:items-start xl:gap-16">
+              
               <div>
+                <div className="mb-5">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#9a6b4e]">
+                      Class overview
+                    </p>
+                    <h2 className="mt-3 text-4xl font-display uppercase leading-none tracking-normal">
+                      What you will shape
+                    </h2>
+                  </div>
                 <div className="grid border border-[#d8cec1] shadow-md rounded-[32px] text-center grid-cols-4">
                   <div className=" border-[#d8cec1] px-5 py-6 sm:border-b-0 sm:border-r">
                     <Clock className="mx-auto h-5 w-5 text-[#9a6b4e]" />
@@ -143,15 +152,8 @@ export default async function ClassPage({ params }: ClassPageProps) {
                   </div>
                 </div>
 
-                <div className="mt-12 grid gap-10 md:grid-cols-[0.72fr_1fr]">
-                  <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#9a6b4e]">
-                      Class overview
-                    </p>
-                    <h2 className="mt-3 text-4xl font-display uppercase leading-none tracking-normal">
-                      What you will shape
-                    </h2>
-                  </div>
+                <div className="mt-12">
+                  
                   <div 
                     className="prose prose-sm max-w-none text-[#6f6259]"
                     dangerouslySetInnerHTML={{ __html: classItem.content }}
@@ -167,7 +169,7 @@ export default async function ClassPage({ params }: ClassPageProps) {
                   </div>
                 )}
 
-                <div className="mt-12 grid gap-4 sm:grid-cols-3">
+                {/* <div className="mt-12 grid gap-4 sm:grid-cols-3">
                   {["Arrive curious", "Practice slowly", "Finish fired"].map((step, index) => (
                     <div key={step} className="border-t border-[#d8cec1] pt-5">
                       <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9a6b4e]">
@@ -178,7 +180,7 @@ export default async function ClassPage({ params }: ClassPageProps) {
                       </p>
                     </div>
                   ))}
-                </div>
+                </div> */}
               </div>
 
               <aside className="lg:sticky lg:top-28">

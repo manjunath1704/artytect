@@ -37,7 +37,7 @@ export function AddClassToCart({ classData }: { classData: PotteryClass }) {
       type="button"
       onClick={handleAddToCart}
       disabled={isAdding || classData.available_seats === 0}
-      className="h-11 inline-flex items-center justify-center gap-2 rounded-full bg-[#1b1511] text-white font-semibold uppercase tracking-[0.16em] text-sm transition hover:bg-[#3a2f27] disabled:opacity-60"
+      className="h-11 w-full flex items-center justify-center gap-2 rounded-full bg-[#1b1511] text-white font-semibold uppercase tracking-[0.16em] text-sm transition hover:bg-[#3a2f27] disabled:opacity-60"
       title={classData.available_seats === 0 ? "No seats available" : "Add to cart"}
     >
       {isAdding ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
