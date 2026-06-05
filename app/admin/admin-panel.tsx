@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FolderOpen, HeartHandshake, Home, Mail, MessageSquareQuote, Newspaper, Package, Route, Sparkles, Users,ChevronRight } from "lucide-react";
+import { FolderOpen, HeartHandshake, Home, Mail, MessageSquareQuote, Newspaper, Package, Route, Sparkles, Users, ChevronRight, BookOpen } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -173,6 +173,27 @@ const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCoun
           </Link>
 
           <Link
+            href="/admin/our-story"
+            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e8ddd1] text-[#1b1511]">
+                <BookOpen className="h-7 w-7" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Our Story</h2>
+                <p className="mt-1 text-sm text-[#665b4f]">Brand story page</p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
+              Manage hero, content, values, timeline, and team sections.
+            </p>
+            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
+              Manage Our Story <ChevronRight className="text-xs" />
+            </div>
+          </Link>
+
+          <Link
             href="/admin/process"
             className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
           >
@@ -256,20 +277,26 @@ const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCoun
             </p>
           </div>
 
-          <div className="rounded-[32px] bg-white p-6 opacity-50 sm:p-8">
+          <Link
+            href="/admin/classes"
+            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
+          >
             <div className="flex items-center gap-4">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#8a7765] text-white">
                 <Users className="h-7 w-7" />
               </div>
               <div>
                 <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Classes</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">Coming soon</p>
+                <p className="mt-1 text-sm text-[#665b4f]">Pottery classes</p>
               </div>
             </div>
             <p className="mt-4 text-sm leading-7 text-[#665b4f]">
               Schedule pottery classes, workshops, and manage registrations.
             </p>
-          </div>
+            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
+              Manage Classes <ChevronRight className="text-xs" />
+            </div>
+          </Link>
         </div>
       </div>
     </div>

@@ -6,20 +6,30 @@ import Link from "next/link";
 import WhatsAppButton from "@/components/whatsapp-button";
 import type { PotteryClass } from "@/lib/classes";
 import { cn } from "@/lib/utils";
-import { getClassBookingMessage } from "@/lib/whatsapp";
+import { formatPrice } from "@/lib/whatsapp";
 
 type ClassCardMicroProps = {
   classItem: PotteryClass;
-  index: number;
   className?: string;
   imageSizes?: string;
 };
+
+function getClassBookingMessage(classItem: PotteryClass): string {
+  return `Hi! I'd like to book the *${classItem.title}* class.
+
+*Duration:* ${classItem.duration}
+*Date:* ${classItem.class_date}
+*Time:* ${classItem.class_time}
+*Fee:* ${formatPrice(classItem.price)}
+
+Looking forward to learning!`;
+}
 
 export default function ClassCardMicro({
   classItem,
   className,
   imageSizes = "(min-width: 768px) 31vw, calc(100vw - 48px)",
-}: Omit<ClassCardMicroProps, 'index'>) {
+}: ClassCardMicroProps) {
   return (
     <article
       className={cn(
@@ -30,7 +40,7 @@ export default function ClassCardMicro({
       <Link href={`/classes/${classItem.slug}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-[#e8ded3]">
           <Image
-            src={classItem.image}
+            src={classItem.thumbnail_url}
             alt={classItem.title}
             fill
             sizes={imageSizes}
@@ -51,7 +61,7 @@ export default function ClassCardMicro({
 
       <div className="p-4">
         <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#7d746d]">
-          {classItem.shortDescription}
+          {classItem.short_description}
         </p>
 
         <div className="mt-3 ">

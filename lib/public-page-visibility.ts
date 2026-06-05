@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 
-export type PublicPageKey = "categories" | "products" | "classes" | "blog" | "contact";
+export type PublicPageKey = "categories" | "products" | "classes" | "blog" | "contact" | "our-story";
 
 export type PublicPageVisibility = {
   page_key: PublicPageKey;

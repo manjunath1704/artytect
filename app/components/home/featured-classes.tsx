@@ -1,17 +1,35 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import ClassCard from "@/app/components/cards/class-card";
-import { potteryClasses } from "@/lib/classes";
 import { FeaturedEmptyState, FeaturedGridSkeleton } from "./featured-section-states";
 import SectionHeader from "./section-header";
-//import ViewMoreLink from "./view-more-link";
+import type { PotteryClass } from "@/lib/classes";
 
-type FeaturedClassesSectionProps = {
-  isLoading?: boolean;
-};
+export default function FeaturedClassesSection() {
+  const [featuredClasses, setFeaturedClasses] = useState<PotteryClass[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-export default function FeaturedClassesSection({
-  isLoading = false,
-}: FeaturedClassesSectionProps) {
-  const featuredClasses = potteryClasses.filter((item) => item.featured);
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const response = await fetch("/api/classes");
+        if (response.ok) {
+          const data = await response.json();
+          const featured = (data.classes || []).filter(
+            (c: PotteryClass) => c.is_featured
+          );
+          setFeaturedClasses(featured);
+        }
+      } catch (error) {
+        console.error("Error fetching featured classes:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void fetchClasses();
+  }, []);
 
   return (
     <section className="bg-[#fff7f4] py-20 md:py-28" aria-labelledby="featured-classes-title">
@@ -21,14 +39,13 @@ export default function FeaturedClassesSection({
           eyebrow="Studio classes"
           title="Learn the rhythm of clay"
           description="Small-group classes for wheel throwing, handbuilding, and surface work, built for generous instruction and calm studio time."
-          //action={<ViewMoreLink href="/classes">View More Classes</ViewMoreLink>}
         />
 
         {isLoading ? <FeaturedGridSkeleton /> : null}
         {!isLoading && featuredClasses.length ?  <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
         {featuredClasses.map((classItem) => (
                   <div
-                    key={classItem.slug}
+                    key={classItem.id}
                   >
                     <ClassCard
                       classItem={classItem}

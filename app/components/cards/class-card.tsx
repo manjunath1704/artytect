@@ -7,20 +7,32 @@ import { Clock, Users } from "lucide-react";
 import WhatsAppButton from "@/components/whatsapp-button";
 import type { PotteryClass } from "@/lib/classes";
 import { cn } from "@/lib/utils";
-import { formatPrice, getClassBookingMessage } from "@/lib/whatsapp";
+import { formatPrice } from "@/lib/whatsapp";
 
 type ClassCardProps = {
   classItem: PotteryClass;
-  index: number;
   className?: string;
   imageSizes?: string;
 };
+
+function getClassBookingMessage(classItem: PotteryClass): string {
+  return `Hi! I'd like to book the *${classItem.title}* class.
+
+*Duration:* ${classItem.duration}
+*Date:* ${classItem.class_date}
+*Time:* ${classItem.class_time}
+*Fee:* ${formatPrice(classItem.price)}
+
+Looking forward to learning!`;
+}
 
 export default function ClassCard({
   classItem,
   className,
   imageSizes = "(min-width: 768px) 31vw, calc(100vw - 48px)",
-}: Omit<ClassCardProps, 'index'>) {
+}: ClassCardProps) {
+  const capacity = `${classItem.total_seats} seats`;
+  
   return (
     <article
       className={cn(
@@ -31,7 +43,7 @@ export default function ClassCard({
       <Link href={`/classes/${classItem.slug}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-[#e8ded3]">
           <Image
-            src={classItem.image}
+            src={classItem.thumbnail_url}
             alt={classItem.title}
             fill
             sizes={imageSizes}
@@ -58,7 +70,7 @@ export default function ClassCard({
           </div>
           <div className="border-r border-[#e2d6ca] px-2">
             <Users className="mx-auto h-4 w-4 text-[#9a6b4e]" />
-            <p className="mt-1.5 text-xs">{classItem.capacity}</p>
+            <p className="mt-1.5 text-xs">{capacity}</p>
           </div>
           <div className="px-2">
             <p className="text-base font-semibold text-[#1b1511]">
@@ -71,7 +83,7 @@ export default function ClassCard({
         </div>
 
         <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#7d746d]">
-          {classItem.shortDescription}
+          {classItem.short_description}
         </p>
 
         <div className="mt-3 grid grid-cols-[1fr_auto] gap-3">

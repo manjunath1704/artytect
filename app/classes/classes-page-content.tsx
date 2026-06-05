@@ -1,16 +1,37 @@
 "use client";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Loader2 } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import ClassCard from "@/app/components/cards/class-card";
-import { potteryClasses } from "@/lib/classes";
 import ClassCardMicro from "../components/cards/class-card-micro";
+import type { PotteryClass } from "@/lib/classes";
 
 export default function ClassesPageContent() {
+  const [classes, setClasses] = useState<PotteryClass[]>([]);
+  const [loading, setLoading] = useState(true);
   const { scrollY } = useScroll();
-
   const y = useTransform(scrollY, [0, 500], [0, 120]);
+
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const response = await fetch("/api/classes");
+        if (response.ok) {
+          const data = await response.json();
+          setClasses(data.classes || []);
+        }
+      } catch (error) {
+        console.error("Error fetching classes:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchClasses();
+  }, []);
+
   return (
       <main className="bg-[#fbf8f4] text-[#171717]">
         <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#201914] text-white">
@@ -28,7 +49,6 @@ export default function ClassesPageContent() {
   />
 </motion.div>
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(24,18,14,0.82),rgba(24,18,14,0.45),rgba(24,18,14,0.18))]" />
-          {/* <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#fbf8f4] to-transparent" /> */}
 
           <div className="site-container relative flex min-h-[calc(100vh-5rem)] items-end pb-12 pt-20 md:pb-16">
             <div className="grid w-full gap-10 lg:grid-cols-[1fr_360px] lg:items-end">
@@ -48,7 +68,7 @@ export default function ClassesPageContent() {
               <div className="overflow-hidden rounded-[32px] shadow-sm bg-[#17110d]/55 p-5 backdrop-blur-md">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <p className="text-2xl font-display">{potteryClasses.length}</p>
+                    <p className="text-2xl font-display">{classes.length}</p>
                     <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#e6d3c1]">
                       Classes
                     </p>
@@ -95,24 +115,38 @@ export default function ClassesPageContent() {
               </p>
             </div>
 
-            <div className="hidden md:block mt-10">
-            <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3 ">
-              {potteryClasses.map((classItem) => (
-                <ClassCard
-                  key={classItem.slug}
-                  classItem={classItem}
-                />
-              ))}
-            </div>
-            </div>
-            <div className="grid gap-3 grid-cols-2 py-10 md:hidden">
-              {potteryClasses.map((classItem) => (
-                <ClassCardMicro
-                  key={classItem.slug}
-                  classItem={classItem}
-                />
-              ))}
-            </div>
+            {loading ? (
+              <div className="mt-10 flex justify-center py-20">
+                <Loader2 className="h-8 w-8 animate-spin text-[#9a6b4e]" />
+              </div>
+            ) : classes.length > 0 ? (
+              <>
+                <div className="hidden md:block mt-10">
+                  <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3 ">
+                    {classes.map((classItem) => (
+                      <ClassCard
+                        key={classItem.id}
+                        classItem={classItem}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="grid gap-3 grid-cols-2 py-10 md:hidden">
+                  {classes.map((classItem) => (
+                    <ClassCardMicro
+                      key={classItem.id}
+                      classItem={classItem}
+                    />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="mt-10 rounded-2xl border border-[#d9ccbc] bg-[#faf6f2] p-12 text-center">
+                <p className="text-sm text-[#6b5f55]">
+                  No classes available at the moment. Check back soon!
+                </p>
+              </div>
+            )}
           </div>
         </section>
       </main>
