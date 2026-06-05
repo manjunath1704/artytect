@@ -30,13 +30,7 @@ export default async function AdminClassBookingsPage() {
 
   return (
     <AdminLayout userEmail={userData.user.email ?? ""}>
-      <div>
-        <div className="mb-8">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#9a6b4e]">Admin</p>
-          <h1 className="mt-2 text-4xl font-display uppercase leading-none">Class Bookings</h1>
-        </div>
-        <ClassBookingsManager initialBookings={bookings} />
-      </div>
+      <ClassBookingsManager initialBookings={bookings} />
     </AdminLayout>
   );
 }
