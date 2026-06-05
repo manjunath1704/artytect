@@ -99,24 +99,24 @@ console.log(form,'form')
               </div>
 
               <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-                <div className="grid gap-5">
-                  <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-3">
+                  <div className="grid gap-4 sm:grid-cols-2 ">
                     <label className="block">
-                      <span className="text-sm font-medium text-[#352a21]">Hero Subtitle</span>
+                      <span className="text-sm block font-medium text-[#352a21]">Hero Subtitle</span>
                       <input
                         type="text"
                         value={form.hero_subtitle}
                         onChange={(event) => setForm((c) => ({ ...c, hero_subtitle: event.target.value }))}
-                        className="mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
+                        className="mt-2 h-11 w-full rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
                       />
                     </label>
-                    <label className="block sm:col-span-2">
-                      <span className="text-sm font-medium text-[#352a21]">Hero Title</span>
+                    <label className="block">
+                      <span className="text-sm block font-medium text-[#352a21]">Hero Title</span>
                       <input
                         type="text"
                         value={form.hero_title}
                         onChange={(event) => setForm((c) => ({ ...c, hero_title: event.target.value }))}
-                        className="mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
+                        className="mt-2 h-11 w-full rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
                       />
                     </label>
                   </div>
@@ -133,33 +133,34 @@ console.log(form,'form')
 
                   <div className="grid gap-4 sm:grid-cols-2">
                     <label className="block">
-                      <span className="text-sm font-medium text-[#352a21]">Email</span>
+                      <span className="text-sm block font-medium text-[#352a21]">Email</span>
                       <input
                         type="email"
                         value={form.email}
                         onChange={(event) => setForm((c) => ({ ...c, email: event.target.value }))}
-                        className="mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
+                        className="mt-2 h-11 w-full rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
                       />
                     </label>
                     <label className="block">
-                      <span className="text-sm font-medium text-[#352a21]">Phone</span>
+                      <span className="text-sm block font-medium text-[#352a21]">Phone</span>
                       <input
                         type="tel"
                         value={form.phone}
                         onChange={(event) => setForm((c) => ({ ...c, phone: event.target.value }))}
-                        className="mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
+                        className="mt-2 h-11 w-full rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
                       />
                     </label>
                   </div>
 
                   <label className="block">
-                    <span className="text-sm font-medium text-[#352a21]">Map Embed URL (Google Maps iframe src)</span>
-                    <input
-                      type="text"
+                    <span className="text-sm block font-medium text-[#352a21]">Map Embed URL (Google Maps iframe src)</span>
+                    <textarea
+                      rows={4}
                       value={form.map_embed_url}
                       onChange={(event) => setForm((c) => ({ ...c, map_embed_url: event.target.value }))}
                       placeholder="https://www.google.com/maps/embed?pb=..."
-                      className="mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
+                      className="mt-2 w-full rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
+                  
                     />
                   </label>
                 </div>
