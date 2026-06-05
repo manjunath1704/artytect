@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { ImageUploader } from "@/components/ui/image-uploader";
+import Select from "react-select";
 import { createClient } from "@/lib/supabase/client";
 import type { PotteryClass } from "@/lib/classes";
 import { formatPrice } from "@/lib/whatsapp";
@@ -415,11 +416,51 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
                     </label>
                     <label>
                       <span className={labelClassName}>Level</span>
-                      <select value={form.level} onChange={(event) => setForm((current) => ({ ...current, level: event.target.value }))} className={inputClassName}>
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                      </select>
+                      <Select
+                        options={[
+                          { value: "Beginner", label: "Beginner" },
+                          { value: "Intermediate", label: "Intermediate" },
+                          { value: "Advanced", label: "Advanced" },
+                        ]}
+                        value={{ value: form.level, label: form.level }}
+                        onChange={(option) => {
+                          if (option) setForm((current) => ({ ...current, level: option.value }));
+                        }}
+                        classNamePrefix="react-select"
+                        styles={{
+                          control: (base) => ({
+                            ...base,
+                            borderRadius: "32px",
+                            border: "1px solid #d9ccbc",
+                            backgroundColor: "white",
+                            padding: "6px 12px",
+                            fontSize: "14px",
+                            outline: "none",
+                            transition: "all 0.2s",
+                            boxShadow: "none",
+                            "&:hover": {
+                              borderColor: "#b38d67",
+                            },
+                            "&:focus": {
+                              borderColor: "#b38d67",
+                              boxShadow: "0 0 0 4px rgba(215, 182, 139, 0.2)",
+                            },
+                          }),
+                          option: (base, state) => ({
+                            ...base,
+                            backgroundColor: state.isSelected ? "#1b1511" : state.isFocused ? "#f5eee4" : "white",
+                            color: state.isSelected ? "white" : "#1b1511",
+                            padding: "10px 12px",
+                            cursor: "pointer",
+                          }),
+                          menu: (base) => ({
+                            ...base,
+                            borderRadius: "12px",
+                            backgroundColor: "white",
+                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                          }),
+                        }}
+                      />
                     </label>
                     <label>
                       <span className={labelClassName}>Duration</span>
