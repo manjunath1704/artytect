@@ -41,20 +41,35 @@ export async function POST(request: Request) {
     }
 
     const items = JSON.parse(itemsRaw) as Array<{
-      productId: string;
+      id: string;
+      productId?: string;
+      classId?: string;
+      type: "product" | "class";
       name: string;
       slug: string;
       image: string;
       price: number;
-      size: string;
-      color: string;
-      quantity: number;
+      size?: string;
+      color?: string;
+      quantity?: number;
+      seats?: number;
+      date?: string;
+      time?: string;
+      instructor?: string;
     }>;
     if (!Array.isArray(items) || !items.length) {
       return NextResponse.json({ error: "Cart is empty." }, { status: 400 });
     }
 
-    const calculatedTotal = items.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
+    // Separate products and classes
+    const productItems = items.filter(item => item.type === "product");
+    const classItems = items.filter(item => item.type === "class");
+
+    // Calculate total for validation
+    const calculatedTotal = items.reduce((sum, item) => {
+      const quantity = item.type === "product" ? (item.quantity || 1) : (item.seats || 1);
+      return sum + Number(item.price) * quantity;
+    }, 0);
     if (Math.abs(calculatedTotal - totalAmount) > 0.01) {
       return NextResponse.json({ error: "Payment amount does not match cart total." }, { status: 400 });
     }
@@ -72,27 +87,57 @@ export async function POST(request: Request) {
     const { data: publicUrl } = supabase.storage.from(PAYMENT_BUCKET).getPublicUrl(filePath);
     const user = await getUser();
 
-    const { data: order, error } = await supabase
-      .from("orders")
-      .insert({
-        order_id: makeOrderId(),
+    const orderId = makeOrderId();
+
+    // If there are products, create an order
+    let orderRecord = null;
+    if (productItems.length > 0) {
+      const { data: order, error } = await supabase
+        .from("orders")
+        .insert({
+          order_id: orderId,
+          user_id: user?.id ?? null,
+          customer_name: customerName,
+          customer_email: customerEmail,
+          customer_phone: customerPhone,
+          address,
+          ordered_products: productItems,
+          selected_sizes: productItems.map((item) => item.size || ""),
+          selected_colors: productItems.map((item) => item.color || ""),
+          quantities: productItems.map((item) => item.quantity || 1),
+          total_amount: productItems.reduce((sum, item) => sum + Number(item.price) * (item.quantity || 1), 0),
+          payment_screenshot: publicUrl.publicUrl,
+        })
+        .select("order_id")
+        .single();
+
+      if (error) throw new Error(error.message);
+      orderRecord = order;
+    }
+
+    // Create class bookings
+    if (classItems.length > 0) {
+      const makeBookingId = () => `CB-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+      
+      const bookings = classItems.map((item) => ({
+        booking_id: makeBookingId(),
+        class_id: item.classId,
         user_id: user?.id ?? null,
         customer_name: customerName,
         customer_email: customerEmail,
         customer_phone: customerPhone,
-        address,
-        ordered_products: items,
-        selected_sizes: items.map((item) => item.size),
-        selected_colors: items.map((item) => item.color),
-        quantities: items.map((item) => item.quantity),
-        total_amount: calculatedTotal,
+        number_of_seats: item.seats || 1,
+        total_amount: Number(item.price) * (item.seats || 1),
         payment_screenshot: publicUrl.publicUrl,
-      })
-      .select("order_id")
-      .single();
+        payment_status: "Pending Verification",
+        booking_status: "Payment Review",
+      }));
 
-    if (error) throw new Error(error.message);
-    return NextResponse.json({ orderId: order.order_id }, { status: 201 });
+      const { error: bookingError } = await supabase.from("class_bookings").insert(bookings);
+      if (bookingError) throw new Error(bookingError.message);
+    }
+
+    return NextResponse.json({ orderId: orderRecord?.order_id || orderId }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unable to create order." },

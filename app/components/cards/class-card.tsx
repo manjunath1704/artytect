@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Clock, Users } from "lucide-react";
 
-import WhatsAppButton from "@/components/whatsapp-button";
+import { AddClassToCart } from "@/components/cart/add-class-to-cart";
 import type { PotteryClass } from "@/lib/classes";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/whatsapp";
@@ -14,17 +14,6 @@ type ClassCardProps = {
   className?: string;
   imageSizes?: string;
 };
-
-function getClassBookingMessage(classItem: PotteryClass): string {
-  return `Hi! I'd like to book the *${classItem.title}* class.
-
-*Duration:* ${classItem.duration}
-*Date:* ${classItem.class_date}
-*Time:* ${classItem.class_time}
-*Fee:* ${formatPrice(classItem.price)}
-
-Looking forward to learning!`;
-}
 
 export default function ClassCard({
   classItem,
@@ -87,12 +76,7 @@ export default function ClassCard({
         </p>
 
         <div className="mt-3 grid grid-cols-[1fr_auto] gap-3">
-          <WhatsAppButton
-            message={getClassBookingMessage(classItem)}
-            className="h-11 rounded-full px-4"
-          >
-            Book Now
-          </WhatsAppButton>
+          <AddClassToCart classData={classItem} />
           <Link
             href={`/classes/${classItem.slug}`}
             className="inline-flex h-11 items-center justify-center rounded-full border border-[#d8cec1] px-4 text-[11px] font-semibold uppercase tracking-[0.16em] transition hover:border-[#1b1511] hover:bg-white"

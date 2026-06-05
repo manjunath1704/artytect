@@ -23,14 +23,14 @@ export default function AddToCartButton({
   className,
   children = "Add to cart",
 }: AddToCartButtonProps) {
-  const { addItem } = useCart();
+  const { addProduct } = useCart();
 
   return (
     <button
       type="button"
       className={className}
       onClick={() => {
-        addItem(product, quantity, { size, color });
+        addProduct(product, quantity, { size, color });
         toast.success(`${product.name} added to cart.`);
       }}
     >

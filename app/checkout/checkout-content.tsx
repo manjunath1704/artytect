@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash2, Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 import { ImageUploader } from "@/components/ui/image-uploader";
@@ -16,7 +16,7 @@ const inputClassName =
 
 export default function CheckoutContent({ paymentQrUrl }: { paymentQrUrl: string }) {
   const router = useRouter();
-  const { items, subtotal, clearCart } = useCart();
+  const { items, subtotal, clearCart, removeItem, updateQuantity, updateSeats } = useCart();
   const [proof, setProof] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
@@ -62,6 +62,9 @@ export default function CheckoutContent({ paymentQrUrl }: { paymentQrUrl: string
     }
   };
 
+  const productItems = items.filter(item => item.type === "product");
+  const classItems = items.filter(item => item.type === "class");
+
   return (
     <main className="min-h-screen bg-[#fbf8f4] pb-16 pt-28 text-[#171717]">
       <div className="site-container">
@@ -90,7 +93,7 @@ export default function CheckoutContent({ paymentQrUrl }: { paymentQrUrl: string
                   </label>
                 ))}
                 <label className="block sm:col-span-2">
-                  <span className="text-sm font-medium text-[#352a21]">Address</span>
+                  <span className="text-sm font-medium text-[#352a21]">Delivery address</span>
                   <textarea
                     value={form.address}
                     onChange={(event) => setForm((current) => ({ ...current, address: event.target.value }))}
@@ -112,23 +115,110 @@ export default function CheckoutContent({ paymentQrUrl }: { paymentQrUrl: string
               </div>
             </section>
 
-            <aside className="h-fit rounded-[32px] bg-white p-6 shadow-sm">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.2em]">Cart summary</h2>
-              <div className="mt-5 grid gap-3">
-                {items.map((item) => (
-                  <div key={item.id} className="flex gap-3 border-b border-[#eadfd4] pb-3">
-                    <div className="relative h-16 w-16 overflow-hidden rounded-[18px] bg-[#eee6dc]">
-                      <Image src={item.image} alt={item.name} fill sizes="64px" className="object-cover" />
-                    </div>
-                    <div className="flex-1 text-sm">
-                      <p className="font-semibold">{item.name}</p>
-                      <p className="mt-1 text-xs text-[#665b4f]">{item.size} / {item.color} x {item.quantity}</p>
-                    </div>
-                    <p className="text-sm font-semibold">{formatPrice(item.price * item.quantity)}</p>
+            <aside className="h-fit rounded-[32px] bg-white p-6 shadow-sm sticky top-28">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.2em]">Order summary</h2>
+              <div className="mt-5 grid gap-3 max-h-[400px] overflow-auto">
+                {/* Products Section */}
+                {productItems.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold text-[#665b4f] mb-3">Products</p>
+                    {productItems.map((item) => (
+                      <div key={item.id} className="flex gap-3 border-b border-[#eadfd4] pb-3 mb-3">
+                        <div className="relative h-16 w-16 overflow-hidden rounded-[18px] bg-[#eee6dc] shrink-0">
+                          <Image src={item.image} alt={item.name} fill sizes="64px" className="object-cover" />
+                        </div>
+                        <div className="flex-1 text-sm min-w-0">
+                          <p className="font-semibold truncate">{item.name}</p>
+                          <p className="mt-1 text-xs text-[#665b4f]">
+                            Size {item.size} / {item.color}
+                          </p>
+                          <div className="mt-1 flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => updateQuantity(item.id, (item.quantity || 1) - 1)}
+                              disabled={(item.quantity || 1) <= 1}
+                              className="flex h-6 w-6 items-center justify-center rounded border border-[#d9ccbc] bg-white text-[#1b1511] text-xs transition hover:bg-[#f5eee4] disabled:opacity-50"
+                            >
+                              <Minus className="h-3 w-3" />
+                            </button>
+                            <span className="w-6 text-center text-xs font-semibold">{item.quantity || 1}</span>
+                            <button
+                              type="button"
+                              onClick={() => updateQuantity(item.id, (item.quantity || 1) + 1)}
+                              className="flex h-6 w-6 items-center justify-center rounded border border-[#d9ccbc] bg-white text-[#1b1511] text-xs transition hover:bg-[#f5eee4]"
+                            >
+                              <Plus className="h-3 w-3" />
+                            </button>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                          <p className="text-sm font-semibold">{formatPrice(item.price * (item.quantity || 1))}</p>
+                          <button
+                            type="button"
+                            onClick={() => removeItem(item.id)}
+                            className="flex h-7 w-7 items-center justify-center rounded-full bg-red-50 text-red-600 hover:bg-red-100"
+                            title="Remove"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
+
+                {/* Classes Section */}
+                {classItems.length > 0 && (
+                  <div>
+                    {productItems.length > 0 && <hr className="my-3 border-[#eadfd4]" />}
+                    <p className="text-xs font-semibold text-[#665b4f] mb-3">Classes</p>
+                    {classItems.map((item) => (
+                      <div key={item.id} className="flex gap-3 border-b border-[#eadfd4] pb-3 mb-3">
+                        <div className="relative h-16 w-16 overflow-hidden rounded-[18px] bg-[#eee6dc] shrink-0">
+                          <Image src={item.image} alt={item.name} fill sizes="64px" className="object-cover" />
+                        </div>
+                        <div className="flex-1 text-sm min-w-0">
+                          <p className="font-semibold truncate">{item.name}</p>
+                          <p className="mt-1 text-xs text-[#665b4f]">
+                            {item.date} at {item.time}
+                          </p>
+                          <div className="mt-1 flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => updateSeats(item.id, (item.seats || 1) - 1)}
+                              disabled={(item.seats || 1) <= 1}
+                              className="flex h-6 w-6 items-center justify-center rounded border border-[#d9ccbc] bg-white text-[#1b1511] text-xs transition hover:bg-[#f5eee4] disabled:opacity-50"
+                            >
+                              <Minus className="h-3 w-3" />
+                            </button>
+                            <span className="w-6 text-center text-xs font-semibold">{item.seats || 1}</span>
+                            <button
+                              type="button"
+                              onClick={() => updateSeats(item.id, (item.seats || 1) + 1)}
+                              className="flex h-6 w-6 items-center justify-center rounded border border-[#d9ccbc] bg-white text-[#1b1511] text-xs transition hover:bg-[#f5eee4]"
+                            >
+                              <Plus className="h-3 w-3" />
+                            </button>
+                            <span className="ml-auto text-xs text-[#665b4f]">seat{(item.seats || 1) > 1 ? "s" : ""}</span>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                          <p className="text-sm font-semibold">{formatPrice(item.price * (item.seats || 1))}</p>
+                          <button
+                            type="button"
+                            onClick={() => removeItem(item.id)}
+                            className="flex h-7 w-7 items-center justify-center rounded-full bg-red-50 text-red-600 hover:bg-red-100"
+                            title="Remove"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              <div className="mt-5 flex justify-between text-base font-semibold">
+              <div className="mt-5 flex justify-between text-base font-semibold border-t border-[#eadfd4] pt-4">
                 <span>Total payable</span>
                 <span>{formatPrice(subtotal)}</span>
               </div>

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FolderOpen, HeartHandshake, Home, Mail, MessageSquareQuote, Newspaper, Package, Route, Sparkles, Users, ChevronRight, BookOpen } from "lucide-react";
+import { FolderOpen, HeartHandshake, Home, Mail, MessageSquareQuote, Newspaper, Package, Route, Sparkles, Users, ChevronRight, BookOpen, BookMarked } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -276,6 +276,27 @@ const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCoun
               Add and manage pottery products, pricing, and inventory.
             </p>
           </div>
+
+          <Link
+            href="/admin/class-bookings"
+            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#dcd4c8] text-[#1b1511]">
+                <BookMarked className="h-7 w-7" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Bookings</h2>
+                <p className="mt-1 text-sm text-[#665b4f]">Class bookings</p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
+              Manage class bookings, verify payments, and confirm registrations.
+            </p>
+            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
+              Manage Bookings <ChevronRight className="text-xs" />
+            </div>
+          </Link>
 
           <Link
             href="/admin/classes"

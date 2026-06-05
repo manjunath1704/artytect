@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import Footer from "@/app/components/home/footer";
 import Navbar from "@/app/components/home/navbar";
 import WhatsAppButton from "@/components/whatsapp-button";
+import { AddClassToCart } from "@/components/cart/add-class-to-cart";
 import { isPublicPageVisible } from "@/lib/public-page-visibility";
 import { formatPrice } from "@/lib/whatsapp";
 import type { PotteryClass } from "@/lib/classes";
@@ -213,14 +214,11 @@ export default async function ClassPage({ params }: ClassPageProps) {
                       </div>
                     </div>
                     <p className="mt-5 text-sm leading-7 text-[#6f6259]">
-                      Tap to start a WhatsApp booking with the class details already filled in.
+                      Select seats and add to your booking cart.
                     </p>
-                    <WhatsAppButton
-                      message={getClassBookingMessage(classItem)}
-                      className="mt-6  h-14 w-full inline-flex"
-                    >
-                      Book via WhatsApp
-                    </WhatsAppButton>
+                    <div className="mt-6">
+                      <AddClassToCart classData={classItem} />
+                    </div>
                   </div>
                 </div>
               </aside>
