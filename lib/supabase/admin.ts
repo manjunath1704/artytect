@@ -14,6 +14,7 @@ export const HERO_BUCKET = "hero-media";
 export const BLOG_BUCKET = "blog-featured-images";
 export const PRODUCT_BUCKET = "product-images";
 export const PAYMENT_BUCKET = "payment-assets";
+export const CONTACT_BUCKET = "contact-page-images";
 
 export const getAdminClient = () => {
   if (!supabaseUrl) {
@@ -269,6 +270,25 @@ export const ensurePaymentAssetsBucket = async () => {
   if (createBucketError && !createBucketError.message.toLowerCase().includes("already exists")) {
     throw new Error(
       `Unable to create Supabase Storage bucket "${PAYMENT_BUCKET}": ${createBucketError.message}`,
+    );
+  }
+};
+
+export const ensureContactImagesBucket = async () => {
+  const supabase = getAdminClient();
+  const { error: bucketLookupError } = await supabase.storage.getBucket(CONTACT_BUCKET);
+
+  if (!bucketLookupError) return;
+
+  const { error: createBucketError } = await supabase.storage.createBucket(CONTACT_BUCKET, {
+    public: true,
+    allowedMimeTypes: ["image/*"],
+    fileSizeLimit: "10485760",
+  });
+
+  if (createBucketError && !createBucketError.message.toLowerCase().includes("already exists")) {
+    throw new Error(
+      `Unable to create Supabase Storage bucket "${CONTACT_BUCKET}": ${createBucketError.message}`,
     );
   }
 };

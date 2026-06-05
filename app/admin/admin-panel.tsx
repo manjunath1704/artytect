@@ -194,6 +194,27 @@ const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCoun
           </Link>
 
           <Link
+            href="/admin/contact"
+            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e8ddd1] text-[#1b1511]">
+                <Mail className="h-7 w-7" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Contact</h2>
+                <p className="mt-1 text-sm text-[#665b4f]">Contact page</p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
+              Manage contact page hero section, contact details, and map embed.
+            </p>
+            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
+              Manage Contact <ChevronRight className="text-xs" />
+            </div>
+          </Link>
+
+          <Link
             href="/admin/process"
             className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
           >
@@ -262,20 +283,26 @@ const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCoun
             </div>
           </Link>
 
-          <div className="rounded-[32px] bg-white p-6 opacity-50 sm:p-8">
+          <Link
+            href="/admin/products"
+            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
+          >
             <div className="flex items-center gap-4">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#b38d67] text-white">
                 <Package className="h-7 w-7" />
               </div>
               <div>
                 <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Products</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">Coming soon</p>
+                <p className="mt-1 text-sm text-[#665b4f]">Manage products</p>
               </div>
             </div>
             <p className="mt-4 text-sm leading-7 text-[#665b4f]">
               Add and manage pottery products, pricing, and inventory.
             </p>
-          </div>
+            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
+              Manage Products <ChevronRight className="text-xs" />
+            </div>
+          </Link>
 
           <Link
             href="/admin/class-bookings"

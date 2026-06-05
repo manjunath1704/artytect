@@ -61,6 +61,7 @@ const BREADCRUMBS: Record<string, { label: string; parent?: string }> = {
   "/admin/orders": { label: "Orders", parent: "/admin" },
   "/admin/classes": { label: "Classes", parent: "/admin" },
   "/admin/class-bookings": { label: "Class Bookings", parent: "/admin" },
+  "/admin/contact": { label: "Contact", parent: "/admin" },
   "/admin/settings": { label: "Settings", parent: "/admin" },
   "/admin/public-visibility": { label: "Public Visibility", parent: "/admin" },
 };
@@ -113,6 +114,7 @@ const NAV: NavItem[] = [
   },
   { title: "Process", href: "/admin/process", icon: Route, children: [] },
   { title: "Crafted Moments", href: "/admin/crafted-moments", icon: Sparkles, children: [] },
+  { title: "Contact", href: "/admin/contact", icon: Mail, children: [] },
   { title: "Public Visibility", href: "/admin/public-visibility", icon: Eye, children: [] },
   { title: "Blogs", href: "/admin/blogs", icon: Newspaper, children: [] },
   { title: "Products", href: "/admin/products", icon: Package, children: [] },
