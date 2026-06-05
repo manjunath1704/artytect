@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
 import { Input } from "@/components/ui/input";
+import { ImageUploader } from "@/components/ui/image-uploader";
 import { createClient } from "@/lib/supabase/client";
 import type { PotteryClass } from "@/lib/classes";
 import { formatPrice } from "@/lib/whatsapp";
@@ -454,23 +455,13 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
                 </div>
 
                 <aside className="rounded-[32px] border border-[#e8ddd1] bg-[#fcfaf7] p-4">
-                  <div>
-                    <span className={labelClassName}>Thumbnail Image</span>
-                    <label className="mt-2 flex cursor-pointer flex-col items-center justify-center rounded-[32px] border-2 border-dashed border-[#d9ccbc] bg-white p-6 transition hover:border-[#b38d67]">
-                      <span className="text-sm text-[#665b4f]">
-                        {imageFile ? imageFile.name : "Click to upload"}
-                      </span>
-                      <input type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
-                    </label>
-                  </div>
-
-                  {form.thumbnail_url && !imageFile && (
-                    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="mt-4 overflow-hidden rounded-[32px] border border-[#e8ddd1] bg-white">
-                      <div className="relative h-52 bg-[#f5eee4]">
-                        <Image src={form.thumbnail_url} alt="Current thumbnail" fill className="object-contain" />
-                      </div>
-                    </motion.div>
-                  )}
+                  <ImageUploader
+                    label="Thumbnail Image"
+                    hint="Drag & drop or click to upload"
+                    file={imageFile}
+                    onChange={setImageFile}
+                    onRemove={() => setImageFile(null)}
+                  />
 
                   <div className="mt-5 grid gap-4">
                     <label className="flex items-center gap-3">

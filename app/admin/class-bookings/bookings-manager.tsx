@@ -261,8 +261,8 @@ export default function ClassBookingsManager({ initialBookings }: { initialBooki
       {/* Detail Modal */}
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-2xl rounded-[32px] bg-white p-6 shadow-lg sm:p-8">
-            <div className="mb-6 flex items-center justify-between border-b border-[#e2d6ca] pb-4">
+          <div className="w-full max-w-2xl rounded-[32px] bg-white shadow-lg sm:p-8 flex flex-col max-h-[90vh]">
+            <div className="mb-6 flex items-center justify-between border-b border-[#e2d6ca] pb-4 px-6 sm:px-8 pt-6 sm:pt-8 shrink-0">
               <h2 className="text-2xl font-display uppercase">Booking Details</h2>
               <button
                 onClick={() => setSelected(null)}
@@ -272,7 +272,7 @@ export default function ClassBookingsManager({ initialBookings }: { initialBooki
               </button>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-6 overflow-y-auto px-6 sm:px-8 py-6 flex-1">
               {/* Booking Info */}
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9a6b4e]">Booking Information</p>
@@ -395,7 +395,7 @@ export default function ClassBookingsManager({ initialBookings }: { initialBooki
 
             <button
               onClick={() => setSelected(null)}
-              className="mt-6 inline-flex h-11 items-center justify-center rounded-full border border-[#d9ccbc] px-6 text-sm font-semibold text-[#1b1511] transition hover:bg-[#f5eee4]"
+              className="mt-6 inline-flex h-11 items-center justify-center rounded-full border border-[#d9ccbc] px-6 text-sm font-semibold text-[#1b1511] transition hover:bg-[#f5eee4] shrink-0 mx-6 sm:mx-8 mb-6 sm:mb-8"
             >
               Close
             </button>
