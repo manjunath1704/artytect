@@ -6,8 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
-import Select from "react-select";
-
 import { AppSelect, type SelectOption } from "@/components/ui/app-select";
 import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
 import { GalleryUploader } from "@/components/ui/gallery-uploader";
@@ -298,7 +296,7 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h2 className="text-3xl tracking-[-0.03em] text-[#1b1511]">{form.id ? "Edit product" : "Create product"}</h2>
+                  <h2 className="text-3xl tracking-[-0.03em] text-[#1b1511]">{form.id ? "Edit product" : "Haritham"}</h2>
                   <p className="mt-2 text-sm text-[#665b4f]">
                     {form.id ? "Update product details below." : "Slug is generated from the product name until you edit an existing product."}
                   </p>
@@ -321,7 +319,7 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                       ["colors", "Colors (comma separated)", "text"],
                     ].map(([key, label, type]) => (
                       <label key={key} className="block">
-                        <span className="text-sm block font-medium text-[#352a21]">{label}</span>
+                        <span className="text-sm font-medium text-[#352a21]">{label}</span>
                         <input
                           type={type}
                           value={form[key as keyof typeof form] as string}
@@ -335,7 +333,7 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                                   : current.slug,
                             }))
                           }
-                          className="w-full mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
+                          className="mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
                         />
                       </label>
                     ))}
@@ -344,7 +342,7 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                   {/* Price — numbers only */}
                   <div className="grid gap-4 sm:grid-cols-2">
                     <label className="block">
-                      <span className="text-sm font-medium text-[#352a21] block">Price (₹)</span>
+                      <span className="text-sm font-medium text-[#352a21]">Price (₹)</span>
                       <input
                         type="number"
                         min="0"
@@ -352,14 +350,14 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                         value={form.price}
                         onChange={(e) => setForm((c) => ({ ...c, price: e.target.value }))}
                         onKeyDown={(e) => { if (["-", "e", "E", "+"].includes(e.key)) e.preventDefault(); }}
-                        className="mt-2 h-11 w-full rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
+                        className="mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
                         placeholder="0"
                       />
                     </label>
 
                     {/* Quantity — integers only */}
                     <label className="block">
-                      <span className="block text-sm font-medium text-[#352a21]">Quantity</span>
+                      <span className="text-sm font-medium text-[#352a21]">Quantity</span>
                       <input
                         type="number"
                         min="0"
@@ -367,7 +365,7 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                         value={form.quantity}
                         onChange={(e) => setForm((c) => ({ ...c, quantity: e.target.value }))}
                         onKeyDown={(e) => { if (["-", "e", "E", "+", "."].includes(e.key)) e.preventDefault(); }}
-                        className="w-full mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
+                        className="mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20"
                         placeholder="0"
                       />
                     </label>
@@ -398,50 +396,10 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                   <div className="grid gap-4 sm:grid-cols-2">
                     <label className="block">
                       <span className="text-sm font-medium text-[#352a21]">Publish status</span>
-                      <Select
-                        options={[
-                          { value: "draft", label: "Draft" },
-                          { value: "published", label: "Published" },
-                        ]}
-                        value={{ value: form.status, label: form.status.charAt(0).toUpperCase() + form.status.slice(1) }}
-                        onChange={(option) => {
-                          if (option) setForm((current) => ({ ...current, status: option.value }));
-                        }}
-                        classNamePrefix="react-select"
-                        styles={{
-                          control: (base) => ({
-                            ...base,
-                            borderRadius: "32px",
-                            border: "1px solid #d9ccbc",
-                            backgroundColor: "white",
-                            padding: "6px 12px",
-                            fontSize: "14px",
-                            outline: "none",
-                            transition: "all 0.2s",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#b38d67",
-                            },
-                            "&:focus": {
-                              borderColor: "#b38d67",
-                              boxShadow: "0 0 0 4px rgba(215, 182, 139, 0.2)",
-                            },
-                          }),
-                          option: (base, state) => ({
-                            ...base,
-                            backgroundColor: state.isSelected ? "#1b1511" : state.isFocused ? "#f5eee4" : "white",
-                            color: state.isSelected ? "white" : "#1b1511",
-                            padding: "10px 12px",
-                            cursor: "pointer",
-                          }),
-                          menu: (base) => ({
-                            ...base,
-                            borderRadius: "12px",
-                            backgroundColor: "white",
-                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                          }),
-                        }}
-                      />
+                      <select value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value }))} className="mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20">
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                      </select>
                     </label>
 
                     {/* Featured checkbox */}
@@ -465,8 +423,8 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                   </div>
 
                   <label className="block">
-                    <span className="text-sm font-medium text-[#352a21] block">Short description</span>
-                    <input value={form.short_description} onChange={(event) => setForm((current) => ({ ...current, short_description: event.target.value }))} className="w-full mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20" />
+                    <span className="text-sm font-medium text-[#352a21]">Short description</span>
+                    <input value={form.short_description} onChange={(event) => setForm((current) => ({ ...current, short_description: event.target.value }))} className="mt-2 h-11 rounded-[32px] border border-[#d9ccbc] bg-white px-4 py-3 text-sm text-[#1b1511] outline-none transition placeholder:text-[#a69280] focus:border-[#b38d67] focus:ring-4 focus:ring-[#d7b68b]/20" />
                   </label>
 
                   <label className="block">
@@ -547,7 +505,7 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                 </button>
                 <button disabled={saving} onClick={saveProduct} className="inline-flex h-12 items-center gap-2 rounded-full bg-[#1b1511] px-6 text-[11px] font-semibold uppercase tracking-[0.18em] text-white disabled:opacity-60">
                   {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                  {form.id ? "Save changes" : "Create product"}
+                  {form.id ? "Save changes" : "Haritham"}
                 </button>
               </div>
             </motion.section>
