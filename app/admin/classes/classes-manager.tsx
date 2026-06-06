@@ -49,13 +49,8 @@ type ClassFormState = {
   slug: string;
   short_description: string;
   content: string;
-  instructor_name: string;
   duration: string;
-  class_date: string;
-  class_time: string;
   price: string;
-  total_seats: string;
-  available_seats: string;
   level: string;
   is_featured: boolean;
   is_published: boolean;
@@ -67,13 +62,8 @@ const emptyForm: ClassFormState = {
   slug: "",
   short_description: "",
   content: "",
-  instructor_name: "",
   duration: "",
-  class_date: "",
-  class_time: "",
   price: "",
-  total_seats: "",
-  available_seats: "",
   level: "Beginner",
   is_featured: false,
   is_published: false,
@@ -161,13 +151,8 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
       slug: classItem.slug,
       short_description: classItem.short_description,
       content: classItem.content,
-      instructor_name: classItem.instructor_name,
       duration: classItem.duration,
-      class_date: classItem.class_date,
-      class_time: classItem.class_time,
       price: (classItem.price / 100).toFixed(2),
-      total_seats: classItem.total_seats.toString(),
-      available_seats: classItem.available_seats.toString(),
       level: classItem.level,
       is_featured: classItem.is_featured,
       is_published: classItem.is_published,
@@ -230,32 +215,12 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
       toast.error("Rich text content is required");
       return;
     }
-    if (!form.instructor_name.trim()) {
-      toast.error("Instructor name is required");
-      return;
-    }
     if (!form.duration.trim()) {
       toast.error("Duration is required");
       return;
     }
-    if (!form.class_date) {
-      toast.error("Class date is required");
-      return;
-    }
-    if (!form.class_time) {
-      toast.error("Class time is required");
-      return;
-    }
     if (!form.price || parseFloat(form.price) <= 0) {
       toast.error("Valid price is required");
-      return;
-    }
-    if (!form.total_seats || parseInt(form.total_seats) <= 0) {
-      toast.error("Total seats must be greater than 0");
-      return;
-    }
-    if (!form.available_seats || parseInt(form.available_seats) <= 0) {
-      toast.error("Available seats must be greater than 0");
       return;
     }
     if (!form.thumbnail_url && !imageFile) {
@@ -272,13 +237,8 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
       data.append("slug", form.slug.trim());
       data.append("short_description", form.short_description.trim());
       data.append("content", form.content.trim());
-      data.append("instructor_name", form.instructor_name.trim());
       data.append("duration", form.duration.trim());
-      data.append("class_date", form.class_date);
-      data.append("class_time", form.class_time);
       data.append("price", form.price);
-      data.append("total_seats", form.total_seats);
-      data.append("available_seats", form.available_seats);
       data.append("level", form.level);
       data.append("is_featured", String(form.is_featured));
       data.append("is_published", String(form.is_published));
@@ -454,11 +414,7 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
                     </div>
                   </div>
 
-                  <div className="grid gap-4 md:grid-cols-3">
-                    <label>
-                      <span className={labelClassName}>Instructor Name</span>
-                      <Input value={form.instructor_name} onChange={(event) => setForm((current) => ({ ...current, instructor_name: event.target.value }))} className={inputClassName} />
-                    </label>
+                  <div className="grid gap-4 md:grid-cols-2">
                     <label>
                       <span className={labelClassName}>Level</span>
                       <Select
@@ -513,31 +469,10 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
                     </label>
                   </div>
 
-                  <div className="grid gap-4 md:grid-cols-3">
-                    <label>
-                      <span className={labelClassName}>Class Date</span>
-                      <Input type="date" value={form.class_date} onChange={(event) => setForm((current) => ({ ...current, class_date: event.target.value }))} className={inputClassName} />
-                    </label>
-                    <label>
-                      <span className={labelClassName}>Class Time</span>
-                      <Input type="time" value={form.class_time} onChange={(event) => setForm((current) => ({ ...current, class_time: event.target.value }))} className={inputClassName} />
-                    </label>
-                    <label>
-                      <span className={labelClassName}>Price (₹)</span>
-                      <Input type="number" step="0.01" value={form.price} onChange={(event) => setForm((current) => ({ ...current, price: event.target.value }))} className={inputClassName} placeholder="0.00" />
-                    </label>
-                  </div>
-
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <label>
-                      <span className={labelClassName}>Total Seats</span>
-                      <Input type="number" value={form.total_seats} onChange={(event) => setForm((current) => ({ ...current, total_seats: event.target.value }))} className={inputClassName} placeholder="10" />
-                    </label>
-                    <label>
-                      <span className={labelClassName}>Available Seats</span>
-                      <Input type="number" value={form.available_seats} onChange={(event) => setForm((current) => ({ ...current, available_seats: event.target.value }))} className={inputClassName} placeholder="10" />
-                    </label>
-                  </div>
+                  <label>
+                    <span className={labelClassName}>Price (₹)</span>
+                    <Input type="number" step="0.01" value={form.price} onChange={(event) => setForm((current) => ({ ...current, price: event.target.value }))} className={inputClassName} placeholder="0.00" />
+                  </label>
                 </div>
 
                 <aside className="rounded-[32px] border border-[#e8ddd1] bg-[#fcfaf7] p-4">
@@ -596,9 +531,7 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
               <thead className="sticky top-0 z-10 bg-[#fcfaf7] shadow-[0_1px_0_#e8ddd1]">
                 <tr>
                   <th className="p-3 text-left text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Class</th>
-                  <th className="p-3 text-left text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Instructor</th>
-                  <th className="p-3 text-left text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Date</th>
-                  <th className="p-3 text-left text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Seats</th>
+                  <th className="p-3 text-left text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Duration</th>
                   <th className="p-3 text-left text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Price</th>
                   <th className="p-3 text-left text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Status</th>
                   <th className="p-3 text-center text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7765]">Actions</th>
@@ -620,17 +553,7 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
                         </div>
                       </td>
                       <td className="p-3">
-                        <span className="text-[#665b4f]">{classItem.instructor_name}</span>
-                      </td>
-                      <td className="p-3">
-                        <div className="flex items-center gap-1 text-[#665b4f]">
-                          <CalendarDays className="h-4 w-4" />
-                          <span>{classItem.class_date}</span>
-                        </div>
-                        <p className="mt-1 text-xs text-[#8a7765]">{classItem.class_time}</p>
-                      </td>
-                      <td className="p-3">
-                        <span className="text-[#665b4f]">{classItem.available_seats}/{classItem.total_seats}</span>
+                        <span className="text-[#665b4f]">{classItem.duration}</span>
                       </td>
                       <td className="p-3">
                         <span className="text-[#665b4f]">{formatPrice(classItem.price)}</span>
@@ -677,7 +600,7 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7} className="p-12 text-center text-[#8a7765]">
+                    <td colSpan={5} className="p-12 text-center text-[#8a7765]">
                       {query ? "No classes found matching your search." : "No classes yet. Create your first class!"}
                     </td>
                   </tr>

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Clock, Users, Calendar } from "lucide-react";
+import { ArrowUpRight, Clock } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import Footer from "@/app/components/home/footer";
@@ -136,27 +136,13 @@ export default async function ClassPage({ params }: ClassPageProps) {
                       What you will shape
                     </h2>
                   </div>
-                <div className="grid border border-[#d8cec1] shadow-md rounded-[32px] text-center grid-cols-4">
+                <div className="grid border border-[#d8cec1] shadow-md rounded-[32px] text-center grid-cols-2">
                   <div className=" border-[#d8cec1] px-5 py-6 sm:border-b-0 sm:border-r">
                     <Clock className="mx-auto h-5 w-5 text-[#9a6b4e]" />
                     <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8a7765]">
                       Duration
                     </p>
                     <p className="mt-2 text-sm font-semibold">{classItem.duration}</p>
-                  </div>
-                  <div className=" border-[#d8cec1] px-5 py-6 sm:border-b-0 sm:border-r">
-                    <Users className="mx-auto h-5 w-5 text-[#9a6b4e]" />
-                    <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8a7765]">
-                      Seats
-                    </p>
-                    <p className="mt-2 text-sm font-semibold">{classItem.available_seats}/{classItem.total_seats}</p>
-                  </div>
-                  <div className=" border-[#d8cec1] px-5 py-6 sm:border-b-0 sm:border-r">
-                    <Calendar className="mx-auto h-5 w-5 text-[#9a6b4e]" />
-                    <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8a7765]">
-                      Date
-                    </p>
-                    <p className="mt-2 text-sm font-semibold">{classItem.class_date}</p>
                   </div>
                   <div className="px-5 py-6">
                     <p className="text-2xl font-display text-[#1b1511]">
@@ -175,15 +161,6 @@ export default async function ClassPage({ params }: ClassPageProps) {
                     dangerouslySetInnerHTML={{ __html: classItem.content }}
                   />
                 </div>
-
-                {classItem.instructor_name && (
-                  <div className="mt-12 rounded-[32px] shadow-sm bg-[#fffdf9] p-6 md:p-8">
-                    <h2 className="text-xs font-semibold uppercase tracking-[0.2em]">
-                      Your Instructor
-                    </h2>
-                    <p className="mt-4 text-lg font-semibold">{classItem.instructor_name}</p>
-                  </div>
-                )}
 
                 {/* <div className="mt-12 grid gap-4 sm:grid-cols-3">
                   {["Arrive curious", "Practice slowly", "Finish fired"].map((step, index) => (
@@ -223,16 +200,12 @@ export default async function ClassPage({ params }: ClassPageProps) {
                         <span className="font-semibold">{formatPrice(classItem.price)}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[#6f6259]">Available seats</span>
-                        <span className="font-semibold">{classItem.available_seats} of {classItem.total_seats}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-[#6f6259]">Date & Time</span>
-                        <span className="font-semibold">{classItem.class_date} at {classItem.class_time}</span>
+                        <span className="text-[#6f6259]">Duration</span>
+                        <span className="font-semibold">{classItem.duration}</span>
                       </div>
                     </div>
                     <p className="mt-5 text-sm leading-7 text-[#6f6259]">
-                      Select seats and add to your booking cart.
+                      Add this class to your booking cart.
                     </p>
                     <div className="mt-6">
                       <AddClassToCart classData={classItem} />

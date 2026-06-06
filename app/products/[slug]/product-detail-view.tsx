@@ -203,7 +203,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                 <p className="mt-8 text-sm leading-8 text-[#6f6259]">{product.shortDescription}</p>
 
                 {/* Spec cards */}
-                <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                {/* <div className="mt-8 grid gap-3 sm:grid-cols-2">
                   {[
                     { label: "Dimensions", value: formattedDimensions, icon: Ruler },
                     { label: "Materials",  value: product.materials,  icon: PackageCheck },
@@ -221,7 +221,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                       </div>
                     );
                   })}
-                </div>
+                </div> */}
 
                 {/* Size + Color selectors */}
                 <div className="mt-8 grid gap-6 border-t border-[#eadfd4] pt-6 sm:grid-cols-2">
