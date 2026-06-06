@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Plus, Minus } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { useCart } from "./cart-provider";
@@ -25,7 +25,7 @@ export function AddClassToCart({ classData }: { classData: PotteryClass }) {
       addClass(classData, seats);
       toast.success(`Added ${seats} seat(s) to cart`);
       setSeats(1);
-    } catch (error) {
+    } catch {
       toast.error("Failed to add to cart");
     } finally {
       setIsAdding(false);
