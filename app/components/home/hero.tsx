@@ -109,7 +109,7 @@ const Hero = ({
         >
           <motion.h1
             variants={itemVariants}
-            className="uppercase  text-6xl md:text-8xl font-display leading-[1.08] tracking-normal text-[#ffffff] sm:leading-[1.04] text-center"
+            className="uppercase  text-4xl md:text-6xl font-display leading-[1.08] tracking-normal text-[#ffffff] sm:leading-[1.04] text-center"
           >
             {content.title.split("\n").map((line, index, lines) => (
               <span key={`${line}-${index}`}>
