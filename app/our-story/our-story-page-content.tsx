@@ -168,7 +168,7 @@ export default function OurStoryPageContent() {
             className="max-w-3xl"
           >
             <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.34em] text-[#ead7c3]">
-              <Sparkles className="h-4 w-4" />
+              {/* <Sparkles className="h-4 w-4" /> */}
               About Us
             </p>
             <h1 className="mt-5 font-display text-4xl uppercase leading-[1] tracking-normal sm:text-5xl lg:text-6xl">
