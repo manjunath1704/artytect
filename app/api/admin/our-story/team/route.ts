@@ -1,21 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
+import { getAdminClient, OUR_STORY_BUCKET, ensureOurStoryImagesBucket } from "@/lib/supabase/admin";
 import { NextRequest, NextResponse } from "next/server";
 
-const OUR_STORY_BUCKET = "our-story-images";
-
-async function ensureBucket() {
-  const supabase = await createClient();
-  const { data: buckets } = await supabase.storage.listBuckets();
-  const exists = buckets?.some((bucket) => bucket.name === OUR_STORY_BUCKET);
-  
-  if (!exists) {
-    await supabase.storage.createBucket(OUR_STORY_BUCKET, { public: true });
-  }
-}
-
 async function uploadImage(file: File, prefix: string): Promise<string> {
-  const supabase = await createClient();
-  await ensureBucket();
+  const supabase = getAdminClient();
+  await ensureOurStoryImagesBucket();
 
   const timestamp = Date.now();
   const extension = file.name.includes(".") ? file.name.split(".").pop() : "jpg";

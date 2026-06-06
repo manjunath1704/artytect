@@ -256,13 +256,15 @@ export default async function ClassPage({ params }: ClassPageProps) {
                     className="group grid gap-5 shadow-sm rounded-[32px] bg-[#fffdf9] p-4 sm:grid-cols-[150px_1fr]"
                   >
                     <div className="relative aspect-square rounded-[32px] overflow-hidden bg-[#f1ece6]">
-                      <Image
-                        src={relatedClass.thumbnail_url}
-                        alt={relatedClass.title}
-                        fill
-                        sizes="150px"
-                        className="object-cover "
-                      />
+                      {relatedClass.thumbnail_url ? (
+                        <Image
+                          src={relatedClass.thumbnail_url}
+                          alt={relatedClass.title}
+                          fill
+                          sizes="150px"
+                          className="object-cover "
+                        />
+                      ) : null}
                     </div>
                     <div>
                       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9a6b4e]">

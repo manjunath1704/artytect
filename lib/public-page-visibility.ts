@@ -15,6 +15,7 @@ export const PUBLIC_PAGE_DEFAULTS: PublicPageVisibility[] = [
   { page_key: "products", label: "Products", path: "/products", is_visible: true, sort_order: 20 },
   { page_key: "classes", label: "Classes", path: "/classes", is_visible: true, sort_order: 30 },
   { page_key: "blog", label: "Blog", path: "/blog", is_visible: true, sort_order: 40 },
+  { page_key: "our-story", label: "Our Story", path: "/our-story", is_visible: true, sort_order: 45 },
   { page_key: "contact", label: "Contact", path: "/contact", is_visible: true, sort_order: 50 },
 ];
 

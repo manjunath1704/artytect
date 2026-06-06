@@ -279,7 +279,7 @@ export default function OurStoryPageContent() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="rounded-[32px] border border-[#d9cfc6] bg-white p-8 shadow-sm md:p-10"
+              className="rounded-[32px] bg-white p-8 shadow-sm md:p-10"
             >
               <p className="text-[10px] font-semibold uppercase tracking-[0.36em] text-[#9a6b4e]">
                 Purpose
@@ -297,7 +297,7 @@ export default function OurStoryPageContent() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="rounded-[32px] border border-[#d9cfc6] bg-white p-8 shadow-sm md:p-10"
+              className="rounded-[32px] bg-white p-8 shadow-sm md:p-10"
             >
               <p className="text-[10px] font-semibold uppercase tracking-[0.36em] text-[#9a6b4e]">
                 Future
@@ -336,7 +336,7 @@ export default function OurStoryPageContent() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className="rounded-[32px] border border-[#d9cfc6] bg-white p-6 shadow-sm transition hover:shadow-md"
+                    className="rounded-[32px]  bg-white p-6 shadow-sm transition  shadow-md"
                   >
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f5f0eb]">
                       <Icon className="h-6 w-6 text-[#9a6b4e]" />
@@ -449,7 +449,7 @@ export default function OurStoryPageContent() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="overflow-hidden rounded-[32px] border border-[#d9cfc6] bg-white shadow-sm"
+                  className="overflow-hidden rounded-[32px] bg-white shadow-sm"
                 >
                   {member.image_url && (
                     <div className="relative aspect-square">
