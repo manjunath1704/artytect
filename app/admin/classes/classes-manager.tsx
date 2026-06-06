@@ -213,8 +213,53 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
   };
 
   const handleSubmit = async () => {
-    if (!form.title.trim() || !form.slug.trim()) {
-      toast.error("Title and slug are required");
+    // Validate all required fields
+    if (!form.title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+    if (!form.slug.trim()) {
+      toast.error("Slug is required");
+      return;
+    }
+    if (!form.short_description.trim()) {
+      toast.error("Short description is required");
+      return;
+    }
+    if (!form.content.trim()) {
+      toast.error("Rich text content is required");
+      return;
+    }
+    if (!form.instructor_name.trim()) {
+      toast.error("Instructor name is required");
+      return;
+    }
+    if (!form.duration.trim()) {
+      toast.error("Duration is required");
+      return;
+    }
+    if (!form.class_date) {
+      toast.error("Class date is required");
+      return;
+    }
+    if (!form.class_time) {
+      toast.error("Class time is required");
+      return;
+    }
+    if (!form.price || parseFloat(form.price) <= 0) {
+      toast.error("Valid price is required");
+      return;
+    }
+    if (!form.total_seats || parseInt(form.total_seats) <= 0) {
+      toast.error("Total seats must be greater than 0");
+      return;
+    }
+    if (!form.available_seats || parseInt(form.available_seats) <= 0) {
+      toast.error("Available seats must be greater than 0");
+      return;
+    }
+    if (!form.thumbnail_url && !imageFile) {
+      toast.error("Thumbnail image is required");
       return;
     }
 

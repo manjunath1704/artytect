@@ -189,8 +189,17 @@ const CategoriesManager = ({ initialUserEmail, initialHeader, initialCategories 
     setUpdating(true);
     setEditError(null);
     try {
-      if (!editTitle.trim() || !editSlug.trim() || !editDescription.trim() || !editThumbnailAlt.trim()) {
-        throw new Error("Please fill in all required fields.");
+      if (!editTitle.trim()) {
+        throw new Error("Category title is required");
+      }
+      if (!editSlug.trim()) {
+        throw new Error("Category slug is required");
+      }
+      if (!editDescription.trim()) {
+        throw new Error("Category description is required");
+      }
+      if (!editThumbnailAlt.trim()) {
+        throw new Error("Alt text is required");
       }
       if (editCategoryType === "child" && !editParentCategoryId) {
         throw new Error("Select a parent category for child categories.");

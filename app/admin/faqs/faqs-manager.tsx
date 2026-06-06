@@ -103,8 +103,16 @@ export default function FAQsManager({ initialUserEmail }: { initialUserEmail: st
   };
 
   const handleSubmit = async () => {
-    if (!form.question.trim() || !form.answer.trim()) {
-      toast.error("Question and answer are required");
+    if (!form.question.trim()) {
+      toast.error("Question is required");
+      return;
+    }
+    if (!form.answer.trim()) {
+      toast.error("Answer is required");
+      return;
+    }
+    if (!form.display_order || parseInt(form.display_order) <= 0) {
+      toast.error("Display order must be greater than 0");
       return;
     }
 

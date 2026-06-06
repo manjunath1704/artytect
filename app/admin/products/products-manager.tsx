@@ -209,12 +209,28 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
   };
 
   const saveProduct = async () => {
-    if (!form.name || !form.category || !form.description || !form.price) {
-      toast.error("Name, category, description, and price are required.");
+    if (!form.name.trim()) {
+      toast.error("Product name is required");
+      return;
+    }
+    if (!form.category.trim()) {
+      toast.error("Product category is required");
+      return;
+    }
+    if (!form.description.trim()) {
+      toast.error("Product description is required");
+      return;
+    }
+    if (!form.short_description.trim()) {
+      toast.error("Short description is required");
+      return;
+    }
+    if (!form.price || parseFloat(form.price) <= 0) {
+      toast.error("Valid price is required");
       return;
     }
     if (!form.id && !thumbnail) {
-      toast.error("Upload a thumbnail image.");
+      toast.error("Thumbnail image is required for new products");
       return;
     }
 

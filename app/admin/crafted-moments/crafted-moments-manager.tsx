@@ -196,8 +196,16 @@ export default function CraftedMomentsManager({
   };
 
   const saveHeader = async () => {
-    if (!headerEyebrow.trim() || !headerTitle.trim() || !headerDescription.trim()) {
-      toast.error("Crafted moments eyebrow, title, and description are required.");
+    if (!headerEyebrow.trim()) {
+      toast.error("Crafted moments eyebrow is required");
+      return;
+    }
+    if (!headerTitle.trim()) {
+      toast.error("Crafted moments title is required");
+      return;
+    }
+    if (!headerDescription.trim()) {
+      toast.error("Crafted moments description is required");
       return;
     }
 
@@ -228,8 +236,20 @@ export default function CraftedMomentsManager({
     const isCreating = !editingItem.id;
     const sortOrder = Number(itemForm.sortOrder);
 
-    if (!itemForm.title.trim() || !itemForm.caption.trim() || !itemForm.label.trim() || !Number.isFinite(sortOrder)) {
-      toast.error("Please fill all required crafted moment fields.");
+    if (!itemForm.title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+    if (!itemForm.caption.trim()) {
+      toast.error("Caption is required");
+      return;
+    }
+    if (!itemForm.label.trim()) {
+      toast.error("Label is required");
+      return;
+    }
+    if (!Number.isFinite(sortOrder) || sortOrder <= 0) {
+      toast.error("Sort order must be a valid number greater than 0");
       return;
     }
 

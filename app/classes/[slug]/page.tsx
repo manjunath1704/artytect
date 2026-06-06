@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Check, Clock, Users, Calendar } from "lucide-react";
+import { ArrowUpRight, Clock, Users, Calendar } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import Footer from "@/app/components/home/footer";
@@ -9,6 +9,7 @@ import WhatsAppButton from "@/components/whatsapp-button";
 import { AddClassToCart } from "@/components/cart/add-class-to-cart";
 import { isPublicPageVisible } from "@/lib/public-page-visibility";
 import { formatPrice } from "@/lib/whatsapp";
+import { createClient } from "@/lib/supabase/server";
 import type { PotteryClass } from "@/lib/classes";
 
 type ClassPageProps = {
@@ -32,13 +33,21 @@ Looking forward to learning!`;
 
 async function getClassBySlug(slug: string): Promise<PotteryClass | null> {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/classes/${slug}`,
-      { cache: 'no-store' }
-    );
-    if (!response.ok) return null;
-    const data = await response.json();
-    return data.class;
+    const supabase = await createClient();
+    
+    const { data, error } = await supabase
+      .from("classes")
+      .select("*")
+      .eq("slug", slug)
+      .eq("is_published", true)
+      .single();
+
+    if (error) {
+      console.error("Error fetching class:", error);
+      return null;
+    }
+
+    return data as PotteryClass;
   } catch (error) {
     console.error("Error fetching class:", error);
     return null;
@@ -47,13 +56,20 @@ async function getClassBySlug(slug: string): Promise<PotteryClass | null> {
 
 async function getAllClasses(): Promise<PotteryClass[]> {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/classes`,
-      { cache: 'no-store' }
-    );
-    if (!response.ok) return [];
-    const data = await response.json();
-    return data.classes || [];
+    const supabase = await createClient();
+    
+    const { data, error } = await supabase
+      .from("classes")
+      .select("*")
+      .eq("is_published", true)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching classes:", error);
+      return [];
+    }
+
+    return (data as PotteryClass[]) || [];
   } catch (error) {
     console.error("Error fetching classes:", error);
     return [];
