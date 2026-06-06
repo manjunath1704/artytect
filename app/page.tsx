@@ -19,6 +19,7 @@ import GalleryApp, {
   type CraftedMomentItem,
   type CraftedMomentsHeader,
 } from "./components/home/gallery";
+import FAQSection from "./components/home/faq-section";
 import Footer from "./components/home/footer";
 import { createClient } from "@supabase/supabase-js";
 import { getPublishedProducts } from "@/lib/product-queries";
@@ -368,6 +369,7 @@ export default async function Page() {
             items={craftedMoments.items}
           />
         )}
+        <FAQSection />
       </main>
       <Footer />
     </>

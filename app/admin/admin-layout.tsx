@@ -25,6 +25,7 @@ import {
   Users,
   BookMarked,
   X,
+  HelpCircle,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -62,6 +63,7 @@ const BREADCRUMBS: Record<string, { label: string; parent?: string }> = {
   "/admin/classes": { label: "Classes", parent: "/admin" },
   "/admin/class-bookings": { label: "Class Bookings", parent: "/admin" },
   "/admin/contact": { label: "Contact", parent: "/admin" },
+  "/admin/faqs": { label: "FAQs", parent: "/admin" },
   "/admin/settings": { label: "Settings", parent: "/admin" },
   "/admin/public-visibility": { label: "Public Visibility", parent: "/admin" },
 };
@@ -121,6 +123,7 @@ const NAV: NavItem[] = [
   { title: "Orders", href: "/admin/orders", icon: ShoppingBag, children: [] },
   { title: "Classes", href: "/admin/classes", icon: Users, children: [] },
   { title: "Class Bookings", href: "/admin/class-bookings", icon: BookMarked, children: [] },
+  { title: "FAQs", href: "/admin/faqs", icon: HelpCircle, children: [] },
   { title: "Settings", href: "/admin/settings", icon: Settings, children: [] },
 ];
 
