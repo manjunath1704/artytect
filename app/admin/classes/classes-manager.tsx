@@ -165,7 +165,7 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
       duration: classItem.duration,
       class_date: classItem.class_date,
       class_time: classItem.class_time,
-      price: (classItem.price / 100).toString(),
+      price: (classItem.price / 100).toFixed(2),
       total_seats: classItem.total_seats.toString(),
       available_seats: classItem.available_seats.toString(),
       level: classItem.level,
@@ -231,7 +231,7 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
       data.append("duration", form.duration.trim());
       data.append("class_date", form.class_date);
       data.append("class_time", form.class_time);
-      data.append("price", (parseFloat(form.price || "0") * 100).toString());
+      data.append("price", form.price);
       data.append("total_seats", form.total_seats);
       data.append("available_seats", form.available_seats);
       data.append("level", form.level);

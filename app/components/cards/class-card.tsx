@@ -31,13 +31,15 @@ export default function ClassCard({
     >
       <Link href={`/classes/${classItem.slug}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-[#e8ded3]">
-          <Image
-            src={classItem.thumbnail_url}
-            alt={classItem.title}
-            fill
-            sizes={imageSizes}
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
+          {classItem.thumbnail_url ? (
+            <Image
+              src={classItem.thumbnail_url}
+              alt={classItem.title}
+              fill
+              sizes={imageSizes}
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : null}
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,17,13,0.18),rgba(23,17,13,0.2)_34%,rgba(23,17,13,0.9))]" />
           
           <div className="absolute inset-x-2 bottom-2 rounded-2xl bg-[#17110d]/62 p-2 text-white backdrop-blur-[2px]">

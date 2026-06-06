@@ -21,7 +21,7 @@ type ProductMessageInput = {
 };
 
 export function formatPrice(price: number) {
-  return `₹${price}`;
+  return `₹${(price / 100).toFixed(2)}`;
 }
 
 export function getClassBookingMessage(classItem: ClassMessageInput) {
