@@ -3,25 +3,56 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FolderOpen, HeartHandshake, Home, Mail, MessageSquareQuote, Newspaper, Package, Route, Sparkles, Users, ChevronRight, BookOpen, BookMarked } from "lucide-react";
+import {
+  Mail,
+  ShoppingBag,
+  BookMarked,
+  Settings,
+  ChevronRight,
+  TrendingUp,
+  AlertCircle,
+  Clock,
+  ArrowUpRight,
+} from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
 
-type AdminPanelProps = {
-  initialUserEmail: string;
-  heroCount: number;
-  messagesCount: number;
-  categoriesCount: number;
-  testimonialsCount: number;
-  aboutSectionsCount: number;
-  processStepsCount: number;
-  craftedMomentsCount: number;
-  blogsCount: number;
+const formatCurrency = (val: number) => {
+  return val.toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 };
 
-const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCount, testimonialsCount, aboutSectionsCount, processStepsCount, craftedMomentsCount, blogsCount }: AdminPanelProps) => {
+type AdminPanelProps = {
+  initialUserEmail: string;
+  messagesCount: number;
+  ordersCount: number;
+  pendingOrdersCount: number;
+  monthlyOrdersRevenue: number;
+  totalOrdersRevenue: number;
+  bookingsCount: number;
+  pendingBookingsCount: number;
+  monthlyBookingsRevenue: number;
+  totalBookingsRevenue: number;
+  isQrConfigured: boolean;
+};
+
+const AdminPanel = ({
+  initialUserEmail,
+  messagesCount,
+  ordersCount,
+  pendingOrdersCount,
+  monthlyOrdersRevenue,
+  totalOrdersRevenue,
+  bookingsCount,
+  pendingBookingsCount,
+  monthlyBookingsRevenue,
+  totalBookingsRevenue,
+  isQrConfigured,
+}: AdminPanelProps) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -37,314 +68,294 @@ const AdminPanel = ({ initialUserEmail, heroCount, messagesCount, categoriesCoun
     return () => subscription.unsubscribe();
   }, [initialUserEmail, router]);
 
+  const currentMonthName = new Date().toLocaleString("default", { month: "long" });
+  const totalMonthlyCombinedRevenue = monthlyOrdersRevenue + monthlyBookingsRevenue;
+  const totalCombinedRevenue = totalOrdersRevenue + totalBookingsRevenue;
+  const totalPendingActions = pendingOrdersCount + pendingBookingsCount;
+
   return (
     <div className="px-6 py-8 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         {/* Welcome banner */}
-        <div className="rounded-[32px] bg-white p-6 shadow-sm sm:p-8">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-[#8a7765]">
-            Admin Dashboard
-          </p>
-          <h1 className="mt-2 text-4xl tracking-[-0.04em] text-[#1b1511]">
-            Welcome back
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[#665b4f]">
-            Manage your pottery website content, categories, testimonials, products, and classes.
-          </p>
+        <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-white to-[#fbf9f6] p-6 shadow-sm sm:p-8 border border-[#efe6dc]/60">
+          <div className="absolute right-0 top-0 -mr-6 -mt-6 h-36 w-36 rounded-full bg-[#f6efe4] opacity-50 blur-3xl pointer-events-none" />
+          <div className="relative z-10">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-[#8a7765]">
+              System Overview
+            </p>
+            <h1 className="mt-2 text-3xl font-normal tracking-[-0.04em] text-[#1b1511] sm:text-4xl">
+              Welcome back
+            </h1>
+            <p className="mt-2.5 max-w-2xl text-sm leading-6 text-[#665b4f]">
+              Quick operational overview of orders, workshop bookings, customer inquiries, and payment settings.
+            </p>
+          </div>
         </div>
 
-        {/* Cards */}
-        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <Link
-            href="/admin/hero"
-            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1b1511] text-[#f8f2e8]">
-                <Home className="h-7 w-7" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Hero</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">
-                  {heroCount ? "Configured" : "Not configured"}
-                </p>
+        {/* Quick Insights Grid */}
+        <div className="mt-8 grid gap-4 grid-cols-2 lg:grid-cols-4">
+          {/* Stat 1: Monthly Combined Sales */}
+          <div className="rounded-2xl border border-[#efe6dc]/50 bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium uppercase tracking-[0.05em] text-[#8a7765]">
+                {currentMonthName} Revenue
+              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fcf4f0] text-[#c87a53]">
+                <TrendingUp className="h-4 w-4" />
               </div>
             </div>
-            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-              Edit homepage hero copy, button, poster, and video backgrounds.
-            </p>
-            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
-              Manage hero <ChevronRight className="text-xs" />
+            <div className="mt-3">
+              <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#1b1511]">
+                ₹{formatCurrency(totalMonthlyCombinedRevenue)}
+              </h3>
+              <p className="mt-1 text-[11px] text-[#8a7765] flex flex-col gap-0.5">
+                <span className="flex items-center gap-1">
+                  <span>Orders: ₹{formatCurrency(monthlyOrdersRevenue)}</span>
+                  <span className="opacity-50">•</span>
+                  <span>Bookings: ₹{formatCurrency(monthlyBookingsRevenue)}</span>
+                </span>
+                <span className="text-[9px] text-[#a69280] mt-0.5">
+                  All-time: ₹{formatCurrency(totalCombinedRevenue)}
+                </span>
+              </p>
             </div>
-          </Link>
+          </div>
 
-          <Link
-            href="/admin/messages"
-            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f4eadf] text-[#1b1511]">
-                <Mail className="h-7 w-7" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Messages</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">
-                  {messagesCount} {messagesCount === 1 ? "message" : "messages"}
-                </p>
+          {/* Stat 2: Pending Actions */}
+          <div className="rounded-2xl border border-[#efe6dc]/50 bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium uppercase tracking-[0.05em] text-[#8a7765]">
+                Pending Actions
+              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fff8eb] text-[#b45309]">
+                <Clock className="h-4 w-4" />
               </div>
             </div>
-            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-              Review, filter, export, and delete contact form submissions.
-            </p>
-          
-            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
-              Manage Messages <ChevronRight className="text-xs" />
+            <div className="mt-3">
+              <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#1b1511]">
+                {totalPendingActions}
+              </h3>
+              <p className="mt-1 text-[11px] text-[#8a7765] flex items-center gap-1">
+                <span>{pendingOrdersCount} orders</span>
+                <span className="opacity-50">•</span>
+                <span>{pendingBookingsCount} bookings</span>
+              </p>
             </div>
-          </Link>
+          </div>
 
-          <Link
-            href="/admin/categories"
-            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#d7b68b] text-[#1b1511]">
-                <FolderOpen className="h-7 w-7" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Categories</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">
-                  {categoriesCount} {categoriesCount === 1 ? "category" : "categories"}
-                </p>
+          {/* Stat 3: Contact Messages */}
+          <div className="rounded-2xl border border-[#efe6dc]/50 bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium uppercase tracking-[0.05em] text-[#8a7765]">
+                Total Messages
+              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#f0f9ff] text-[#0369a1]">
+                <Mail className="h-4 w-4" />
               </div>
             </div>
-            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-              Manage product categories, create new ones, and organize your collections.
-            </p>
-           
-            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
-              Manage Categories <ChevronRight className="text-xs" />
+            <div className="mt-3">
+              <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#1b1511]">
+                {messagesCount}
+              </h3>
+              <p className="mt-1 text-[11px] text-[#8a7765]">
+                Inbox customer messages
+              </p>
             </div>
-          </Link>
+          </div>
 
-          <Link
-            href="/admin/testimonials"
-            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f5eee4] text-[#1b1511]">
-                <MessageSquareQuote className="h-7 w-7" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Testimonials</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">
-                  {testimonialsCount} {testimonialsCount === 1 ? "testimonial" : "testimonials"}
-                </p>
+          {/* Stat 4: QR Config Status */}
+          <div className="rounded-2xl border border-[#efe6dc]/50 bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium uppercase tracking-[0.05em] text-[#8a7765]">
+                Payment Setup
+              </span>
+              <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+                isQrConfigured ? "bg-[#f0fdf4] text-[#166534]" : "bg-[#fef2f2] text-[#991b1b]"
+              }`}>
+                <AlertCircle className="h-4 w-4" />
               </div>
             </div>
-            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-              Create and manage customer stories shown in the community section.
-            </p>
-            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
-              Manage Testimonials <ChevronRight className="text-xs" />
+            <div className="mt-3">
+              <h3 className={`text-lg font-semibold tracking-tight ${
+                isQrConfigured ? "text-[#166534]" : "text-[#991b1b]"
+              }`}>
+                {isQrConfigured ? "Configured" : "Incomplete"}
+              </h3>
+              <p className="mt-1.5 text-[11px] text-[#8a7765]">
+                Payment QR Code config
+              </p>
             </div>
-          </Link>
+          </div>
+        </div>
 
-          <Link
-            href="/admin/about-sections"
-            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#fff0eb] text-[#1b1511]">
-                <HeartHandshake className="h-7 w-7" />
+        {/* Action Cards Grid */}
+        <div className="mt-8 grid gap-6 sm:grid-cols-2">
+          {/* Card 1: Orders */}
+          <div className="group relative overflow-hidden rounded-[32px] border border-[#efe6dc]/60 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-8">
+            <div className="flex items-start justify-between">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#fcf4f0] text-[#c87a53] transition-colors group-hover:bg-[#c87a53] group-hover:text-white duration-300">
+                <ShoppingBag className="h-7 w-7" />
               </div>
-              <div>
-                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">About</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">
-                  {aboutSectionsCount} {aboutSectionsCount === 1 ? "section" : "sections"}
-                </p>
+              <Link
+                href="/admin/orders"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fbf8f4] text-[#8a7765] transition-all hover:bg-[#1b1511] hover:text-[#f8f2e8]"
+              >
+                <ArrowUpRight className="h-5 w-5" />
+              </Link>
+            </div>
+            <div className="mt-6">
+              <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">
+                Orders
+              </h2>
+              <div className="mt-2 flex items-baseline gap-2">
+                <span className="text-3xl font-semibold text-[#1b1511]">{ordersCount}</span>
+                <span className="text-xs text-[#8a7765] font-normal uppercase tracking-wider">Total</span>
               </div>
+              <p className="mt-2 text-sm leading-6 text-[#665b4f]">
+                Manage product orders, verify customer payments, track shipping statuses, and process deliveries.
+              </p>
             </div>
-            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-              Manage the homepage creator story and call-to-action.
-            </p>
-            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
-              Manage About <ChevronRight className="text-xs" />
+            <div className="mt-6 flex items-center justify-between border-t border-[#efe6dc]/40 pt-4">
+              <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                pendingOrdersCount > 0 ? "bg-[#fff8eb] text-[#b45309]" : "bg-[#f0fdf4] text-[#166534]"
+              }`}>
+                <span className={`h-1.5 w-1.5 rounded-full ${
+                  pendingOrdersCount > 0 ? "bg-[#b45309] animate-pulse" : "bg-[#166534]"
+                }`} />
+                {pendingOrdersCount} pending confirmation
+              </span>
+              <Link
+                href="/admin/orders"
+                className="text-xs font-semibold uppercase tracking-wider text-[#1b1511] hover:text-[#8a7765] flex items-center gap-1"
+              >
+                View Orders <ChevronRight className="h-3 w-3" />
+              </Link>
             </div>
-          </Link>
+          </div>
 
-          <Link
-            href="/admin/our-story"
-            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e8ddd1] text-[#1b1511]">
-                <BookOpen className="h-7 w-7" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Our Story</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">Brand story page</p>
-              </div>
-            </div>
-            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-              Manage hero, content, values, timeline, and team sections.
-            </p>
-            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
-              Manage Our Story <ChevronRight className="text-xs" />
-            </div>
-          </Link>
-
-          <Link
-            href="/admin/contact"
-            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e8ddd1] text-[#1b1511]">
-                <Mail className="h-7 w-7" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Contact</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">Contact page</p>
-              </div>
-            </div>
-            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-              Manage contact page hero section, contact details, and map embed.
-            </p>
-            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
-              Manage Contact <ChevronRight className="text-xs" />
-            </div>
-          </Link>
-
-          <Link
-            href="/admin/process"
-            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#fcfdfa] text-[#1b1511]">
-                <Route className="h-7 w-7" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Process</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">
-                  {processStepsCount} {processStepsCount === 1 ? "step" : "steps"}
-                </p>
-              </div>
-            </div>
-            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-              Edit section titles and manage the process step collection.
-            </p>
-            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
-              Manage Process <ChevronRight className="text-xs" />
-            </div>
-          </Link>
-
-          <Link
-            href="/admin/crafted-moments"
-            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f5eee4] text-[#1b1511]">
-                <Sparkles className="h-7 w-7" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Crafted Moments</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">
-                  {craftedMomentsCount} {craftedMomentsCount === 1 ? "item" : "items"}
-                </p>
-              </div>
-            </div>
-            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-              Edit the studio moments header and manage image or video tiles.
-            </p>
-            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
-              Manage Crafted Moments <ChevronRight className="text-xs" />
-            </div>
-          </Link>
-
-          <Link
-            href="/admin/blogs"
-            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#fff7e8] text-[#1b1511]">
-                <Newspaper className="h-7 w-7" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Blogs</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">
-                  {blogsCount} {blogsCount === 1 ? "blog" : "blogs"}
-                </p>
-              </div>
-            </div>
-            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-              Create, edit, publish, and organize studio journal stories.
-            </p>
-            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
-              Manage Blogs <ChevronRight className="text-xs" />
-            </div>
-          </Link>
-
-          <Link
-            href="/admin/products"
-            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#b38d67] text-white">
-                <Package className="h-7 w-7" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Products</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">Manage products</p>
-              </div>
-            </div>
-            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-              Add and manage pottery products, pricing, and inventory.
-            </p>
-            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
-              Manage Products <ChevronRight className="text-xs" />
-            </div>
-          </Link>
-
-          <Link
-            href="/admin/class-bookings"
-            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#dcd4c8] text-[#1b1511]">
+          {/* Card 2: Bookings */}
+          <div className="group relative overflow-hidden rounded-[32px] border border-[#efe6dc]/60 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-8">
+            <div className="flex items-start justify-between">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f4f6f0] text-[#7d8c60] transition-colors group-hover:bg-[#7d8c60] group-hover:text-white duration-300">
                 <BookMarked className="h-7 w-7" />
               </div>
-              <div>
-                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Bookings</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">Class bookings</p>
+              <Link
+                href="/admin/class-bookings"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fbf8f4] text-[#8a7765] transition-all hover:bg-[#1b1511] hover:text-[#f8f2e8]"
+              >
+                <ArrowUpRight className="h-5 w-5" />
+              </Link>
+            </div>
+            <div className="mt-6">
+              <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">
+                Bookings
+              </h2>
+              <div className="mt-2 flex items-baseline gap-2">
+                <span className="text-3xl font-semibold text-[#1b1511]">{bookingsCount}</span>
+                <span className="text-xs text-[#8a7765] font-normal uppercase tracking-wider">Total</span>
               </div>
+              <p className="mt-2 text-sm leading-6 text-[#665b4f]">
+                Review class registrations, confirm reservation seats, verify transaction screenshots, and manage student attendance.
+              </p>
             </div>
-            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-              Manage class bookings, verify payments, and confirm registrations.
-            </p>
-            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
-              Manage Bookings <ChevronRight className="text-xs" />
+            <div className="mt-6 flex items-center justify-between border-t border-[#efe6dc]/40 pt-4">
+              <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                pendingBookingsCount > 0 ? "bg-[#fff8eb] text-[#b45309]" : "bg-[#f0fdf4] text-[#166534]"
+              }`}>
+                <span className={`h-1.5 w-1.5 rounded-full ${
+                  pendingBookingsCount > 0 ? "bg-[#b45309] animate-pulse" : "bg-[#166534]"
+                }`} />
+                {pendingBookingsCount} verification pending
+              </span>
+              <Link
+                href="/admin/class-bookings"
+                className="text-xs font-semibold uppercase tracking-wider text-[#1b1511] hover:text-[#8a7765] flex items-center gap-1"
+              >
+                View Bookings <ChevronRight className="h-3 w-3" />
+              </Link>
             </div>
-          </Link>
+          </div>
 
-          <Link
-            href="/admin/classes"
-            className="group rounded-[32px] bg-white p-6 shadow-sm transition hover:shadow-md sm:p-8"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#8a7765] text-white">
-                <Users className="h-7 w-7" />
+          {/* Card 3: Messages */}
+          <div className="group relative overflow-hidden rounded-[32px] border border-[#efe6dc]/60 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-8">
+            <div className="flex items-start justify-between">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#fbf8f4] text-[#8a7765] transition-colors group-hover:bg-[#8a7765] group-hover:text-white duration-300">
+                <Mail className="h-7 w-7" />
               </div>
-              <div>
-                <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">Classes</h2>
-                <p className="mt-1 text-sm text-[#665b4f]">Pottery classes</p>
+              <Link
+                href="/admin/messages"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fbf8f4] text-[#8a7765] transition-all hover:bg-[#1b1511] hover:text-[#f8f2e8]"
+              >
+                <ArrowUpRight className="h-5 w-5" />
+              </Link>
+            </div>
+            <div className="mt-6">
+              <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">
+                Messages
+              </h2>
+              <div className="mt-2 flex items-baseline gap-2">
+                <span className="text-3xl font-semibold text-[#1b1511]">{messagesCount}</span>
+                <span className="text-xs text-[#8a7765] font-normal uppercase tracking-wider">Messages</span>
               </div>
+              <p className="mt-2 text-sm leading-6 text-[#665b4f]">
+                Read and manage customer inquiries, feedback submissions, and general contact messages from your site.
+              </p>
             </div>
-            <p className="mt-4 text-sm leading-7 text-[#665b4f]">
-              Schedule pottery classes, workshops, and manage registrations.
-            </p>
-            <div className="mt-4 min-h-12 h-12 inline-flex gap-2 items-center rounded-full bg-[#1b1511] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_16px_32px_rgba(27,21,17,0.14)] transition hover:-translate-y-0.5 hover:bg-[#3a2f27] focus-visible:ring-[#8a5f3b]/30 disabled:translate-y-0">
-              Manage Classes <ChevronRight className="text-xs" />
+            <div className="mt-6 flex items-center justify-between border-t border-[#efe6dc]/40 pt-4">
+              <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium bg-[#fcfaf7] text-[#8a7765] border border-[#efe6dc]/30">
+                Contact Form Submissions
+              </span>
+              <Link
+                href="/admin/messages"
+                className="text-xs font-semibold uppercase tracking-wider text-[#1b1511] hover:text-[#8a7765] flex items-center gap-1"
+              >
+                View Messages <ChevronRight className="h-3 w-3" />
+              </Link>
             </div>
-          </Link>
+          </div>
+
+          {/* Card 4: Settings */}
+          <div className="group relative overflow-hidden rounded-[32px] border border-[#efe6dc]/60 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-8">
+            <div className="flex items-start justify-between">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f5f6f8] text-[#6b7280] transition-colors group-hover:bg-[#6b7280] group-hover:text-white duration-300">
+                <Settings className="h-7 w-7" />
+              </div>
+              <Link
+                href="/admin/settings"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fbf8f4] text-[#8a7765] transition-all hover:bg-[#1b1511] hover:text-[#f8f2e8]"
+              >
+                <ArrowUpRight className="h-5 w-5" />
+              </Link>
+            </div>
+            <div className="mt-6">
+              <h2 className="text-2xl font-medium tracking-[-0.03em] text-[#1b1511]">
+                Settings
+              </h2>
+              <div className="mt-2 flex items-baseline gap-2">
+                <span className={`text-sm font-semibold uppercase tracking-wider ${
+                  isQrConfigured ? "text-[#166534]" : "text-[#991b1b]"
+                }`}>
+                  {isQrConfigured ? "Active" : "Action Required"}
+                </span>
+              </div>
+              <p className="mt-3.5 text-sm leading-6 text-[#665b4f]">
+                Manage website credentials, update payment QR code for buyer verification, and customize checkout details.
+              </p>
+            </div>
+            <div className="mt-6 flex items-center justify-between border-t border-[#efe6dc]/40 pt-4">
+              <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                isQrConfigured ? "bg-[#f0fdf4] text-[#166534]" : "bg-[#fef2f2] text-[#991b1b]"
+              }`}>
+                Payment QR: {isQrConfigured ? "Setup done" : "Setup missing"}
+              </span>
+              <Link
+                href="/admin/settings"
+                className="text-xs font-semibold uppercase tracking-wider text-[#1b1511] hover:text-[#8a7765] flex items-center gap-1"
+              >
+                Open Settings <ChevronRight className="h-3 w-3" />
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>

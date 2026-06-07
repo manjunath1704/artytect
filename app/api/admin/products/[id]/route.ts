@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import { NextResponse } from "next/server";
 
 import { ensureProductImagesBucket, getAdminClient, PRODUCT_BUCKET } from "@/lib/supabase/admin";
@@ -68,9 +70,6 @@ export async function PUT(request: Request, { params }: ProductRouteProps) {
         : [];
       const removedUrls = oldGalleryUrls.filter((url: string) => !existingGallery.includes(url));
       
-      // Write to a test file to confirm this code runs
-      const fs = require('fs');
-      const path = require('path');
       const logPath = path.join(process.cwd(), 'gallery-delete-log.txt');
       fs.appendFileSync(logPath, `\n=== ${new Date().toISOString()} ===\n`);
       fs.appendFileSync(logPath, `Old gallery: ${JSON.stringify(oldGalleryUrls)}\n`);
