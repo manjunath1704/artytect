@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { CONTACT_BUCKET, ensureContactImagesBucket, getAdminClient } from "@/lib/supabase/admin";
+import { deleteStorageFile, STORAGE_BUCKETS } from "@/lib/supabase/storage-utils";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -62,6 +63,13 @@ export async function PUT(
   }
 
   try {
+    // Get existing contact data to retrieve old image URL
+    const { data: existingContact } = await supabase
+      .from("contact_page")
+      .select("hero_image_url")
+      .eq("id", id)
+      .single();
+
     const formData = await request.formData();
     const heroSubtitle = formData.get("hero_subtitle") as string;
     const heroTitle = formData.get("hero_title") as string;
@@ -82,12 +90,21 @@ export async function PUT(
       imageFileName: heroImageFile?.name,
       imageFileSize: heroImageFile?.size,
       existingImageUrl,
+      oldImageUrl: existingContact?.hero_image_url,
     });
 
     let heroImageUrl = existingImageUrl;
 
     if (heroImageFile && heroImageFile.size > 0) {
       console.log("Uploading new image...");
+      
+      // Delete old image if it exists (we're uploading a new one, so always delete the old one)
+      if (existingContact?.hero_image_url) {
+        console.log("Deleting old image:", existingContact.hero_image_url);
+        const deleted = await deleteStorageFile(existingContact.hero_image_url, STORAGE_BUCKETS.CONTACT);
+        console.log("Delete result:", deleted);
+      }
+      
       heroImageUrl = await uploadContactImage(heroImageFile);
       console.log("Image uploaded successfully:", heroImageUrl);
     } else {

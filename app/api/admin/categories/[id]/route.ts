@@ -7,6 +7,7 @@ import {
   ensureCategoryThumbnailsBucket,
   getAdminClient,
 } from "@/lib/supabase/admin";
+import { deleteStorageFile, STORAGE_BUCKETS } from "@/lib/supabase/storage-utils";
 
 const getAuthenticatedUser = async () => {
   const cookieStore = await cookies();
@@ -48,6 +49,15 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
 
+    const supabase = getAdminClient();
+    
+    // Get existing category data first
+    const { data: existingCategory } = await supabase
+      .from("categories")
+      .select("category_thumbnail, category_hover_thumbnail")
+      .eq("id", id)
+      .single();
+
     const formData = await request.formData();
     const title = String(formData.get("title") ?? "").trim();
     const slug = String(formData.get("slug") ?? "").trim();
@@ -65,7 +75,6 @@ export async function PUT(
       );
     }
 
-    const supabase = getAdminClient();
     const timestamp = Date.now();
 
     if (categoryType !== "parent" && categoryType !== "child") {
@@ -145,8 +154,13 @@ export async function PUT(
       parent_category_id: categoryType === "child" ? parentCategoryId : null,
     };
 
-    // Upload new thumbnail if provided
+    // Upload new thumbnail if provided and delete old one
     if (thumbnail instanceof File) {
+      // Delete old thumbnail if exists
+      if (existingCategory?.category_thumbnail) {
+        await deleteStorageFile(existingCategory.category_thumbnail, STORAGE_BUCKETS.CATEGORIES);
+      }
+      
       await ensureCategoryThumbnailsBucket();
       const extension = thumbnail.name.includes(".") ? thumbnail.name.split(".").pop() : "jpg";
       const filePath = `${slug}/default-${timestamp}.${extension}`;
@@ -167,8 +181,13 @@ export async function PUT(
       updateData.category_thumbnail = data.publicUrl;
     }
 
-    // Upload new hover thumbnail if provided
+    // Upload new hover thumbnail if provided and delete old one
     if (hoverThumbnail instanceof File) {
+      // Delete old hover thumbnail if exists
+      if (existingCategory?.category_hover_thumbnail) {
+        await deleteStorageFile(existingCategory.category_hover_thumbnail, STORAGE_BUCKETS.CATEGORIES);
+      }
+      
       await ensureCategoryThumbnailsBucket();
       const extension = hoverThumbnail.name.includes(".") ? hoverThumbnail.name.split(".").pop() : "jpg";
       const filePath = `${slug}/hover-${timestamp}.${extension}`;

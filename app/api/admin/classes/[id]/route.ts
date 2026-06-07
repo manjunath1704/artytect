@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { deleteStorageFile, deleteStorageFiles, STORAGE_BUCKETS } from "@/lib/supabase/storage-utils";
 
 const CLASSES_BUCKET = "classes-images";
 
@@ -52,19 +53,21 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Get existing class data first
+    const { data: existingClass } = await supabase
+      .from("classes")
+      .select("thumbnail_url, gallery_images")
+      .eq("id", id)
+      .single();
+
     const formData = await request.formData();
     const title = formData.get("title") as string;
     const slug = formData.get("slug") as string;
     const short_description = formData.get("short_description") as string;
     const content = formData.get("content") as string;
-    const instructor_name = formData.get("instructor_name") as string;
     const duration = formData.get("duration") as string;
-    const class_date = formData.get("class_date") as string;
-    const class_time = formData.get("class_time") as string;
     const priceInRupees = parseFloat(formData.get("price") as string) || 0;
     const price = Math.round(priceInRupees * 100); // Convert to cents
-    const total_seats = parseInt(formData.get("total_seats") as string) || 0;
-    const available_seats = parseInt(formData.get("available_seats") as string) || 0;
     const level = formData.get("level") as string;
     const is_featured = formData.get("is_featured") === "true";
     const is_published = formData.get("is_published") === "true";
@@ -73,8 +76,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     let thumbnail_url = existing_thumbnail_url;
 
-    // Upload new thumbnail if provided
+    // Upload new thumbnail if provided and delete old one
     if (thumbnail && thumbnail.size > 0) {
+      // Delete old thumbnail if exists and is different
+      if (existingClass?.thumbnail_url && existingClass.thumbnail_url !== existing_thumbnail_url) {
+        await deleteStorageFile(existingClass.thumbnail_url, STORAGE_BUCKETS.CLASSES);
+      }
       thumbnail_url = await uploadImage(thumbnail, `class-${slug}`);
     }
 
@@ -92,6 +99,16 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       }
     }
 
+    // Delete removed gallery images
+    if (existingClass?.gallery_images && Array.isArray(existingClass.gallery_images)) {
+      const removedUrls = existingClass.gallery_images.filter(
+        (url: string) => !galleryImages.includes(url)
+      );
+      if (removedUrls.length > 0) {
+        await deleteStorageFiles(removedUrls, STORAGE_BUCKETS.CLASSES);
+      }
+    }
+
     // Upload new gallery images
     const galleryFiles = formData.getAll("gallery_images") as File[];
     for (const file of galleryFiles) {
@@ -106,13 +123,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       title,
       short_description,
       content,
-      instructor_name,
       duration,
-      class_date,
-      class_time,
       price,
-      total_seats,
-      available_seats,
       level,
       thumbnail_url,
       gallery_images: galleryImages,
@@ -155,12 +167,33 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Get class data to delete associated images
+    const { data: classData } = await supabase
+      .from("classes")
+      .select("thumbnail_url, gallery_images")
+      .eq("id", id)
+      .single();
+
+    // Delete the class from database
     const { error } = await supabase
       .from("classes")
       .delete()
       .eq("id", id);
 
     if (error) throw error;
+
+    // Delete associated images from storage
+    if (classData) {
+      const imagesToDelete: string[] = [];
+      if (classData.thumbnail_url) imagesToDelete.push(classData.thumbnail_url);
+      if (classData.gallery_images && Array.isArray(classData.gallery_images)) {
+        imagesToDelete.push(...classData.gallery_images);
+      }
+      
+      if (imagesToDelete.length > 0) {
+        await deleteStorageFiles(imagesToDelete, STORAGE_BUCKETS.CLASSES);
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

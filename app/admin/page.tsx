@@ -14,50 +14,25 @@ export default async function AdminPage() {
     redirect("/admin/login");
   }
 
-  const { count } = await supabase
-    .from('categories')
-    .select('*', { count: 'exact', head: true });
-
-  const { count: heroCount } = await supabase
-    .from('hero_sections')
-    .select('*', { count: 'exact', head: true });
-
   const { count: messagesCount } = await supabase
     .from('contact_messages')
     .select('*', { count: 'exact', head: true });
 
-  const { count: testimonialsCount } = await supabase
-    .from('testimonials')
+  const { count: bookingsCount } = await supabase
+    .from('bookings')
     .select('*', { count: 'exact', head: true });
 
-  const { count: aboutSectionsCount } = await supabase
-    .from('about_sections')
-    .select('*', { count: 'exact', head: true });
-
-  const { count: processStepsCount } = await supabase
-    .from('process_steps')
-    .select('*', { count: 'exact', head: true });
-
-  const { count: craftedMomentsCount } = await supabase
-    .from('crafted_moments_items')
-    .select('*', { count: 'exact', head: true });
-
-  const { count: blogsCount } = await supabase
-    .from('blogs')
+  const { count: ordersCount } = await supabase
+    .from('orders')
     .select('*', { count: 'exact', head: true });
 
   return (
     <AdminLayout userEmail={data.user.email ?? ""}>
       <AdminPanel
         initialUserEmail={data.user.email ?? ""}
-        heroCount={heroCount || 0}
         messagesCount={messagesCount || 0}
-        categoriesCount={count || 0}
-        testimonialsCount={testimonialsCount || 0}
-        aboutSectionsCount={aboutSectionsCount || 0}
-        processStepsCount={processStepsCount || 0}
-        craftedMomentsCount={craftedMomentsCount || 0}
-        blogsCount={blogsCount || 0}
+        bookingsCount={bookingsCount || 0}
+        ordersCount={ordersCount || 0}
       />
     </AdminLayout>
   );

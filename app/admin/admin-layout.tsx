@@ -26,6 +26,7 @@ import {
   BookMarked,
   X,
   HelpCircle,
+  BookOpen,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -57,6 +58,7 @@ const BREADCRUMBS: Record<string, { label: string; parent?: string }> = {
   "/admin/create-about-sections": { label: "Create About Section", parent: "/admin/about-sections" },
   "/admin/process": { label: "Process", parent: "/admin" },
   "/admin/crafted-moments": { label: "Crafted Moments", parent: "/admin" },
+  "/admin/our-story": { label: "Our Story", parent: "/admin" },
   "/admin/blogs": { label: "Blogs", parent: "/admin" },
   "/admin/products": { label: "Products", parent: "/admin" },
   "/admin/orders": { label: "Orders", parent: "/admin" },
@@ -116,6 +118,7 @@ const NAV: NavItem[] = [
   },
   { title: "Process", href: "/admin/process", icon: Route, children: [] },
   { title: "Crafted Moments", href: "/admin/crafted-moments", icon: Sparkles, children: [] },
+  { title: "Our Story", href: "/admin/our-story", icon: BookOpen, children: [] },
   { title: "Contact", href: "/admin/contact", icon: Mail, children: [] },
   { title: "Public Visibility", href: "/admin/public-visibility", icon: Eye, children: [] },
   { title: "Blogs", href: "/admin/blogs", icon: Newspaper, children: [] },
