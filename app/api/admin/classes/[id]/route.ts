@@ -78,8 +78,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Upload new thumbnail if provided and delete old one
     if (thumbnail && thumbnail.size > 0) {
-      // Delete old thumbnail if exists and is different
-      if (existingClass?.thumbnail_url && existingClass.thumbnail_url !== existing_thumbnail_url) {
+      // Delete old thumbnail from storage if it exists
+      if (existingClass?.thumbnail_url) {
         await deleteStorageFile(existingClass.thumbnail_url, STORAGE_BUCKETS.CLASSES);
       }
       thumbnail_url = await uploadImage(thumbnail, `class-${slug}`);

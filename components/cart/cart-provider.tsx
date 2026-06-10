@@ -124,7 +124,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const addClass = useCallback((classData: PotteryClass, seats = 1) => {
-    const safeSeats = Math.max(1, Math.min(Math.floor(seats), classData.available_seats));
+    const safeSeats = Math.max(1, Math.floor(seats));
     const cartId = classData.id;
 
     setItems((currentItems) => {
@@ -133,7 +133,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (existingItem) {
         return currentItems.map((item) =>
           item.id === cartId && item.type === "class"
-            ? { ...item, seats: Math.min((item.seats || 0) + safeSeats, classData.available_seats) }
+            ? { ...item, seats: (item.seats || 0) + safeSeats }
             : item,
         );
       }

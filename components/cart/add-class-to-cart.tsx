@@ -15,8 +15,8 @@ export function AddClassToCart({ classData }: { classData: PotteryClass }) {
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     
-    if (seats < 1 || seats > classData.available_seats) {
-      toast.error(`Please select 1 to ${classData.available_seats} seats`);
+    if (seats < 1) {
+      toast.error("Please select at least 1 seat");
       return;
     }
 
@@ -36,9 +36,9 @@ export function AddClassToCart({ classData }: { classData: PotteryClass }) {
     <button
       type="button"
       onClick={handleAddToCart}
-      disabled={isAdding || classData.available_seats === 0}
+      disabled={isAdding}
       className="h-11 w-full flex items-center justify-center gap-2 rounded-full bg-[#1b1511] text-white font-semibold uppercase tracking-[0.16em] text-sm transition hover:bg-[#3a2f27] disabled:opacity-60"
-      title={classData.available_seats === 0 ? "No seats available" : "Add to cart"}
+      title="Add to cart"
     >
       {isAdding ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
       Add to cart

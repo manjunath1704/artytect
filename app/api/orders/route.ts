@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     const totalAmount = Number(formData.get("total_amount") ?? 0);
     const proof = formData.get("payment_screenshot");
 
-    if (!customerName || !customerEmail || !customerPhone || !address || !totalAmount) {
+    if (!customerName || !customerEmail || !customerPhone || !totalAmount) {
       return NextResponse.json({ error: "Customer details and total amount are required." }, { status: 400 });
     }
     if (!(proof instanceof File)) {

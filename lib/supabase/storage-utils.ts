@@ -154,7 +154,7 @@ export async function replaceStorageFile(
 export const STORAGE_BUCKETS = {
   PRODUCTS: "product-images",
   BLOGS: "blog-images",
-  CLASSES: "class-images",
+  CLASSES: "classes-images",
   HERO: "hero-images",
   CATEGORIES: "category-images",
   TESTIMONIALS: "testimonial-images",
