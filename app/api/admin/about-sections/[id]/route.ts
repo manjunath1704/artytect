@@ -7,6 +7,7 @@ import {
   ensureAboutSectionImagesBucket,
   getAdminClient,
 } from "@/lib/supabase/admin";
+import { deleteStorageFile, STORAGE_BUCKETS } from "@/lib/supabase/storage-utils";
 
 const getAuthenticatedUser = async () => {
   const cookieStore = await cookies();
@@ -61,6 +62,14 @@ export async function PUT(
     }
 
     const supabase = getAdminClient();
+
+    // Fetch existing image_url before update
+    const { data: existingSection } = await supabase
+      .from("about_sections")
+      .select("image_url")
+      .eq("id", id)
+      .single();
+
     const updateData: {
       eyebrow: string;
       title: string;
@@ -81,6 +90,10 @@ export async function PUT(
     };
 
     if (image instanceof File) {
+      // Delete old image from storage if exists
+      if (existingSection?.image_url) {
+        await deleteStorageFile(existingSection.image_url, STORAGE_BUCKETS.ABOUT);
+      }
       const timestamp = Date.now();
       await ensureAboutSectionImagesBucket();
       const extension = image.name.includes(".") ? image.name.split(".").pop() : "jpg";

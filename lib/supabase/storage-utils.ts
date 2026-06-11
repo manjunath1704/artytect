@@ -158,7 +158,7 @@ export const STORAGE_BUCKETS = {
   HERO: "hero-media",
   CATEGORIES: "category-images",
   TESTIMONIALS: "testimonial-images",
-  ABOUT: "about-images",
+  ABOUT: "about-section-images",
   CRAFTED_MOMENTS: "crafted-moments",
   OUR_STORY: "our-story-images",
   CONTACT: "contact-page-images",
