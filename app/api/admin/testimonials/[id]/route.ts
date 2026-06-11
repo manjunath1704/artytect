@@ -7,6 +7,7 @@ import {
   ensureTestimonialImagesBucket,
   getAdminClient,
 } from "@/lib/supabase/admin";
+import { deleteStorageFile, STORAGE_BUCKETS } from "@/lib/supabase/storage-utils";
 
 const slugify = (value: string) =>
   value
@@ -79,6 +80,14 @@ export async function PUT(
     }
 
     const supabase = getAdminClient();
+
+    // Fetch existing image_url before update
+    const { data: existingTestimonial } = await supabase
+      .from("testimonials")
+      .select("image_url")
+      .eq("id", id)
+      .single();
+
     const updateData: {
       name: string;
       location: string;
@@ -97,6 +106,10 @@ export async function PUT(
     };
 
     if (image instanceof File) {
+      // Delete old image from storage if exists
+      if (existingTestimonial?.image_url) {
+        await deleteStorageFile(existingTestimonial.image_url, STORAGE_BUCKETS.TESTIMONIALS);
+      }
       const timestamp = Date.now();
       const safeName = slugify(name) || "testimonial";
 
@@ -170,6 +183,13 @@ export async function DELETE(
 
     const supabase = getAdminClient();
 
+    // Fetch image_url before deleting the record
+    const { data: testimonial } = await supabase
+      .from("testimonials")
+      .select("image_url")
+      .eq("id", id)
+      .single();
+
     const { error: deleteError } = await supabase
       .from("testimonials")
       .delete()
@@ -177,6 +197,11 @@ export async function DELETE(
 
     if (deleteError) {
       throw new Error(deleteError.message);
+    }
+
+    // Delete associated image from storage
+    if (testimonial?.image_url) {
+      await deleteStorageFile(testimonial.image_url, STORAGE_BUCKETS.TESTIMONIALS);
     }
 
     return NextResponse.json(
