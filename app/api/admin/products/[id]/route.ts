@@ -63,11 +63,31 @@ export async function PUT(request: Request, { params }: ProductRouteProps) {
     // Handle gallery images
     const newGalleryUrls = await Promise.all(gallery.map((file, index) => uploadImage(file, slug, `gallery-${index}`)));
     
+    /**
+     * Parse a PostgreSQL text[] value that may come as:
+     *  - a JS array   → use as-is
+     *  - a JSON string → parse
+     *  - a PG literal  → "{val1,val2}" → split and clean
+     */
+    const parsePgTextArray = (value: unknown): string[] => {
+      if (Array.isArray(value)) return value;
+      if (typeof value !== "string" || !value) return [];
+      const trimmed = value.trim();
+      // PG literal: {val1,"val2"}
+      if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+        return trimmed
+          .slice(1, -1)
+          .split(",")
+          .map((s) => s.trim().replace(/^"|"$/g, ""))
+          .filter(Boolean);
+      }
+      // JSON string array
+      try { return JSON.parse(trimmed); } catch { return []; }
+    };
+
     // Delete removed gallery images
     if (existingProduct?.gallery_urls) {
-      const oldGalleryUrls = Array.isArray(existingProduct.gallery_urls) 
-        ? existingProduct.gallery_urls 
-        : [];
+      const oldGalleryUrls = parsePgTextArray(existingProduct.gallery_urls);
       const removedUrls = oldGalleryUrls.filter((url: string) => !existingGallery.includes(url));
       
       const logPath = path.join(process.cwd(), 'gallery-delete-log.txt');

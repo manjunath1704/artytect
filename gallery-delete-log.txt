@@ -3,3 +3,52 @@
 Old gallery: []
 Keep gallery: ["https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-0-1780778208667-cyrzwev2bqj.jpeg"]
 Removed URLs: []
+
+=== 2026-06-11T03:12:30.792Z ===
+Old gallery: []
+Keep gallery: []
+Removed URLs: []
+
+=== 2026-06-11T03:13:21.394Z ===
+Old gallery: []
+Keep gallery: []
+Removed URLs: []
+
+=== 2026-06-11T03:16:58.898Z ===
+Old gallery: []
+Keep gallery: []
+Removed URLs: []
+
+=== 2026-06-11T03:21:45.875Z ===
+Old gallery: []
+Keep gallery: []
+Removed URLs: []
+
+=== 2026-06-11T03:22:22.084Z ===
+Old gallery: ["https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-0-1781148104999-jyoo51cx0s.jpeg"]
+Keep gallery: []
+Removed URLs: ["https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-0-1781148104999-jyoo51cx0s.jpeg"]
+Deleted count: 1
+
+=== 2026-06-11T03:22:41.787Z ===
+Old gallery: ["https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-0-1781148141345-9xyp5nv21h.jpeg"]
+Keep gallery: []
+Removed URLs: ["https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-0-1781148141345-9xyp5nv21h.jpeg"]
+Deleted count: 1
+
+=== 2026-06-11T03:25:20.403Z ===
+Old gallery: []
+Keep gallery: []
+Removed URLs: []
+
+=== 2026-06-11T03:25:57.996Z ===
+Old gallery: ["https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-0-1781148319455-2eci6qa3z7m.jpeg","https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-1-1781148319455-s7k36zu0tz.jpeg","https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-2-1781148319456-8d8ii3bu4xh.jpeg"]
+Keep gallery: ["https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-1-1781148319455-s7k36zu0tz.jpeg","https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-2-1781148319456-8d8ii3bu4xh.jpeg"]
+Removed URLs: ["https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-0-1781148319455-2eci6qa3z7m.jpeg"]
+Deleted count: 1
+
+=== 2026-06-11T03:26:30.129Z ===
+Old gallery: ["https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-1-1781148319455-s7k36zu0tz.jpeg","https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-2-1781148319456-8d8ii3bu4xh.jpeg"]
+Keep gallery: ["https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-1-1781148319455-s7k36zu0tz.jpeg"]
+Removed URLs: ["https://qgjbonfvngwqujdbvist.supabase.co/storage/v1/object/public/product-images/testing-product/gallery-2-1781148319456-8d8ii3bu4xh.jpeg"]
+Deleted count: 1
