@@ -19,64 +19,6 @@ type CategoryItem = {
   count?: number;
 };
 
-const fallbackCategories: CategoryItem[] = [
-  {
-    id: "bowls",
-    title: "Bowls",
-    slug: "bowls",
-    description: "Everyday forms with soft handles and warm glazes for slow mornings.",
-    thumbnailSrc: "/images/bowl-a.avif",
-    hoverThumbnailSrc: "/images/bowl-b.avif",
-    parentCategoryId: null,
-  },
-  {
-    id: "vases",
-    title: "Vases",
-    slug: "vases",
-    description: "Low, balanced silhouettes that work beautifully for serving and display.",
-    thumbnailSrc: "/images/vase-a.avif",
-    hoverThumbnailSrc: "/images/vase-b.avif",
-    parentCategoryId: null,
-  },
-  {
-    id: "mugs",
-    title: "Mugs",
-    slug: "mugs",
-    description: "Tall statement pieces with clean necks and tactile surface variation.",
-    thumbnailSrc: "/images/mug-a.avif",
-    hoverThumbnailSrc: "/images/mug-b.avif",
-    parentCategoryId: null,
-  },
-  {
-    id: "planters",
-    title: "Planters",
-    slug: "planters",
-    description: "Quiet sculptural accents that bring texture to shelves and tabletops.",
-    thumbnailSrc: "/images/planter-a.avif",
-    hoverThumbnailSrc: "/images/planter-b.avif",
-    parentCategoryId: null,
-  },
-  {
-    id: "plates",
-    title: "Plates",
-    slug: "plates",
-    description: "Simple ceramic plates with warm material character for hosting and layering.",
-    thumbnailSrc: "/images/plate-a.avif",
-    hoverThumbnailSrc: "/images/plate-b.avif",
-    parentCategoryId: null,
-  },
-  {
-    id: "deep-plates",
-    title: "Deep plates",
-    slug: "deep-plates",
-    description: "Deep serving forms with a quiet sculptural profile for soups and grains.",
-    thumbnailSrc: "/images/deep-a.avif",
-    hoverThumbnailSrc: "/images/deep-b.avif",
-    parentCategoryId: null,
-  },
-  
-];
-
 type CategoryRow = {
   id: string;
   title: string;
@@ -88,7 +30,7 @@ type CategoryRow = {
 };
 
 export default function CategoriesPageContent() {
-  const [categories, setCategories] = useState<CategoryItem[]>(fallbackCategories);
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -129,7 +71,7 @@ export default function CategoriesPageContent() {
           setProducts(nextProducts);
         }
       } catch {
-        // Keep fallback
+        // Silently handle errors — empty state will show
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -252,6 +194,12 @@ export default function CategoriesPageContent() {
                 </div>
               ))}
             </div>
+          ) : parentCategories.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-[#d9ccbc] bg-[#faf6f2] p-12 text-center">
+              <p className="text-sm text-[#6b5f55]">
+                No categories available yet. Check back soon!
+              </p>
+            </div>
           ) : (
             <div className="space-y-10">
               {parentCategories.map((category, index) => {
@@ -359,8 +307,12 @@ export default function CategoriesPageContent() {
            
         </div>
 
-       <div className="site-container grid gap-3 grid-cols-2 py-10 md:hidden">
-       {
+        <div className="site-container grid gap-3 grid-cols-2 py-10 md:hidden">
+          {parentCategories.length === 0 ? (
+            <div className="col-span-2 rounded-2xl border border-dashed border-[#d9ccbc] bg-[#faf6f2] p-8 text-center text-sm text-[#6b5f55]">
+              No categories available yet. Check back soon!
+            </div>
+          ) : (
             parentCategories.map((category, index) => (
               <div key={category.id}>
                 <CategoryCardMicro
@@ -373,7 +325,7 @@ export default function CategoriesPageContent() {
                   />
               </div>
             ))
-           }
+          )}
        </div>
 
        {/* ── All Products ──────────────────────────────────────────── */}

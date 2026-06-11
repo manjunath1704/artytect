@@ -14,51 +14,6 @@ import {
 import CategoryCard from "./category-card";
 import SectionHeader from "./section-header";
 import ViewMoreLink from "./view-more-link";
-const fallbackCollections = [
-  {
-    title: "Bowls",
-    description: "Everyday forms with soft handles and warm glazes for slow mornings.",
-    href: "/categories/bowls",
-    thumbnailSrc: "/images/bowl-a.avif",
-    hoverThumbnailSrc: "/images/bowl-b.avif",
-  },
-  {
-    title: "Vases",
-    description: "Low, balanced silhouettes that work beautifully for serving and display.",
-    href: "/categories/vases",
-    thumbnailSrc: "/images/vase-a.avif",
-    hoverThumbnailSrc: "/images/vase-b.avif",
-  },
-  {
-    title: "Mugs",
-    description: "Tall statement pieces with clean necks and tactile surface variation.",
-    href: "/categories/mugs",
-    thumbnailSrc: "/images/mug-a.avif",
-    hoverThumbnailSrc: "/images/mug-b.avif",
-  },
-  {
-    title: "Planters",
-    description: "Quiet sculptural accents that bring texture to shelves and tabletops.",
-    href: "/categories/planters",
-    thumbnailSrc: "/images/planter-a.avif",
-    hoverThumbnailSrc: "/images/planter-b.avif",
-  },
-  {
-    title: "Plates",
-    description: "Quiet sculptural accents that bring texture to shelves and tabletops.",
-    href: "/categories/plates",
-    thumbnailSrc: "/images/plate-a.avif",
-    hoverThumbnailSrc: "/images/plate-b.avif",
-  },
-  {
-    title: "Deep plates",
-    description: "Quiet sculptural accents that bring texture to shelves and tabletops.",
-    href: "/categories/deep-plates",
-    thumbnailSrc: "/images/deep-a.avif",
-    hoverThumbnailSrc: "/images/deep-b.avif",
-  },
-];
-
 type CategoryRow = {
   id: string;
   title: string;
@@ -95,7 +50,7 @@ const FeaturedCollections = ({
 }: {
   header?: CategoriesSectionHeader;
 }) => {
-  const [collections, setCollections] = useState<CollectionItem[]>(fallbackCollections);
+  const [collections, setCollections] = useState<CollectionItem[]>([]);
   const [api, setApi] = useState<CarouselApi>();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
@@ -110,6 +65,7 @@ const FeaturedCollections = ({
         | null;
 
       if (!isMounted || !response.ok || !result?.categories?.length) {
+        setCollections([]);
         return;
       }
 
@@ -123,9 +79,7 @@ const FeaturedCollections = ({
           hoverThumbnailSrc: category.hover_thumbnail_url,
         }));
 
-      if (nextCollections.length) {
-        setCollections(nextCollections);
-      }
+      setCollections(nextCollections);
     };
 
     void loadCategories();
@@ -170,7 +124,14 @@ const FeaturedCollections = ({
           description={header.description}
           action={<ViewMoreLink href="/categories">View all categories</ViewMoreLink>}
         />
-        <div className="mt-12 md:mt-14">
+        {collections.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-[#d9ccbc] bg-white/50 p-12 text-center">
+              <p className="text-sm text-[#6b5f55]">
+                No categories available yet. Check back soon!
+              </p>
+            </div>
+          ) : (
+            <div className="mt-12 md:mt-14">
           <Carousel
             setApi={setApi}
             opts={{
@@ -234,6 +195,7 @@ const FeaturedCollections = ({
             </div>
           </Carousel>
         </div>
+          )}
       </div>
     </section>
   );
