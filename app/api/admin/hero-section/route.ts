@@ -7,6 +7,7 @@ import {
   ensureHeroMediaBucket,
   getAdminClient,
 } from "@/lib/supabase/admin";
+import { deleteStorageFile, STORAGE_BUCKETS } from "@/lib/supabase/storage-utils";
 
 const getAuthenticatedUser = async () => {
   const cookieStore = await cookies();
@@ -79,7 +80,7 @@ export async function PUT(request: Request) {
     const supabase = getAdminClient();
     const { data: current, error: currentError } = await supabase
       .from("hero_sections")
-      .select("id")
+      .select("id, desktop_video_url, mobile_video_url, poster_url")
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -104,14 +105,26 @@ export async function PUT(request: Request) {
     };
 
     if (desktopVideo instanceof File) {
+      // Delete old desktop video if exists
+      if (current?.desktop_video_url) {
+        await deleteStorageFile(current.desktop_video_url, STORAGE_BUCKETS.HERO);
+      }
       payload.desktop_video_url = await uploadFile(desktopVideo, "desktop-video");
     }
 
     if (mobileVideo instanceof File) {
+      // Delete old mobile video if exists
+      if (current?.mobile_video_url) {
+        await deleteStorageFile(current.mobile_video_url, STORAGE_BUCKETS.HERO);
+      }
       payload.mobile_video_url = await uploadFile(mobileVideo, "mobile-video");
     }
 
     if (poster instanceof File) {
+      // Delete old poster if exists
+      if (current?.poster_url) {
+        await deleteStorageFile(current.poster_url, STORAGE_BUCKETS.HERO);
+      }
       payload.poster_url = await uploadFile(poster, "poster");
     }
 
