@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getAdminClient, OUR_STORY_BUCKET, ensureOurStoryImagesBucket } from "@/lib/supabase/admin";
+import { deleteStorageFile } from "@/lib/supabase/storage-utils";
 import { NextRequest, NextResponse } from "next/server";
 
 async function uploadImage(file: File, prefix: string): Promise<string> {
@@ -48,6 +49,10 @@ export async function POST(request: NextRequest) {
 
     // Upload new hero image if provided
     if (hero_image) {
+      // Delete old hero image before uploading new one
+      if (existing_hero_image_url) {
+        await deleteStorageFile(existing_hero_image_url, OUR_STORY_BUCKET);
+      }
       hero_image_url = await uploadImage(hero_image, "our-story-hero");
     }
 

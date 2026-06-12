@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getAdminClient, OUR_STORY_BUCKET, ensureOurStoryImagesBucket } from "@/lib/supabase/admin";
+import { deleteStorageFile } from "@/lib/supabase/storage-utils";
 import { NextRequest, NextResponse } from "next/server";
 
 async function uploadImage(file: File, prefix: string): Promise<string> {
@@ -50,6 +51,10 @@ export async function PUT(
     let image_url = existing_image_url;
 
     if (timeline_image) {
+      // Delete old image before uploading new one
+      if (existing_image_url) {
+        await deleteStorageFile(existing_image_url, OUR_STORY_BUCKET);
+      }
       image_url = await uploadImage(timeline_image, "our-story-timeline");
     }
 
@@ -87,6 +92,18 @@ export async function DELETE(
     }
 
     const { id } = await params;
+
+    // Fetch timeline item to get image URL for storage cleanup
+    const { data: item } = await supabase
+      .from("our_story_timeline")
+      .select("image_url")
+      .eq("id", id)
+      .single();
+
+    // Delete image from storage
+    if (item?.image_url) {
+      await deleteStorageFile(item.image_url, OUR_STORY_BUCKET);
+    }
 
     const { error } = await supabase
       .from("our_story_timeline")

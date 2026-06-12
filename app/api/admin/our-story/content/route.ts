@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getAdminClient, OUR_STORY_BUCKET, ensureOurStoryImagesBucket } from "@/lib/supabase/admin";
+import { deleteStorageFile } from "@/lib/supabase/storage-utils";
 import { NextRequest, NextResponse } from "next/server";
 
 async function uploadImage(file: File, prefix: string): Promise<string> {
@@ -57,11 +58,17 @@ export async function POST(request: NextRequest) {
     let final_who_we_are_image = who_we_are_image_url;
     let final_journey_image = journey_image_url;
 
-    // Upload images if provided
+    // Upload images if provided, deleting old ones first
     if (who_we_are_image) {
+      if (who_we_are_image_url) {
+        await deleteStorageFile(who_we_are_image_url, OUR_STORY_BUCKET);
+      }
       final_who_we_are_image = await uploadImage(who_we_are_image, "our-story");
     }
     if (journey_image) {
+      if (journey_image_url) {
+        await deleteStorageFile(journey_image_url, OUR_STORY_BUCKET);
+      }
       final_journey_image = await uploadImage(journey_image, "our-story");
     }
 
