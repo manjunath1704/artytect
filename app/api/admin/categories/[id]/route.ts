@@ -7,7 +7,7 @@ import {
   ensureCategoryThumbnailsBucket,
   getAdminClient,
 } from "@/lib/supabase/admin";
-import { deleteStorageFile, STORAGE_BUCKETS } from "@/lib/supabase/storage-utils";
+import { deleteStorageFile } from "@/lib/supabase/storage-utils";
 
 const getAuthenticatedUser = async () => {
   const cookieStore = await cookies();
@@ -158,7 +158,7 @@ export async function PUT(
     if (thumbnail instanceof File) {
       // Delete old thumbnail if exists
       if (existingCategory?.category_thumbnail) {
-        await deleteStorageFile(existingCategory.category_thumbnail, STORAGE_BUCKETS.CATEGORIES);
+        await deleteStorageFile(existingCategory.category_thumbnail, CATEGORY_BUCKET);
       }
       
       await ensureCategoryThumbnailsBucket();
@@ -185,7 +185,7 @@ export async function PUT(
     if (hoverThumbnail instanceof File) {
       // Delete old hover thumbnail if exists
       if (existingCategory?.category_hover_thumbnail) {
-        await deleteStorageFile(existingCategory.category_hover_thumbnail, STORAGE_BUCKETS.CATEGORIES);
+        await deleteStorageFile(existingCategory.category_hover_thumbnail, CATEGORY_BUCKET);
       }
       
       await ensureCategoryThumbnailsBucket();
