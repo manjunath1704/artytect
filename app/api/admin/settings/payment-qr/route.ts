@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { ensurePaymentAssetsBucket, getAdminClient, PAYMENT_BUCKET } from "@/lib/supabase/admin";
+import { deleteStorageFile } from "@/lib/supabase/storage-utils";
 
 export async function PUT(request: Request) {
   try {
@@ -12,6 +13,18 @@ export async function PUT(request: Request) {
 
     await ensurePaymentAssetsBucket();
     const supabase = getAdminClient();
+
+    // Fetch existing QR URL to delete old file
+    const { data: existingSetting } = await supabase
+      .from("admin_settings")
+      .select("value")
+      .eq("key", "payment_qr")
+      .maybeSingle();
+    const existingUrl = existingSetting?.value?.url as string | undefined;
+    if (existingUrl) {
+      await deleteStorageFile(existingUrl, PAYMENT_BUCKET);
+    }
+
     const extension = file.name.includes(".") ? file.name.split(".").pop() : "jpg";
     const filePath = `qr/payment-qr-${Date.now()}.${extension}`;
     const { error: uploadError } = await supabase.storage.from(PAYMENT_BUCKET).upload(
