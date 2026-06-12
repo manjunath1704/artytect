@@ -7,6 +7,7 @@ import {
   ensureCraftedMomentsMediaBucket,
   getAdminClient,
 } from "@/lib/supabase/admin";
+import { deleteStorageFile } from "@/lib/supabase/storage-utils";
 
 const getAuthenticatedUser = async () => {
   const cookieStore = await cookies();
@@ -81,6 +82,14 @@ export async function PUT(
     }
 
     const supabase = getAdminClient();
+
+    // Fetch existing item to get old file URLs for cleanup
+    const { data: existingItem } = await supabase
+      .from("crafted_moments_items")
+      .select("media_url, poster_url")
+      .eq("id", id)
+      .single();
+
     const updateData: {
       type: string;
       title: string;
@@ -100,12 +109,24 @@ export async function PUT(
     };
 
     if (media instanceof File) {
+      // Delete old media file before uploading new one
+      if (existingItem?.media_url) {
+        await deleteStorageFile(existingItem.media_url, CRAFTED_MOMENTS_BUCKET);
+      }
       updateData.media_url = await uploadFile(media, `${type}-${sortOrder}`);
     }
 
     if (poster instanceof File) {
+      // Delete old poster file before uploading new one
+      if (existingItem?.poster_url) {
+        await deleteStorageFile(existingItem.poster_url, CRAFTED_MOMENTS_BUCKET);
+      }
       updateData.poster_url = await uploadFile(poster, `poster-${sortOrder}`);
     } else if (type === "image") {
+      // Delete old poster file if type changed to image
+      if (existingItem?.poster_url) {
+        await deleteStorageFile(existingItem.poster_url, CRAFTED_MOMENTS_BUCKET);
+      }
       updateData.poster_url = null;
     }
 
@@ -146,6 +167,22 @@ export async function DELETE(
     if (!user) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
 
     const supabase = getAdminClient();
+
+    // Fetch item to get file URLs for storage cleanup
+    const { data: item } = await supabase
+      .from("crafted_moments_items")
+      .select("media_url, poster_url")
+      .eq("id", id)
+      .single();
+
+    // Delete files from storage
+    if (item?.media_url) {
+      await deleteStorageFile(item.media_url, CRAFTED_MOMENTS_BUCKET);
+    }
+    if (item?.poster_url) {
+      await deleteStorageFile(item.poster_url, CRAFTED_MOMENTS_BUCKET);
+    }
+
     const { error } = await supabase.from("crafted_moments_items").delete().eq("id", id);
     if (error) throw new Error(error.message);
 
