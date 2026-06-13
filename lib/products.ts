@@ -1,3 +1,22 @@
+export type ProductVariantSize = {
+  id: string;
+  variant_id: string;
+  size: string;
+  price: number;
+  compare_at_price?: number | null;
+  stock_quantity: number;
+};
+
+export type ProductVariant = {
+  id: string;
+  product_id: string;
+  color_name: string;
+  color_code: string;
+  sort_order: number;
+  images: string[];
+  sizes: ProductVariantSize[];
+};
+
 export type Product = {
   id: string;
   slug?: string;
@@ -22,6 +41,7 @@ export type Product = {
   status?: "draft" | "published";
   createdAt?: string;
   updatedAt?: string;
+  variants?: ProductVariant[];
 };
 
 export type MeasurementRow = {

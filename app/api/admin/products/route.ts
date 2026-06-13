@@ -44,6 +44,12 @@ const uploadImage = async (file: File, slug: string, prefix: string) => {
   return supabase.storage.from(PRODUCT_BUCKET).getPublicUrl(filePath).data.publicUrl;
 };
 
+type VariantInput = {
+  colorName: string;
+  colorCode: string;
+  sizes: { size: string; price: string; compareAtPrice: string; stockQuantity: string }[];
+};
+
 export async function POST(request: Request) {
   try {
     if (!(await requireUser())) {
@@ -96,6 +102,55 @@ export async function POST(request: Request) {
       .single();
 
     if (error) throw new Error(error.message);
+
+    // Handle variants
+    const variantsJson = String(formData.get("variants") || "[]");
+    let variants: VariantInput[] = [];
+    try {
+      variants = JSON.parse(variantsJson);
+    } catch { /* ignore parse errors */ }
+
+    if (variants.length > 0 && data?.id) {
+      for (let vi = 0; vi < variants.length; vi++) {
+        const v = variants[vi];
+        // Upload variant images
+        const variantImageFiles = formData.getAll(`variant_images_${vi}`).filter((f): f is File => f instanceof File);
+        const variantImageUrls = await Promise.all(
+          variantImageFiles.map((file, idx) => uploadImage(file, slug, `variant-${vi}-${idx}`)),
+        );
+
+        // Insert variant
+        const { data: variantRow, error: vErr } = await supabase
+          .from("product_variants")
+          .insert({
+            product_id: data.id,
+            color_name: v.colorName,
+            color_code: v.colorCode,
+            sort_order: vi,
+            images: variantImageUrls,
+          })
+          .select()
+          .single();
+
+        if (vErr || !variantRow) continue;
+
+        // Insert sizes for this variant
+        const sizeInserts = v.sizes
+          .filter((s) => s.size && s.price)
+          .map((s) => ({
+            variant_id: variantRow.id,
+            size: s.size,
+            price: Number(s.price) || 0,
+            compare_at_price: s.compareAtPrice ? Number(s.compareAtPrice) : null,
+            stock_quantity: Number(s.stockQuantity) || 0,
+          }));
+
+        if (sizeInserts.length) {
+          await supabase.from("variant_sizes").insert(sizeInserts);
+        }
+      }
+    }
+
     return NextResponse.json({ product: data }, { status: 201 });
   } catch (error) {
     return NextResponse.json(

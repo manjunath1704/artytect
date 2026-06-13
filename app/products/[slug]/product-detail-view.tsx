@@ -5,7 +5,7 @@ import { Check, Minus, PackageCheck, Plus, Ruler, ShieldCheck } from "lucide-rea
 import { useMemo, useState } from "react";
 
 import AddToCartButton from "@/components/cart/add-to-cart-button";
-import type { Product } from "@/lib/products";
+import type { Product, ProductVariant } from "@/lib/products";
 import { formatPrice } from "@/lib/whatsapp";
 
 type ProductDetailViewProps = {
@@ -20,11 +20,76 @@ const tabs: { id: ProductTab; label: string }[] = [
 ];
 
 export default function ProductDetailView({ product }: ProductDetailViewProps) {
-  const [selectedImage, setSelectedImage] = useState(product.images[0]);
-  const [selectedSize,  setSelectedSize]  = useState(product.sizes?.[0] ?? "S");
-  const [selectedColor, setSelectedColor] = useState(product.colors?.[0] ?? "Natural");
-  const [quantity,      setQuantity]      = useState(1);
-  const [activeTab,     setActiveTab]     = useState<ProductTab>("description");
+  const hasVariants = product.variants && product.variants.length > 0;
+
+  // Get available colors from variants
+  const variantColors = useMemo(() => {
+    if (!hasVariants) return [];
+    return product.variants!.map((v) => ({
+      name: v.color_name,
+      code: v.color_code,
+    }));
+  }, [hasVariants, product.variants]);
+
+  const [selectedColor, setSelectedColor] = useState(variantColors[0]?.name ?? product.colors?.[0] ?? "Natural");
+
+  // Get the active variant based on selected color
+  const activeVariant = useMemo(() => {
+    if (!hasVariants) return null;
+    return product.variants!.find((v) => v.color_name === selectedColor) ?? product.variants![0];
+  }, [hasVariants, product.variants, selectedColor]);
+
+  // Get available sizes for the selected color
+  const availableSizes = useMemo(() => {
+    if (activeVariant?.sizes?.length) {
+      return activeVariant.sizes.map((s) => s.size);
+    }
+    return product.sizes?.length ? product.sizes : ["S", "M", "L", "XL"];
+  }, [activeVariant, product.sizes]);
+
+  const [selectedSize, setSelectedSize] = useState(availableSizes[0] ?? "S");
+  const [quantity, setQuantity] = useState(1);
+  const [activeTab, setActiveTab] = useState<ProductTab>("description");
+
+  // Get images for the selected color variant
+  const displayImages = useMemo(() => {
+    if (activeVariant?.images?.length) {
+      return activeVariant.images;
+    }
+    return product.images;
+  }, [activeVariant, product.images]);
+
+  const [selectedImage, setSelectedImage] = useState(displayImages[0]);
+
+  // When color changes, update the image
+  const handleColorChange = (color: string) => {
+    setSelectedColor(color);
+    const variant = product.variants?.find((v) => v.color_name === color);
+    if (variant?.images?.length) {
+      setSelectedImage(variant.images[0]);
+    } else {
+      setSelectedImage(product.images[0]);
+    }
+    // Reset size selection
+    const variantSizes = variant?.sizes?.length
+      ? variant.sizes.map((s) => s.size)
+      : product.sizes?.length ? product.sizes : ["S", "M", "L", "XL"];
+    if (!variantSizes.includes(selectedSize)) {
+      setSelectedSize(variantSizes[0] ?? "S");
+    }
+  };
+
+  // Get the current size's price and stock from the variant
+  const currentSizeData = useMemo(() => {
+    if (activeVariant?.sizes?.length) {
+      return activeVariant.sizes.find((s) => s.size === selectedSize) ?? null;
+    }
+    return null;
+  }, [activeVariant, selectedSize]);
+
+  const displayPrice = currentSizeData?.price ?? product.price;
+  const displayComparePrice = currentSizeData?.compare_at_price ?? product.compareAtPrice;
+  const displayStock = currentSizeData?.stock_quantity ?? product.quantity;
 
   // Dimensions for the currently selected size
   const selectedSizeDimensions = useMemo(
@@ -149,7 +214,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
               </div>
 
               <div className="grid grid-cols-4 gap-3">
-                {product.images.map((image, index) => {
+                {displayImages.map((image, index) => {
                   const isSelected = selectedImage === image;
                   return (
                     <button
@@ -190,15 +255,22 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
                 {/* Price */}
                 <p className="mt-5 text-xl text-[#9a8d82]">
-                  {product.compareAtPrice ? (
+                  {displayComparePrice ? (
                     <>
-                      <span className="mr-3 line-through">{formatPrice(product.compareAtPrice)}</span>
-                      <span className="font-semibold text-[#1b1511]">{formatPrice(product.price)}</span>
+                      <span className="mr-3 line-through">{formatPrice(displayComparePrice)}</span>
+                      <span className="font-semibold text-[#1b1511]">{formatPrice(displayPrice)}</span>
                     </>
                   ) : (
-                    <span className="font-semibold text-[#1b1511]">{formatPrice(product.price)}</span>
+                    <span className="font-semibold text-[#1b1511]">{formatPrice(displayPrice)}</span>
                   )}
                 </p>
+
+                {/* Stock indicator */}
+                {displayStock !== undefined && displayStock !== null && (
+                  <p className={`mt-2 text-xs ${displayStock > 0 ? "text-green-700" : "text-red-600"}`}>
+                    {displayStock > 0 ? `${displayStock} in stock` : "Out of stock"}
+                  </p>
+                )}
 
                 <p className="mt-8 text-sm leading-8 text-[#6f6259]">{product.shortDescription}</p>
 
@@ -230,7 +302,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                       Size
                     </p>
                     <div className="grid grid-cols-4 gap-2">
-                      {(product.sizes?.length ? product.sizes : ["S", "M", "L", "XL"]).map((size) => (
+                      {availableSizes.map((size) => (
                         <button
                           key={size}
                           type="button"
@@ -285,21 +357,45 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                       Color
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {(product.colors?.length ? product.colors : ["Natural"]).map((color, i) => (
-                        <button
-                          key={`color-${i}`}
-                          type="button"
-                          onClick={() => setSelectedColor(color)}
-                          className={[
-                            "h-11 rounded-full border px-4 text-xs font-semibold transition",
-                            selectedColor === color
-                              ? "border-[#1b1511] bg-[#1b1511] text-white"
-                              : "border-[#ded3c8] bg-white text-[#1b1511] hover:border-[#1b1511]",
-                          ].join(" ")}
-                        >
-                          {color}
-                        </button>
-                      ))}
+                      {hasVariants ? (
+                        variantColors.map((color) => (
+                          <button
+                            key={color.name}
+                            type="button"
+                            onClick={() => handleColorChange(color.name)}
+                            className={[
+                              "inline-flex h-11 items-center gap-2 rounded-full border px-4 text-xs font-semibold transition",
+                              selectedColor === color.name
+                                ? "border-[#1b1511] bg-[#1b1511] text-white"
+                                : "border-[#ded3c8] bg-white text-[#1b1511] hover:border-[#1b1511]",
+                            ].join(" ")}
+                          >
+                            {color.code && (
+                              <span
+                                className="h-4 w-4 rounded-full border border-gray-300"
+                                style={{ backgroundColor: color.code }}
+                              />
+                            )}
+                            {color.name}
+                          </button>
+                        ))
+                      ) : (
+                        (product.colors?.length ? product.colors : ["Natural"]).map((color, i) => (
+                          <button
+                            key={`color-${i}`}
+                            type="button"
+                            onClick={() => setSelectedColor(color)}
+                            className={[
+                              "h-11 rounded-full border px-4 text-xs font-semibold transition",
+                              selectedColor === color
+                                ? "border-[#1b1511] bg-[#1b1511] text-white"
+                                : "border-[#ded3c8] bg-white text-[#1b1511] hover:border-[#1b1511]",
+                            ].join(" ")}
+                          >
+                            {color}
+                          </button>
+                        ))
+                      )}
                     </div>
                   </div>
                 </div>
@@ -334,15 +430,15 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                         type="button"
                         className="flex items-center justify-center text-[#7d746d] transition hover:bg-[#f7f2ec] hover:text-[#171717] disabled:cursor-not-allowed disabled:opacity-35"
                         aria-label="Increase quantity"
-                        disabled={product.quantity ? quantity >= product.quantity : false}
-                        onClick={() => setQuantity((v) => Math.min(product.quantity || v + 1, v + 1))}
+                        disabled={displayStock ? quantity >= displayStock : false}
+                        onClick={() => setQuantity((v) => Math.min(displayStock || v + 1, v + 1))}
                       >
                         <Plus className="h-3.5 w-3.5" />
                       </button>
                     </div>
 
                     <AddToCartButton
-                      product={product}
+                      product={{ ...product, price: displayPrice }}
                       quantity={quantity}
                       size={selectedSize}
                       color={selectedColor}

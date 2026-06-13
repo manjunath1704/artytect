@@ -13,7 +13,7 @@ import { DeleteConfirmDialog } from "@/components/ui/delete-confirm-dialog";
 import { GalleryUploader } from "@/components/ui/gallery-uploader";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { Pagination } from "@/components/ui/pagination";
-import { fixedSizes, mapProductRow, slugifyProductName, type MeasurementRow, type ProductRow } from "@/lib/products";
+import { fixedSizes, mapProductRow, slugifyProductName, type MeasurementRow, type ProductRow, type ProductVariant } from "@/lib/products";
 import { formatPrice } from "@/lib/whatsapp";
 
 /**
@@ -61,6 +61,35 @@ const sortOptions: SelectOption[] = [
   { value: "name-asc", label: "Name A-Z" },
 ];
 
+type SizeRow = {
+  size: string;
+  price: string;
+  compareAtPrice: string;
+  stockQuantity: string;
+};
+
+type VariantFormRow = {
+  id?: string;
+  colorName: string;
+  colorCode: string;
+  images: string[];
+  newImageFiles: File[];
+  sizes: SizeRow[];
+};
+
+const emptyVariantRow = (): VariantFormRow => ({
+  colorName: "",
+  colorCode: "#000000",
+  images: [],
+  newImageFiles: [],
+  sizes: [
+    { size: "S", price: "", compareAtPrice: "", stockQuantity: "" },
+    { size: "M", price: "", compareAtPrice: "", stockQuantity: "" },
+    { size: "L", price: "", compareAtPrice: "", stockQuantity: "" },
+    { size: "XL", price: "", compareAtPrice: "", stockQuantity: "" },
+  ],
+});
+
 const emptyForm = {
   id: "",
   name: "",
@@ -81,6 +110,7 @@ const emptyForm = {
     { label: "L",  height: "", width: "", length: "" },
     { label: "XL", height: "", width: "", length: "" },
   ] as MeasurementRow[],
+  variants: [] as VariantFormRow[],
 };
 
 export default function ProductsManager({ initialProducts }: { initialProducts: ProductRow[] }) {
@@ -175,7 +205,7 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
     setFormOpen(true);
   };
 
-  const openEdit = (product: ProductRow) => {
+  const openEdit = async (product: ProductRow) => {
     setForm({
       id: product.id,
       name: product.name,
@@ -193,10 +223,37 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
       measurement_table: product.measurement_table?.length
         ? product.measurement_table
         : emptyForm.measurement_table,
+      variants: [],
     });
     setThumbnail(null);
     setGallery([]);
     setFormOpen(true);
+
+    // Fetch existing variants
+    try {
+      const resp = await fetch(`/api/admin/products/${product.id}/variants`);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.variants?.length) {
+          setForm((current) => ({
+            ...current,
+            variants: data.variants.map((v: ProductVariant) => ({
+              id: v.id,
+              colorName: v.color_name,
+              colorCode: v.color_code || "#000000",
+              images: v.images || [],
+              newImageFiles: [],
+              sizes: v.sizes?.length ? v.sizes.map((s) => ({
+                size: s.size,
+                price: String(s.price),
+                compareAtPrice: s.compare_at_price ? String(s.compare_at_price) : "",
+                stockQuantity: String(s.stock_quantity),
+              })) : emptyVariantRow().sizes,
+            })),
+          }));
+        }
+      }
+    } catch { /* ignore */ }
   };
 
   const updateMeasurement = (index: number, key: keyof MeasurementRow, value: string) => {
@@ -253,6 +310,24 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
       formData.append("existing_gallery", JSON.stringify(form.gallery_urls));
       if (thumbnail) formData.append("thumbnail", thumbnail);
       gallery.forEach((file) => formData.append("gallery", file));
+
+      // Append variant data
+      const variantPayload = form.variants.map((v) => ({
+        id: v.id,
+        colorName: v.colorName,
+        colorCode: v.colorCode,
+        sizes: v.sizes,
+      }));
+      formData.append("variants", JSON.stringify(variantPayload));
+
+      // Append variant image files
+      form.variants.forEach((v, vi) => {
+        v.newImageFiles.forEach((file) => {
+          formData.append(`variant_images_${vi}`, file);
+        });
+        // Append existing images list for tracking
+        formData.append(`existing_variant_images_${vi}`, JSON.stringify(v.images));
+      });
 
       const response = await fetch(form.id ? `/api/admin/products/${form.id}` : "/api/admin/products", {
         method: form.id ? "PUT" : "POST",
@@ -551,6 +626,332 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                       ))}
                     </tbody>
                   </table>
+                </div>
+              </div>
+
+              {/* ── Product Variants ──────────────────────────────── */}
+              <div className="mt-8 rounded-[32px] border border-[#e8ddd1] bg-[#fcfaf7] p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-[#352a21]">Product Variants</h3>
+                    <p className="mt-1 text-xs text-[#665b4f]">
+                      Add color variants with size-specific pricing and stock. Each color can have its own images and prices.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm((c) => ({
+                        ...c,
+                        variants: [...c.variants, emptyVariantRow()],
+                      }))
+                    }
+                    className="inline-flex h-10 items-center gap-2 rounded-full border border-[#d9ccbc] bg-white px-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition hover:bg-[#f5eee4]"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Add Color Variant
+                  </button>
+                </div>
+
+                {form.variants.length === 0 && (
+                  <p className="mt-4 text-sm text-[#a69280]">
+                    No variants added. Products without variants will use the base price and gallery images.
+                  </p>
+                )}
+
+                <div className="mt-5 space-y-6">
+                  {form.variants.map((variant, vi) => (
+                    <div
+                      key={vi}
+                      className="rounded-2xl border border-[#d9ccbc] bg-white p-5"
+                    >
+                      {/* Variant header */}
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="color"
+                            value={variant.colorCode || "#000000"}
+                            onChange={(e) =>
+                              setForm((c) => ({
+                                ...c,
+                                variants: c.variants.map((v, i) =>
+                                  i === vi ? { ...v, colorCode: e.target.value } : v,
+                                ),
+                              }))
+                            }
+                            className="h-10 w-10 cursor-pointer rounded-full border border-[#d9ccbc]"
+                          />
+                          <input
+                            type="text"
+                            value={variant.colorName}
+                            onChange={(e) =>
+                              setForm((c) => ({
+                                ...c,
+                                variants: c.variants.map((v, i) =>
+                                  i === vi ? { ...v, colorName: e.target.value } : v,
+                                ),
+                              }))
+                            }
+                            placeholder="Color name (e.g. Black)"
+                            className="h-10 w-48 rounded-full border border-[#d9ccbc] bg-white px-4 text-sm outline-none focus:border-[#b38d67]"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setForm((c) => ({
+                              ...c,
+                              variants: c.variants.filter((_, i) => i !== vi),
+                            }))
+                          }
+                          className="inline-flex h-9 items-center gap-1.5 rounded-full border border-red-200 px-3 text-[11px] font-semibold text-red-600 transition hover:bg-red-50"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" /> Remove
+                        </button>
+                      </div>
+
+                      {/* Variant images */}
+                      <div className="mt-4">
+                        <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8a7765]">
+                          Images for {variant.colorName || "this color"}
+                        </p>
+                        <div className="flex flex-wrap gap-3">
+                          {variant.images.map((img, imgIdx) => (
+                            <div key={imgIdx} className="relative h-20 w-20 overflow-hidden rounded-xl border border-[#e8ddd1]">
+                              <Image src={img} alt="" fill sizes="80px" className="object-cover" />
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setForm((c) => ({
+                                    ...c,
+                                    variants: c.variants.map((v, i) =>
+                                      i === vi
+                                        ? { ...v, images: v.images.filter((_, j) => j !== imgIdx) }
+                                        : v,
+                                    ),
+                                  }))
+                                }
+                                className="absolute right-0.5 top-0.5 grid h-5 w-5 place-items-center rounded-full bg-black/60 text-white"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </div>
+                          ))}
+                          <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#d9ccbc] bg-[#faf6f2] text-[#8a7765] transition hover:border-[#b38d67] hover:bg-[#f5eee4]">
+                            <Plus className="h-4 w-4" />
+                            <span className="mt-1 text-[9px] font-semibold uppercase tracking-wider">Add</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                setForm((c) => ({
+                                  ...c,
+                                  variants: c.variants.map((v, i) =>
+                                    i === vi
+                                      ? { ...v, newImageFiles: [...v.newImageFiles, file] }
+                                      : v,
+                                  ),
+                                }));
+                                e.target.value = "";
+                              }}
+                            />
+                          </label>
+                        </div>
+                        {variant.newImageFiles.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {variant.newImageFiles.map((f, fi) => (
+                              <span key={fi} className="inline-flex items-center gap-1 rounded-full bg-[#f5eee4] px-3 py-1 text-[10px] text-[#665b4f]">
+                                {f.name}
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setForm((c) => ({
+                                      ...c,
+                                      variants: c.variants.map((v, i) =>
+                                        i === vi
+                                          ? { ...v, newImageFiles: v.newImageFiles.filter((_, j) => j !== fi) }
+                                          : v,
+                                      ),
+                                    }))
+                                  }
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Size variants */}
+                      <div className="mt-5">
+                        <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8a7765]">
+                          Sizes & Pricing
+                        </p>
+                        <div className="overflow-x-auto">
+                          <table className="w-full min-w-[500px] text-sm">
+                            <thead>
+                              <tr className="text-[10px] uppercase tracking-[0.2em] text-[#8a7765]">
+                                <th className="px-2 pb-2 text-left">Size</th>
+                                <th className="px-2 pb-2 text-left">Price (₹)</th>
+                                <th className="px-2 pb-2 text-left">Compare At (₹)</th>
+                                <th className="px-2 pb-2 text-left">Stock</th>
+                                <th className="px-2 pb-2"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {variant.sizes.map((sizeRow, si) => (
+                                <tr key={si}>
+                                  <td className="p-1">
+                                    <select
+                                      value={sizeRow.size}
+                                      onChange={(e) =>
+                                        setForm((c) => ({
+                                          ...c,
+                                          variants: c.variants.map((v, i) =>
+                                            i === vi
+                                              ? {
+                                                  ...v,
+                                                  sizes: v.sizes.map((s, j) =>
+                                                    j === si ? { ...s, size: e.target.value } : s,
+                                                  ),
+                                                }
+                                              : v,
+                                          ),
+                                        }))
+                                      }
+                                      className="h-9 rounded-xl border border-[#d9ccbc] bg-white px-2 text-sm outline-none focus:border-[#b38d67]"
+                                    >
+                                      {fixedSizes.map((s) => (
+                                        <option key={s} value={s}>{s}</option>
+                                      ))}
+                                    </select>
+                                  </td>
+                                  <td className="p-1">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      step="0.01"
+                                      value={sizeRow.price}
+                                      onChange={(e) =>
+                                        setForm((c) => ({
+                                          ...c,
+                                          variants: c.variants.map((v, i) =>
+                                            i === vi
+                                              ? {
+                                                  ...v,
+                                                  sizes: v.sizes.map((s, j) =>
+                                                    j === si ? { ...s, price: e.target.value } : s,
+                                                  ),
+                                                }
+                                              : v,
+                                          ),
+                                        }))
+                                      }
+                                      placeholder="0"
+                                      className="h-9 w-24 rounded-xl border border-[#d9ccbc] bg-white px-2 text-sm outline-none focus:border-[#b38d67]"
+                                    />
+                                  </td>
+                                  <td className="p-1">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      step="0.01"
+                                      value={sizeRow.compareAtPrice}
+                                      onChange={(e) =>
+                                        setForm((c) => ({
+                                          ...c,
+                                          variants: c.variants.map((v, i) =>
+                                            i === vi
+                                              ? {
+                                                  ...v,
+                                                  sizes: v.sizes.map((s, j) =>
+                                                    j === si ? { ...s, compareAtPrice: e.target.value } : s,
+                                                  ),
+                                                }
+                                              : v,
+                                          ),
+                                        }))
+                                      }
+                                      placeholder="Optional"
+                                      className="h-9 w-24 rounded-xl border border-[#d9ccbc] bg-white px-2 text-sm outline-none focus:border-[#b38d67]"
+                                    />
+                                  </td>
+                                  <td className="p-1">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      step="1"
+                                      value={sizeRow.stockQuantity}
+                                      onChange={(e) =>
+                                        setForm((c) => ({
+                                          ...c,
+                                          variants: c.variants.map((v, i) =>
+                                            i === vi
+                                              ? {
+                                                  ...v,
+                                                  sizes: v.sizes.map((s, j) =>
+                                                    j === si ? { ...s, stockQuantity: e.target.value } : s,
+                                                  ),
+                                                }
+                                              : v,
+                                          ),
+                                        }))
+                                      }
+                                      placeholder="0"
+                                      className="h-9 w-24 rounded-xl border border-[#d9ccbc] bg-white px-2 text-sm outline-none focus:border-[#b38d67]"
+                                    />
+                                  </td>
+                                  <td className="p-1">
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        setForm((c) => ({
+                                          ...c,
+                                          variants: c.variants.map((v, i) =>
+                                            i === vi
+                                              ? { ...v, sizes: v.sizes.filter((_, j) => j !== si) }
+                                              : v,
+                                          ),
+                                        }))
+                                      }
+                                      className="grid h-8 w-8 place-items-center rounded-full text-red-400 transition hover:bg-red-50 hover:text-red-600"
+                                    >
+                                      <Trash2 className="h-3.5 w-3.5" />
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setForm((c) => ({
+                              ...c,
+                              variants: c.variants.map((v, i) =>
+                                i === vi
+                                  ? {
+                                      ...v,
+                                      sizes: [
+                                        ...v.sizes,
+                                        { size: "S", price: "", compareAtPrice: "", stockQuantity: "" },
+                                      ],
+                                    }
+                                  : v,
+                              ),
+                            }))
+                          }
+                          className="mt-2 inline-flex h-8 items-center gap-1.5 rounded-full border border-[#d9ccbc] px-3 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#665b4f] transition hover:bg-[#f5eee4]"
+                        >
+                          <Plus className="h-3 w-3" /> Add Size
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 

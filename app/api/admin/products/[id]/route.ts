@@ -29,6 +29,13 @@ const uploadImage = async (file: File, slug: string, prefix: string) => {
   return supabase.storage.from(PRODUCT_BUCKET).getPublicUrl(filePath).data.publicUrl;
 };
 
+type VariantInput = {
+  id?: string;
+  colorName: string;
+  colorCode: string;
+  sizes: { id?: string; size: string; price: string; compareAtPrice: string; stockQuantity: string }[];
+};
+
 export async function PUT(request: Request, { params }: ProductRouteProps) {
   try {
     const { id } = await params;
@@ -37,7 +44,7 @@ export async function PUT(request: Request, { params }: ProductRouteProps) {
     // Get existing product data first
     const { data: existingProduct } = await supabase
       .from("products")
-      .select("thumbnail_url, gallery_urls")
+      .select("thumbnail_url, gallery_urls, slug")
       .eq("id", id)
       .single();
 
@@ -125,6 +132,134 @@ export async function PUT(request: Request, { params }: ProductRouteProps) {
       .single();
 
     if (error) throw new Error(error.message);
+
+    // Handle variants
+    const variantsJson = String(formData.get("variants") || "[]");
+    let variants: VariantInput[] = [];
+    try {
+      variants = JSON.parse(variantsJson);
+    } catch { /* ignore parse errors */ }
+
+    // Get existing variant IDs to determine what to delete/update
+    const { data: existingVariants } = await supabase
+      .from("product_variants")
+      .select("id")
+      .eq("product_id", id);
+
+    const existingVariantIds = existingVariants?.map((v) => v.id) ?? [];
+    const incomingVariantIds = variants.filter((v) => v.id).map((v) => v.id!);
+    const variantsToDelete = existingVariantIds.filter((eid) => !incomingVariantIds.includes(eid));
+
+    // Delete removed variants (cascade will delete sizes)
+    if (variantsToDelete.length) {
+      // Delete variant images from storage
+      const { data: toDeleteVariants } = await supabase
+        .from("product_variants")
+        .select("images")
+        .in("id", variantsToDelete);
+
+      if (toDeleteVariants?.length) {
+        for (const dv of toDeleteVariants) {
+          const imgs = Array.isArray(dv.images) ? dv.images : [];
+          if (imgs.length) {
+            await deleteStorageFiles(imgs, STORAGE_BUCKETS.PRODUCTS);
+          }
+        }
+      }
+
+      await supabase.from("variant_sizes").delete().in("variant_id", variantsToDelete);
+      await supabase.from("product_variants").delete().in("id", variantsToDelete);
+    }
+
+    // Upsert variants
+    for (let vi = 0; vi < variants.length; vi++) {
+      const v = variants[vi];
+
+      // Upload new variant images
+      const variantImageFiles = formData.getAll(`variant_images_${vi}`).filter((f): f is File => f instanceof File);
+      const existingVariantImages = JSON.parse(String(formData.get(`existing_variant_images_${vi}`) || "[]")) as string[];
+      const newVariantImageUrls = await Promise.all(
+        variantImageFiles.map((file, idx) => uploadImage(file, slug, `variant-${vi}-${idx}`)),
+      );
+      const allVariantImages = [...existingVariantImages, ...newVariantImageUrls];
+
+      // Delete removed variant images from storage
+      if (v.id) {
+        const { data: oldVariant } = await supabase
+          .from("product_variants")
+          .select("images")
+          .eq("id", v.id)
+          .maybeSingle();
+
+        if (oldVariant?.images) {
+          const oldImgs = Array.isArray(oldVariant.images) ? oldVariant.images : [];
+          const removedImgs = oldImgs.filter((img: string) => !allVariantImages.includes(img));
+          if (removedImgs.length) {
+            await deleteStorageFiles(removedImgs, STORAGE_BUCKETS.PRODUCTS);
+          }
+        }
+      }
+
+      if (v.id) {
+        // Update existing variant
+        await supabase
+          .from("product_variants")
+          .update({
+            color_name: v.colorName,
+            color_code: v.colorCode,
+            sort_order: vi,
+            images: allVariantImages,
+          })
+          .eq("id", v.id);
+
+        // Sync sizes: delete existing and re-insert
+        await supabase.from("variant_sizes").delete().eq("variant_id", v.id);
+
+        const sizeInserts = v.sizes
+          .filter((s) => s.size && s.price)
+          .map((s) => ({
+            variant_id: v.id!,
+            size: s.size,
+            price: Number(s.price) || 0,
+            compare_at_price: s.compareAtPrice ? Number(s.compareAtPrice) : null,
+            stock_quantity: Number(s.stockQuantity) || 0,
+          }));
+
+        if (sizeInserts.length) {
+          await supabase.from("variant_sizes").insert(sizeInserts);
+        }
+      } else {
+        // Insert new variant
+        const { data: variantRow, error: vErr } = await supabase
+          .from("product_variants")
+          .insert({
+            product_id: id,
+            color_name: v.colorName,
+            color_code: v.colorCode,
+            sort_order: vi,
+            images: allVariantImages,
+          })
+          .select()
+          .single();
+
+        if (vErr || !variantRow) continue;
+
+        const sizeInserts = v.sizes
+          .filter((s) => s.size && s.price)
+          .map((s) => ({
+            variant_id: variantRow.id,
+            size: s.size,
+            price: Number(s.price) || 0,
+            compare_at_price: s.compareAtPrice ? Number(s.compareAtPrice) : null,
+            stock_quantity: Number(s.stockQuantity) || 0,
+          }));
+
+        if (sizeInserts.length) {
+          await supabase.from("variant_sizes").insert(sizeInserts);
+        }
+      }
+    }
+
     return NextResponse.json({ product: data });
   } catch (error) {
     return NextResponse.json(
@@ -146,7 +281,22 @@ export async function DELETE(_request: Request, { params }: ProductRouteProps) {
       .eq("id", id)
       .single();
     
-    // Delete the product from database
+    // Delete variant data and images
+    const { data: variants } = await supabase
+      .from("product_variants")
+      .select("id, images")
+      .eq("product_id", id);
+
+    if (variants?.length) {
+      for (const v of variants) {
+        const imgs = Array.isArray(v.images) ? v.images : [];
+        if (imgs.length) {
+          await deleteStorageFiles(imgs, STORAGE_BUCKETS.PRODUCTS);
+        }
+      }
+    }
+
+    // Delete the product from database (cascades to variants and sizes)
     const { error } = await supabase.from("products").delete().eq("id", id);
     if (error) throw new Error(error.message);
     
