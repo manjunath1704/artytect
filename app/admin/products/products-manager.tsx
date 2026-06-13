@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Pencil, Plus, Search, Trash2, X } from "lucide-react";
+import { HexColorPicker } from "react-colorful";
 import { toast } from "sonner";
 
 import Select from "react-select";
@@ -667,25 +668,40 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                       {/* Variant header */}
                       <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
-                          <input
-                            type="color"
-                            value={variant.colorCode || "#000000"}
-                            onChange={(e) =>
-                              setForm((c) => ({
-                                ...c,
-                                variants: c.variants.map((v, i) =>
-                                  i === vi ? { ...v, colorCode: e.target.value } : v,
-                                ),
-                              }))
-                            }
-                            className="h-10 w-10 cursor-pointer rounded-xl border border-[#d9ccbc]"
-                          />
+                          {/* Color picker popover */}
+                          <div className="relative">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const el = document.getElementById(`color-picker-${vi}`);
+                                if (el) el.style.display = el.style.display === "none" ? "block" : "none";
+                              }}
+                              className="h-10 w-10 cursor-pointer rounded-xl border-2 border-[#d9ccbc] shadow-sm transition hover:border-[#b38d67]"
+                              style={{ backgroundColor: variant.colorCode || "#000000" }}
+                              title="Click to open color picker"
+                            />
+                            <div
+                              id={`color-picker-${vi}`}
+                              className="absolute left-0 top-12 z-50 hidden rounded-xl border border-[#e8ddd1] bg-white p-3 shadow-lg"
+                            >
+                              <HexColorPicker
+                                color={variant.colorCode || "#000000"}
+                                onChange={(hex) =>
+                                  setForm((c) => ({
+                                    ...c,
+                                    variants: c.variants.map((v, i) =>
+                                      i === vi ? { ...v, colorCode: hex } : v,
+                                    ),
+                                  }))
+                                }
+                              />
+                            </div>
+                          </div>
                           <input
                             type="text"
                             value={variant.colorCode || "#000000"}
                             onChange={(e) => {
                               const val = e.target.value;
-                              // Allow typing hex codes with or without #
                               const hex = val.startsWith("#") ? val : `#${val}`;
                               if (/^#[0-9A-Fa-f]{0,6}$/.test(hex)) {
                                 setForm((c) => ({
