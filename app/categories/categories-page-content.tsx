@@ -29,9 +29,44 @@ type CategoryRow = {
   parent_category_id: string | null;
 };
 
+type HeroData = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  background_image_url: string;
+  button_label: string;
+  button_href: string;
+  sidebar_label: string;
+  sidebar_description: string;
+  sidebar_stat_1_value: string;
+  sidebar_stat_1_label: string;
+  sidebar_stat_2_value: string;
+  sidebar_stat_2_label: string;
+  sidebar_stat_3_value: string;
+  sidebar_stat_3_label: string;
+};
+
+const DEFAULT_HERO: HeroData = {
+  eyebrow: "categories",
+  title: "Explore our ceramic forms",
+  description: "Browse our curated collections of handmade pottery — bowls, vases, mugs, planters, plates, and serving forms shaped with calm lines, tactile finishes, and a studio-made sense of warmth.",
+  background_image_url: "/images/gallery/pexels-karola-g-6805523.jpg",
+  button_label: "Browse categories",
+  button_href: "#collections",
+  sidebar_label: "categories",
+  sidebar_description: "Explore each collection to discover handcrafted pieces for your daily rituals and living spaces.",
+  sidebar_stat_1_value: "",
+  sidebar_stat_1_label: "categories",
+  sidebar_stat_2_value: "100+",
+  sidebar_stat_2_label: "Pieces",
+  sidebar_stat_3_value: "WA",
+  sidebar_stat_3_label: "Order",
+};
+
 export default function CategoriesPageContent() {
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [hero, setHero] = useState<HeroData>(DEFAULT_HERO);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -39,6 +74,15 @@ export default function CategoriesPageContent() {
 
     const loadData = async () => {
       try {
+        // Load hero data
+        const heroResponse = await fetch("/api/page-heroes?pageKey=categories");
+        const heroResult = (await heroResponse.json().catch(() => null)) as
+          | { hero?: HeroData }
+          | null;
+        if (isMounted && heroResponse.ok && heroResult?.hero) {
+          setHero(heroResult.hero);
+        }
+
         // Load categories
         const categoriesResponse = await fetch("/api/categories");
         const categoriesResult = (await categoriesResponse.json().catch(() => null)) as
@@ -107,8 +151,8 @@ export default function CategoriesPageContent() {
             className="absolute inset-0 scale-110"
           >
             <Image
-              src="/images/gallery/pexels-karola-g-6805523.jpg"
-              alt="Hands shaping clay in a pottery class"
+              src={hero.background_image_url || "/images/gallery/pexels-karola-g-6805523.jpg"}
+              alt={hero.title}
               fill
               priority
               sizes="100vw"
@@ -125,50 +169,48 @@ export default function CategoriesPageContent() {
             >
               <div className="max-w-3xl">
                 <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.34em] text-[#ead7c3]">
-                  
-                categories
+                  {hero.eyebrow}
                 </p>
                 <h1 className="mt-5 text-4xl font-display uppercase leading-[1] tracking-normal sm:5xl lg:text-6xl">
-                  Explore our ceramic forms
+                  {hero.title}
                 </h1>
                 <p className="mt-7 max-w-xl text-sm leading-7 text-[#f4e9dc] md:text-base md:leading-8">
-                  Browse our curated collections of handmade pottery — bowls, vases, mugs,
-                  planters, plates, and serving forms shaped with calm lines, tactile
-                  finishes, and a studio-made sense of warmth.
+                  {hero.description}
                 </p>
-                <Link
-                  href="#collections"
-                  className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition hover:bg-[#ead7c3]"
-                >
-                  Browse categories
-                  <ArrowUpRight className="h-4 w-4" />
-                </Link>
+                {hero.button_label && (
+                  <Link
+                    href={hero.button_href || "#collections"}
+                    className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1b1511] transition hover:bg-[#ead7c3]"
+                  >
+                    {hero.button_label}
+                    <ArrowUpRight className="h-4 w-4" />
+                  </Link>
+                )}
               </div>
 
               <div className="overflow-hidden rounded-[32px] shadow-sm bg-[#17110d]/55 p-5 backdrop-blur-md">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <p className="text-2xl font-display">{categories.length}</p>
+                    <p className="text-2xl font-display">{hero.sidebar_stat_1_value || categories.length}</p>
                     <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#e6d3c1]">
-                    categories
+                      {hero.sidebar_stat_1_label || "categories"}
                     </p>
                   </div>
                   <div>
-                    <p className="text-2xl font-display">100+</p>
+                    <p className="text-2xl font-display">{hero.sidebar_stat_2_value || "100+"}</p>
                     <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#e6d3c1]">
-                      Pieces
+                      {hero.sidebar_stat_2_label || "Pieces"}
                     </p>
                   </div>
                   <div>
-                    <p className="text-2xl font-display">WA</p>
+                    <p className="text-2xl font-display">{hero.sidebar_stat_3_value || "WA"}</p>
                     <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#e6d3c1]">
-                      Order
+                      {hero.sidebar_stat_3_label || "Order"}
                     </p>
                   </div>
                 </div>
                 <p className="mt-5 border-t border-white/15 pt-4 text-xs leading-6 text-[#ead7c3]">
-                  Explore each collection to discover handcrafted pieces for your
-                  daily rituals and living spaces.
+                  {hero.sidebar_description || "Explore each collection to discover handcrafted pieces for your daily rituals and living spaces."}
                 </p>
               </div>
             </motion.div>

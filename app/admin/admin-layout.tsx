@@ -68,6 +68,7 @@ const BREADCRUMBS: Record<string, { label: string; parent?: string }> = {
   "/admin/faqs": { label: "FAQs", parent: "/admin" },
   "/admin/settings": { label: "Settings", parent: "/admin" },
   "/admin/public-visibility": { label: "Public Visibility", parent: "/admin" },
+  "/admin/page-heroes":     { label: "Page Heroes", parent: "/admin" },
 };
 
 function useBreadcrumbs(pathname: string) {
@@ -121,6 +122,7 @@ const NAV: NavItem[] = [
   { title: "Our Story", href: "/admin/our-story", icon: BookOpen, children: [] },
   { title: "Contact", href: "/admin/contact", icon: Mail, children: [] },
   { title: "Public Visibility", href: "/admin/public-visibility", icon: Eye, children: [] },
+  { title: "Page Heroes", href: "/admin/page-heroes", icon: Home, children: [] },
   { title: "Blogs", href: "/admin/blogs", icon: Newspaper, children: [] },
   { title: "Products", href: "/admin/products", icon: Package, children: [] },
   { title: "Orders", href: "/admin/orders", icon: ShoppingBag, children: [] },
