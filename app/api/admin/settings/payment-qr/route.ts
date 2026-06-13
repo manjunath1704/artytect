@@ -35,12 +35,24 @@ export async function PUT(request: Request) {
     if (uploadError) throw new Error(uploadError.message);
     const { data } = supabase.storage.from(PAYMENT_BUCKET).getPublicUrl(filePath);
 
-    const { error } = await supabase.from("admin_settings").upsert({
-      key: "payment_qr",
-      value: { url: data.publicUrl },
-      updated_at: new Date().toISOString(),
-    });
-    if (error) throw new Error(error.message);
+    // Try to update existing row first
+    const { data: updatedRows, error: updateError } = await supabase
+      .from("admin_settings")
+      .update({ value: { url: data.publicUrl }, updated_at: new Date().toISOString() })
+      .eq("key", "payment_qr")
+      .select("id");
+
+    if (updateError) throw new Error(updateError.message);
+
+    // If no existing row was updated, insert a new one
+    if (!updatedRows || updatedRows.length === 0) {
+      const { error: insertError } = await supabase.from("admin_settings").insert({
+        key: "payment_qr",
+        value: { url: data.publicUrl },
+        updated_at: new Date().toISOString(),
+      });
+      if (insertError) throw new Error(insertError.message);
+    }
 
     return NextResponse.json({ url: data.publicUrl });
   } catch (error) {
