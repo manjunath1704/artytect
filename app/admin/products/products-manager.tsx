@@ -678,7 +678,26 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                                 ),
                               }))
                             }
-                            className="h-10 w-10 cursor-pointer rounded-full border border-[#d9ccbc]"
+                            className="h-10 w-10 cursor-pointer rounded-xl border border-[#d9ccbc]"
+                          />
+                          <input
+                            type="text"
+                            value={variant.colorCode || "#000000"}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              // Allow typing hex codes with or without #
+                              const hex = val.startsWith("#") ? val : `#${val}`;
+                              if (/^#[0-9A-Fa-f]{0,6}$/.test(hex)) {
+                                setForm((c) => ({
+                                  ...c,
+                                  variants: c.variants.map((v, i) =>
+                                    i === vi ? { ...v, colorCode: hex } : v,
+                                  ),
+                                }));
+                              }
+                            }}
+                            placeholder="#000000"
+                            className="h-10 w-24 rounded-full border border-[#d9ccbc] bg-white px-3 text-sm font-mono outline-none focus:border-[#b38d67]"
                           />
                           <input
                             type="text"
@@ -714,10 +733,12 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                         <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8a7765]">
                           Images for {variant.colorName || "this color"}
                         </p>
+
+                        {/* Existing uploaded images */}
                         <div className="flex flex-wrap gap-3">
                           {variant.images.map((img, imgIdx) => (
-                            <div key={imgIdx} className="relative h-20 w-20 overflow-hidden rounded-xl border border-[#e8ddd1]">
-                              <Image src={img} alt="" fill sizes="80px" className="object-cover" />
+                            <div key={`existing-${imgIdx}`} className="relative h-24 w-24 overflow-hidden rounded-xl border border-[#e8ddd1] bg-[#f5eee4]">
+                              <Image src={img} alt="" fill sizes="96px" className="object-cover" />
                               <button
                                 type="button"
                                 onClick={() =>
@@ -730,27 +751,91 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                                     ),
                                   }))
                                 }
-                                className="absolute right-0.5 top-0.5 grid h-5 w-5 place-items-center rounded-full bg-black/60 text-white"
+                                className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-black/60 text-white transition hover:bg-black/80"
                               >
-                                <X className="h-3 w-3" />
+                                <X className="h-3.5 w-3.5" />
                               </button>
                             </div>
                           ))}
-                          <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#d9ccbc] bg-[#faf6f2] text-[#8a7765] transition hover:border-[#b38d67] hover:bg-[#f5eee4]">
-                            <Plus className="h-4 w-4" />
-                            <span className="mt-1 text-[9px] font-semibold uppercase tracking-wider">Add</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (!file) return;
+
+                          {/* New files preview */}
+                          {variant.newImageFiles.map((f, fi) => (
+                            <div key={`new-${fi}`} className="relative h-24 w-24 overflow-hidden rounded-xl border border-[#d9ccbc] bg-[#f5eee4]">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={URL.createObjectURL(f)}
+                                alt={f.name}
+                                className="h-full w-full object-cover"
+                              />
+                              <div className="absolute bottom-0 left-0 right-0 bg-black/50 px-1 py-0.5">
+                                <p className="truncate text-[8px] text-white">{f.name}</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setForm((c) => ({
+                                    ...c,
+                                    variants: c.variants.map((v, i) =>
+                                      i === vi
+                                        ? { ...v, newImageFiles: v.newImageFiles.filter((_, j) => j !== fi) }
+                                        : v,
+                                    ),
+                                  }))
+                                }
+                                className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-black/60 text-white transition hover:bg-black/80"
+                              >
+                                <X className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          ))}
+
+                          {/* Drag & drop zone */}
+                          <label
+                            className="flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#d9ccbc] bg-[#faf6f2] text-[#8a7765] transition hover:border-[#b38d67] hover:bg-[#f5eee4]"
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              e.currentTarget.classList.add("border-[#b38d67]", "bg-[#f5eee4]");
+                            }}
+                            onDragLeave={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              e.currentTarget.classList.remove("border-[#b38d67]", "bg-[#f5eee4]");
+                            }}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              e.currentTarget.classList.remove("border-[#b38d67]", "bg-[#f5eee4]");
+                              const files = Array.from(e.dataTransfer.files).filter((f) =>
+                                f.type.startsWith("image/"),
+                              );
+                              if (files.length) {
                                 setForm((c) => ({
                                   ...c,
                                   variants: c.variants.map((v, i) =>
                                     i === vi
-                                      ? { ...v, newImageFiles: [...v.newImageFiles, file] }
+                                      ? { ...v, newImageFiles: [...v.newImageFiles, ...files] }
+                                      : v,
+                                  ),
+                                }));
+                              }
+                            }}
+                          >
+                            <Plus className="h-5 w-5" />
+                            <span className="mt-1 text-[9px] font-semibold uppercase tracking-wider">Drop or click</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              className="hidden"
+                              onChange={(e) => {
+                                const files = Array.from(e.target.files || []);
+                                if (!files.length) return;
+                                setForm((c) => ({
+                                  ...c,
+                                  variants: c.variants.map((v, i) =>
+                                    i === vi
+                                      ? { ...v, newImageFiles: [...v.newImageFiles, ...files] }
                                       : v,
                                   ),
                                 }));
@@ -759,29 +844,11 @@ export default function ProductsManager({ initialProducts }: { initialProducts: 
                             />
                           </label>
                         </div>
+
                         {variant.newImageFiles.length > 0 && (
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {variant.newImageFiles.map((f, fi) => (
-                              <span key={fi} className="inline-flex items-center gap-1 rounded-full bg-[#f5eee4] px-3 py-1 text-[10px] text-[#665b4f]">
-                                {f.name}
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setForm((c) => ({
-                                      ...c,
-                                      variants: c.variants.map((v, i) =>
-                                        i === vi
-                                          ? { ...v, newImageFiles: v.newImageFiles.filter((_, j) => j !== fi) }
-                                          : v,
-                                      ),
-                                    }))
-                                  }
-                                >
-                                  <X className="h-3 w-3" />
-                                </button>
-                              </span>
-                            ))}
-                          </div>
+                          <p className="mt-2 text-[10px] text-[#665b4f]">
+                            {variant.newImageFiles.length} new image(s) ready to upload
+                          </p>
                         )}
                       </div>
 
