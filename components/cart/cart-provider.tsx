@@ -105,6 +105,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
         );
       }
 
+      // Find color-specific variant image
+      const matchingVariant = product.variants?.find((v) => v.color_name === selectedColor);
+      const variantImage = matchingVariant?.images?.[0];
+      const itemImage = variantImage || product.thumbnail || product.images?.[0] || "";
+
       return [
         ...currentItems,
         {
@@ -114,7 +119,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           slug: product.slug || product.name,
           name: product.name,
           price: Number(product.price),
-          image: product.thumbnail || product.images?.[0] || "",
+          image: itemImage,
           size: selectedSize,
           color: selectedColor,
           quantity: safeQuantity,

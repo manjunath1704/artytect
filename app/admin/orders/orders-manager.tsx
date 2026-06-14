@@ -150,7 +150,21 @@ export default function OrdersManager({ initialOrders }: { initialOrders: OrderR
                   <tr key={order.id}>
                     <td className="border-b border-[#f1e7dc] px-3 py-3 font-semibold">{order.order_id}</td>
                     <td className="border-b border-[#f1e7dc] px-3 py-3">{order.customer_name}<br /><span className="text-xs text-[#8a7765]">{order.customer_email}</span></td>
-                    <td className="border-b border-[#f1e7dc] px-3 py-3">{order.ordered_products.map((product) => product.name).join(", ")}</td>
+                    <td className="border-b border-[#f1e7dc] px-3 py-3">
+                      <div className="flex flex-col gap-2 py-1">
+                        {order.ordered_products.map((product, idx) => (
+                          <div key={`${product.productId}-${product.size}-${product.color}-${idx}`} className="flex items-center gap-2">
+                            <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-[#eee6dc] shrink-0 border border-[#eadfd4]">
+                              <Image src={product.image || "/images/bowl-a.avif"} alt={product.name} fill className="object-cover" />
+                            </div>
+                            <div className="text-xs leading-normal">
+                              <p className="font-semibold text-[#1b1511]">{product.name}</p>
+                              <p className="text-[#8a7765]">Size: {product.size} / Color: {product.color} x {product.quantity}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </td>
                     <td className="border-b border-[#f1e7dc] px-3 py-3">{formatPrice(Number(order.total_amount))}</td>
                     <td className="border-b border-[#f1e7dc] px-3 py-3">{order.payment_status}</td>
                     <td className="border-b border-[#f1e7dc] px-3 py-3">{order.order_status}</td>

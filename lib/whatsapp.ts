@@ -20,8 +20,8 @@ type ProductMessageInput = {
   category: string;
 };
 
-export function formatPrice(price: number) {
-  return `₹${(price / 100).toFixed(2)}`;
+export function formatPrice(price: number | string) {
+  return `₹${Number(price || 0).toFixed(2)}`;
 }
 
 export function getClassBookingMessage(classItem: ClassMessageInput) {

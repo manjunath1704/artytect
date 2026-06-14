@@ -91,8 +91,7 @@ export async function POST(request: NextRequest) {
     const duration = formData.get("duration") as string;
     const class_date = formData.get("class_date") as string;
     const class_time = formData.get("class_time") as string;
-    const priceInRupees = parseFloat(formData.get("price") as string) || 0;
-    const price = Math.round(priceInRupees * 100); // Convert to cents
+    const price = parseFloat(formData.get("price") as string) || 0;
     const total_seats = parseInt(formData.get("total_seats") as string) || 0;
     const available_seats = parseInt(formData.get("available_seats") as string) || 0;
     const level = formData.get("level") as string;
