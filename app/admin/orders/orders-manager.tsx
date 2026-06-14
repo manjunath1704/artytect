@@ -202,7 +202,7 @@ export default function OrdersManager({ initialOrders }: { initialOrders: OrderR
                 <div className="mt-4 grid gap-3">
                   <button disabled={updating} onClick={() => updateOrder(selected, { payment_status: "Verified", order_status: "Processing" })} className="h-11 rounded-full bg-[#1b1511] text-xs font-semibold uppercase tracking-[0.16em] text-white">Verify payment</button>
                   <button disabled={updating} onClick={() => updateOrder(selected, { payment_status: "Rejected" })} className="h-11 rounded-full border border-red-200 text-xs font-semibold uppercase tracking-[0.16em] text-red-600">Reject payment</button>
-                  <select disabled={updating} value={selected.order_status} onChange={(event) => updateOrder(selected, { order_status: event.target.value as OrderRow["order_status"] })} className="h-11 rounded-full border border-[#d9ccbc] px-4 text-sm">
+                  <select disabled={updating} value={selected.order_status ?? "Payment Review"} onChange={(event) => updateOrder(selected, { order_status: event.target.value as OrderRow["order_status"] })} className="h-11 rounded-full border border-[#d9ccbc] px-4 text-sm">
                     {orderOptions.filter((option) => option.value !== "all").map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                   </select>
                   {updating ? <p className="inline-flex items-center gap-2 text-sm text-[#665b4f]"><Loader2 className="h-4 w-4 animate-spin" /> Updating</p> : null}
