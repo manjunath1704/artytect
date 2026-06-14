@@ -118,7 +118,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
           type: "product" as const,
           slug: product.slug || product.name,
           name: product.name,
-          price: Number(product.price),
+          price: (() => {
+            const variant = product.variants?.find((v) => v.color_name === selectedColor);
+            const sizeData = variant?.sizes?.find((s) => s.size === selectedSize);
+            return sizeData?.price ? Number(sizeData.price) : Number(product.price);
+          })(),
           image: itemImage,
           size: selectedSize,
           color: selectedColor,

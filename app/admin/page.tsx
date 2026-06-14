@@ -47,34 +47,34 @@ export default async function AdminPage() {
   const currentMonth = now.getMonth();
 
   const monthlyOrdersRevenue =
-    (orders
+    orders
       .filter((o) => {
         if (o.payment_status !== "Verified") return false;
         if (!o.created_at) return false;
         const d = new Date(o.created_at);
         return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
       })
-      .reduce((sum, o) => sum + Number(o.total_amount || 0), 0)) / 100;
+      .reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
 
   const monthlyBookingsRevenue =
-    (bookings
+    bookings
       .filter((b) => {
         if (b.payment_status !== "Verified") return false;
         if (!b.created_at) return false;
         const d = new Date(b.created_at);
         return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
       })
-      .reduce((sum, b) => sum + Number(b.total_amount || 0), 0)) / 100;
+      .reduce((sum, b) => sum + Number(b.total_amount || 0), 0);
 
   const totalOrdersRevenue =
-    (orders
+    orders
       .filter((o) => o.payment_status === "Verified")
-      .reduce((sum, o) => sum + Number(o.total_amount || 0), 0)) / 100;
+      .reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
 
   const totalBookingsRevenue =
-    (bookings
+    bookings
       .filter((b) => b.payment_status === "Verified")
-      .reduce((sum, b) => sum + Number(b.total_amount || 0), 0)) / 100;
+      .reduce((sum, b) => sum + Number(b.total_amount || 0), 0);
 
   const isQrConfigured = !!(settingsData?.value as { url?: string } | null)?.url;
 

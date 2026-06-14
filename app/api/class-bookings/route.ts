@@ -4,6 +4,30 @@ import { createServerClient } from "@supabase/ssr";
 
 import { ensurePaymentAssetsBucket, getAdminClient, PAYMENT_BUCKET } from "@/lib/supabase/admin";
 
+type BookingWithClass = {
+  id: string;
+  booking_id: string;
+  class_id: string;
+  user_id: string | null;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  number_of_seats: number;
+  total_amount: number;
+  payment_screenshot: string;
+  payment_status: string;
+  booking_status: string;
+  created_at: string;
+  updated_at: string;
+  classes: {
+    id: string;
+    title: string;
+    thumbnail_url: string;
+    class_date: string;
+    class_time: string;
+  } | null;
+};
+
 const getUser = async () => {
   const cookieStore = await cookies();
   const supabase = createServerClient(
@@ -86,11 +110,28 @@ export async function GET() {
     const supabase = getAdminClient();
     const { data: bookings, error } = await supabase
       .from("class_bookings")
-      .select("*")
+      .select("*, classes(id, title, thumbnail_url, class_date, class_time)")
       .order("created_at", { ascending: false });
 
     if (error) throw new Error(error.message);
-    return NextResponse.json({ bookings }, { status: 200 });
+
+    const formattedBookings = ((bookings || []) as unknown as BookingWithClass[]).map((booking) => {
+      const cls = booking.classes;
+      return {
+        ...booking,
+        booked_class: {
+          id: cls?.id || "",
+          class_id: booking.class_id,
+          class_name: cls?.title || "N/A",
+          class_date: cls?.class_date || "N/A",
+          class_time: cls?.class_time || "N/A",
+          thumbnail_url: cls?.thumbnail_url || "",
+        },
+        classes: undefined,
+      };
+    });
+
+    return NextResponse.json({ bookings: formattedBookings }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unable to fetch bookings." },

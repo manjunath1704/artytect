@@ -16,6 +16,7 @@ type BookedClass = {
   class_name?: string;
   class_date?: string;
   class_time?: string;
+  thumbnail_url?: string;
 };
 
 export type ClassBookingRow = {
@@ -160,7 +161,22 @@ export default function ClassBookingsManager({ initialBookings }: { initialBooki
                   <tr key={booking.id}>
                     <td className="border-b border-[#f1e7dc] px-3 py-3 font-semibold">{booking.booking_id}</td>
                     <td className="border-b border-[#f1e7dc] px-3 py-3">{booking.customer_name}<br /><span className="text-xs text-[#8a7765]">{booking.customer_email}</span></td>
-                    <td className="border-b border-[#f1e7dc] px-3 py-3">{booking.booked_class?.class_name || "N/A"}</td>
+                    <td className="border-b border-[#f1e7dc] px-3 py-3">
+                      <div className="flex items-center gap-2 py-1">
+                        <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-[#eee6dc] shrink-0 border border-[#eadfd4]">
+                          <Image
+                            src={booking.booked_class?.thumbnail_url || "/images/gallery/pexels-rdne-8903303.jpg"}
+                            alt={booking.booked_class?.class_name || "Class"}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="text-xs leading-normal">
+                          <p className="font-semibold text-[#1b1511]">{booking.booked_class?.class_name || "N/A"}</p>
+                          <p className="text-[#8a7765]">{booking.booked_class?.class_date} at {booking.booked_class?.class_time}</p>
+                        </div>
+                      </div>
+                    </td>
                     <td className="border-b border-[#f1e7dc] px-3 py-3">{booking.number_of_seats}</td>
                     <td className="border-b border-[#f1e7dc] px-3 py-3">{formatPrice(Number(booking.total_amount))}</td>
                     <td className="border-b border-[#f1e7dc] px-3 py-3">{booking.payment_status}</td>
@@ -193,6 +209,14 @@ export default function ClassBookingsManager({ initialBookings }: { initialBooki
                 <div className="mt-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8a7765] mb-3">Class Information</p>
                   <div className="flex gap-3 rounded-[24px] border border-[#eadfd4] p-3">
+                    <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-[#eee6dc] shrink-0 border border-[#eadfd4]">
+                      <Image
+                        src={selected.booked_class?.thumbnail_url || "/images/gallery/pexels-rdne-8903303.jpg"}
+                        alt={selected.booked_class?.class_name || "Class"}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                     <div className="flex-1 text-sm">
                       <p className="font-semibold">{selected.booked_class?.class_name || "N/A"}</p>
                       <p className="text-[#665b4f]">{selected.booked_class?.class_date} at {selected.booked_class?.class_time}</p>

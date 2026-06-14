@@ -56,7 +56,7 @@ export default function BookingContent({ paymentQrUrl }: { paymentQrUrl: string 
     void fetchClass();
   }, [classId]);
 
-  const totalAmount = classData ? (classData.price / 100) * numberOfSeats : 0;
+  const totalAmount = classData ? classData.price * numberOfSeats : 0;
 
   const submit = async () => {
     if (!classData) {
@@ -85,7 +85,7 @@ export default function BookingContent({ paymentQrUrl }: { paymentQrUrl: string 
       formData.append("customer_email", form.customer_email);
       formData.append("customer_phone", form.customer_phone);
       formData.append("number_of_seats", String(numberOfSeats));
-      formData.append("total_amount", String(Math.round(totalAmount * 100)));
+      formData.append("total_amount", String(totalAmount));
       formData.append("payment_screenshot", proof);
 
       const response = await fetch("/api/class-bookings", {
@@ -278,7 +278,7 @@ export default function BookingContent({ paymentQrUrl }: { paymentQrUrl: string 
                   <div className="border-t border-[#eadfd4] pt-3">
                     <div className="flex justify-between font-semibold">
                       <span>Total amount:</span>
-                      <span>{formatPrice(Math.round(totalAmount * 100))}</span>
+                      <span>{formatPrice(totalAmount)}</span>
                     </div>
                   </div>
                 </div>

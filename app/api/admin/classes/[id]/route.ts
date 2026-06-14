@@ -66,8 +66,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const short_description = formData.get("short_description") as string;
     const content = formData.get("content") as string;
     const duration = formData.get("duration") as string;
-    const priceInRupees = parseFloat(formData.get("price") as string) || 0;
-    const price = Math.round(priceInRupees * 100); // Convert to cents
+    const price = parseFloat(formData.get("price") as string) || 0;
     const level = formData.get("level") as string;
     const is_featured = formData.get("is_featured") === "true";
     const is_published = formData.get("is_published") === "true";

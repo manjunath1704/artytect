@@ -152,7 +152,7 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
       short_description: classItem.short_description,
       content: classItem.content,
       duration: classItem.duration,
-      price: (classItem.price / 100).toFixed(2),
+      price: (classItem.price).toFixed(2),
       level: classItem.level,
       is_featured: classItem.is_featured,
       is_published: classItem.is_published,
