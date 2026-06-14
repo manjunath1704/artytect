@@ -33,12 +33,15 @@ export async function PUT(request: Request) {
       { contentType: file.type || "image/jpeg", upsert: false },
     );
     if (uploadError) throw new Error(uploadError.message);
+    
+    // Get public URL after successful upload
     const { data } = supabase.storage.from(PAYMENT_BUCKET).getPublicUrl(filePath);
+    const publicUrl = data.publicUrl;
 
     // Try to update existing row first
     const { data: updatedRows, error: updateError } = await supabase
       .from("admin_settings")
-      .update({ value: { url: data.publicUrl }, updated_at: new Date().toISOString() })
+      .update({ value: { url: publicUrl }, updated_at: new Date().toISOString() })
       .eq("key", "payment_qr")
       .select("id");
 
@@ -48,14 +51,15 @@ export async function PUT(request: Request) {
     if (!updatedRows || updatedRows.length === 0) {
       const { error: insertError } = await supabase.from("admin_settings").insert({
         key: "payment_qr",
-        value: { url: data.publicUrl },
+        value: { url: publicUrl },
         updated_at: new Date().toISOString(),
       });
       if (insertError) throw new Error(insertError.message);
     }
 
-    return NextResponse.json({ url: data.publicUrl });
+    return NextResponse.json({ url: publicUrl });
   } catch (error) {
+    console.error("Error uploading QR code:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unable to save payment QR." },
       { status: 500 },

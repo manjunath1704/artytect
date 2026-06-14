@@ -12,9 +12,9 @@ async function getPaymentQr(): Promise<string> {
       .from("admin_settings")
       .select("value")
       .eq("key", "payment_qr")
-      .single();
+      .maybeSingle();
 
-    return data?.value || "";
+    return (data?.value as { url?: string } | null)?.url ?? "";
   } catch (error) {
     console.error("Error fetching payment QR:", error);
     return "";
