@@ -81,8 +81,8 @@ export default function ClassesPageContent() {
   }, []);
 
   return (
-      <main className="bg-[#fbf8f4] text-[#171717]">
-        <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#201914] text-white">
+      <main className="pt-20 md:pt-0 bg-[#fbf8f4] text-[#171717]">
+        <section className="hidden md:block relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#201914] text-white">
           <motion.div
   style={{ y }}
   className="absolute inset-0 scale-110"

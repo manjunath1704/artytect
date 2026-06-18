@@ -68,8 +68,8 @@ export default function ProductsPageContent({ products }: ProductsPageContentPro
   }, []);
 
   return (
-      <main className="bg-white text-[#171717]">
-        <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#211914] text-white">
+      <main className="pt-20 md:pt-0 bg-white text-[#171717]">
+        <section className="hidden md:block relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[#211914] text-white">
           <motion.div
             style={{ y }}
             className="absolute inset-0 scale-110"

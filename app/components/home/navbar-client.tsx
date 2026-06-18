@@ -33,12 +33,8 @@ const NavbarClient = ({
   const showSolid = forceSolid || isScrolled;
   const transparentIsDark = transparentTone === "dark";
 
-  // Determine which logo to show
-  const logoSrc = showSolid 
-    ? "/logo/logo-brand.svg" 
-    : transparentIsDark 
-      ? "/logo/logo-brand.svg" 
-      : "/logo/logo-light.svg";
+  const isMobileSolid = pathname === "/products" || pathname === "/classes";
+  const showSolidOrMobileSolid = showSolid || isMobileSolid;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -101,20 +97,35 @@ const NavbarClient = ({
         "sticky top-0 z-50 -mb-20 transition-colors duration-300",
         showSolid
           ? "border-b border-black/8 bg-white/95 text-black  backdrop-blur-md"
-          : transparentIsDark
-            ? "bg-transparent text-[#1b1511]"
-            : "bg-transparent text-white",
+          : isMobileSolid
+            ? "border-b border-black/8 bg-white/95 text-black backdrop-blur-md md:border-b-0 md:bg-transparent md:text-white md:backdrop-blur-none"
+            : transparentIsDark
+              ? "bg-transparent text-[#1b1511]"
+              : "bg-transparent text-white",
       ].join(" ")}
     >
       <div className="site-container flex h-20 items-center justify-between">
         <Link href="/" className="relative h-16 w-80 transition-opacity hover:opacity-80">
-          <Image
-            src={logoSrc}
-            alt="Haritham"
-            fill
-            className="object-contain object-left"
-            priority
-          />
+          {/* Mobile Logo */}
+          <div className="md:hidden relative w-full h-full">
+            <Image
+              src={showSolidOrMobileSolid ? "/logo/logo-brand.svg" : (transparentIsDark ? "/logo/logo-brand.svg" : "/logo/logo-light.svg")}
+              alt="Haritham"
+              fill
+              className="object-contain object-left"
+              priority
+            />
+          </div>
+          {/* Desktop Logo */}
+          <div className="hidden md:block relative w-full h-full">
+            <Image
+              src={showSolid ? "/logo/logo-brand.svg" : (transparentIsDark ? "/logo/logo-brand.svg" : "/logo/logo-light.svg")}
+              alt="Haritham"
+              fill
+              className="object-contain object-left"
+              priority
+            />
+          </div>
         </Link>
 
         <nav className="hidden min-w-[496px] items-center justify-end gap-8 md:flex">
@@ -162,7 +173,7 @@ const NavbarClient = ({
           type="button"
           className={[
             "inline-flex h-11 w-11 items-center justify-center rounded-full border transition md:hidden",
-            showSolid
+            showSolidOrMobileSolid
               ? "border-black/10 bg-black/5 text-black hover:bg-black/10"
               : transparentIsDark
                 ? isOpen
@@ -193,7 +204,7 @@ const NavbarClient = ({
           <div
             className={[
               "origin-top overflow-hidden rounded-[28px] border px-4 py-4 shadow-[0_18px_60px_rgba(23,20,15,0.18)] backdrop-blur-xl transition-all duration-300 ease-out",
-              showSolid
+              showSolidOrMobileSolid
                 ? "border-black/10 bg-white/95 text-black"
                 : transparentIsDark
                   ? "border-black/10 bg-white/95 text-black"
@@ -207,7 +218,7 @@ const NavbarClient = ({
                 onClick={() => setIsOpen(false)}
                 className={[
                   "mb-2 flex items-center justify-between rounded-full px-3 py-3 text-sm font-medium tracking-[0.08em] transition",
-                  showSolid
+                  showSolidOrMobileSolid
                     ? "bg-black/5 text-black"
                     : "bg-white/10 text-inherit",
                 ].join(" ")}
@@ -231,7 +242,7 @@ const NavbarClient = ({
                     aria-current={isActive ? "page" : undefined}
                     className={[
                       "rounded-full px-3 py-3 text-sm font-medium tracking-[0.08em] transition",
-                      showSolid
+                      showSolidOrMobileSolid
                         ? isActive
                           ? "bg-black text-white"
                           : "hover:bg-black/5"

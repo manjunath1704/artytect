@@ -8,7 +8,6 @@ const NAV_ITEMS: NavbarItem[] = [
   { key: "products", label: "Products", href: "/products" },
   { key: "classes", label: "Classes", href: "/classes" },
   { key: "blog", label: "Blog", href: "/blog" },
-  { key: "posts", label: "Posts", href: "/posts" },
   { key: "our-story", label: "Our Story", href: "/our-story" },
   { key: "contact", label: "Contact", href: "/contact" },
 ];
