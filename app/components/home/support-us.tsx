@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -12,7 +12,8 @@ import {
   Check, 
   Sparkles, 
   MoreHorizontal, 
-  Send 
+  Send,
+  type LucideIcon
 } from "lucide-react";
 
 // Types
@@ -23,45 +24,45 @@ interface TabConfig {
   label: string;
   flyerLabel: string;
   description: string;
-  icon: React.ComponentType<any>;
+  icon: LucideIcon;
 }
+
+// Tabs configuration
+const tabs: TabConfig[] = [
+  {
+    id: "like",
+    label: "Like our posts",
+    flyerLabel: "Like our posts",
+    description: "Double tap to show love on our new releases and process videos. Every like helps the algorithm share our work with other clay lovers.",
+    icon: Heart,
+  },
+  {
+    id: "follow",
+    label: "Follow them on social media",
+    flyerLabel: "Follow our updates",
+    description: "Stay updated on our daily studio rituals, workshop announcements, and behind-the-scenes clay prep.",
+    icon: UserPlus,
+  },
+  {
+    id: "review",
+    label: "Leave a positive review",
+    flyerLabel: "Review our workshop & pieces",
+    description: "Reviews help local pottery enthusiasts discover us. If you own a Haritham piece or attended a class, your feedback is our biggest reward.",
+    icon: Star,
+  },
+  {
+    id: "comment",
+    label: "Comment on something nice",
+    flyerLabel: "Comment on something nice",
+    description: "A kind word goes a long way. Share your thoughts on our process, ask questions about glazes, or just say hello in the comments!",
+    icon: MessageCircle,
+  },
+];
 
 export default function SupportUsSection() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("like");
   const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Tabs configuration
-  const tabs: TabConfig[] = [
-    {
-      id: "like",
-      label: "Like our posts",
-      flyerLabel: "Like our posts",
-      description: "Double tap to show love on our new releases and process videos. Every like helps the algorithm share our work with other clay lovers.",
-      icon: Heart,
-    },
-    {
-      id: "follow",
-      label: "Follow them on social media",
-      flyerLabel: "Follow our updates",
-      description: "Stay updated on our daily studio rituals, workshop announcements, and behind-the-scenes clay prep.",
-      icon: UserPlus,
-    },
-    {
-      id: "review",
-      label: "Leave a positive review",
-      flyerLabel: "Review our workshop & pieces",
-      description: "Reviews help local pottery enthusiasts discover us. If you own a Haritham piece or attended a class, your feedback is our biggest reward.",
-      icon: Star,
-    },
-    {
-      id: "comment",
-      label: "Comment on something nice",
-      flyerLabel: "Comment on something nice",
-      description: "A kind word goes a long way. Share your thoughts on our process, ask questions about glazes, or just say hello in the comments!",
-      icon: MessageCircle,
-    },
-  ];
 
   // Autoplay functionality: cycle tabs every 6 seconds unless user is hovering/interacting
   useEffect(() => {
@@ -336,11 +337,13 @@ function LikeMockup() {
   const imageContainerRef = useRef<HTMLDivElement>(null);
   
   // Floating hearts generator
-  const triggerLike = (e?: React.MouseEvent) => {
-    if (!hasLiked) {
-      setLikes((prev) => prev + 1);
-      setHasLiked(true);
-    }
+  const triggerLike = useCallback((e?: React.MouseEvent) => {
+    setHasLiked((prevHasLiked) => {
+      if (!prevHasLiked) {
+        setLikes((prev) => prev + 1);
+      }
+      return true;
+    });
     
     // Calculate click coordinates or random offset
     let clickX = 150;
@@ -367,7 +370,7 @@ function LikeMockup() {
     setTimeout(() => {
       setHeartClicks((prev) => prev.filter((h) => h.id !== newHeart.id));
     }, 1200);
-  };
+  }, []);
 
   // Autoplay pulse like action
   useEffect(() => {
@@ -375,7 +378,7 @@ function LikeMockup() {
       triggerLike();
     }, 1500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [triggerLike]);
 
   return (
     <motion.div 
@@ -722,7 +725,7 @@ function ReviewMockup() {
       {/* Testimonial body */}
       <div className="mt-3 bg-[#fffaf5] border border-[#f3e6db]/50 p-4 rounded-2xl min-h-[110px] flex items-center">
         <p className="text-xs md:text-sm text-[#6b5f55] leading-relaxed italic font-sans">
-          "{textShown}"
+          &ldquo;{textShown}&rdquo;
           <span className="inline-block w-1.5 h-3.5 ml-0.5 bg-[#9a6b4e] animate-pulse" />
         </p>
       </div>
@@ -738,7 +741,7 @@ function ReviewMockup() {
           Response from Studio Haritham:
         </div>
         <p className="text-[10px] text-[#8a7765] mt-1 italic">
-          Thank you so much, Ananya! Clay brings us so much peace, and we're thrilled that it translates to your daily rituals with our mugs. 🤎
+          Thank you so much, Ananya! Clay brings us so much peace, and we&apos;re thrilled that it translates to your daily rituals with our mugs. 🤎
         </p>
       </motion.div>
     </motion.div>
@@ -789,23 +792,23 @@ function CommentMockup() {
 
   useEffect(() => {
     // Spawn comments progressively
-    let timer1 = setTimeout(() => {
+    const timer1 = setTimeout(() => {
       setCommentsList([initialComments[0]]);
     }, 300);
 
-    let timer2 = setTimeout(() => {
+    const timer2 = setTimeout(() => {
       setCommentsList((prev) => [...prev, initialComments[1]]);
     }, 1100);
 
-    let timer3 = setTimeout(() => {
+    const timer3 = setTimeout(() => {
       setCommentsList((prev) => [...prev, initialComments[2]]);
     }, 2200);
 
-    let timer4 = setTimeout(() => {
+    const timer4 = setTimeout(() => {
       setTyping(true);
     }, 3200);
 
-    let timer5 = setTimeout(() => {
+    const timer5 = setTimeout(() => {
       setTyping(false);
       setCommentsList((prev) => [...prev, newIncomingComment]);
     }, 4500);
