@@ -11,6 +11,7 @@ import AboutSection from "./components/home/about";
 import TestimonialsSection, {
   type TestimonialsSectionHeader,
 } from "./components/home/testimonials";
+import SupportUsSection from "./components/home/support-us";
 import CraftsmanshipProcess, {
   type ProcessHeader,
   type ProcessStep,
@@ -362,6 +363,7 @@ export default async function Page() {
             steps={processSection.steps}
           />
         )}
+        <SupportUsSection />
         {visibility.testimonials && <TestimonialsSection header={testimonialsSection.header} />}
         {visibility.crafted_moments && (
           <GalleryApp
