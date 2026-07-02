@@ -27,19 +27,22 @@ DROP POLICY IF EXISTS "Authenticated can upload hero-media" ON storage.objects;
 CREATE POLICY "Authenticated can upload hero-media"
 ON storage.objects
 FOR INSERT
-WITH CHECK (bucket_id = 'hero-media' AND auth.role() = 'authenticated');
+TO authenticated
+WITH CHECK (bucket_id = 'hero-media');
 
 -- 4. Allow authenticated users (admins) to update hero-media bucket
 DROP POLICY IF EXISTS "Authenticated can update hero-media" ON storage.objects;
 CREATE POLICY "Authenticated can update hero-media"
 ON storage.objects
 FOR UPDATE
-USING (bucket_id = 'hero-media' AND auth.role() = 'authenticated')
-WITH CHECK (bucket_id = 'hero-media' AND auth.role() = 'authenticated');
+TO authenticated
+USING (bucket_id = 'hero-media')
+WITH CHECK (bucket_id = 'hero-media');
 
 -- 5. Allow authenticated users (admins) to delete from hero-media bucket
 DROP POLICY IF EXISTS "Authenticated can delete hero-media" ON storage.objects;
 CREATE POLICY "Authenticated can delete hero-media"
 ON storage.objects
 FOR DELETE
-USING (bucket_id = 'hero-media' AND auth.role() = 'authenticated');
+TO authenticated
+USING (bucket_id = 'hero-media');
