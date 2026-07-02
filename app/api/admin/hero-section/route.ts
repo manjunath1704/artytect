@@ -60,15 +60,42 @@ export async function PUT(request: Request) {
     const user = await getAuthenticatedUser();
     if (!user) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
 
-    const formData = await request.formData();
-    const title = String(formData.get("title") ?? "").trim();
-    const subtitle = String(formData.get("subtitle") ?? "").trim();
-    const buttonLabel = String(formData.get("buttonLabel") ?? "").trim();
-    const buttonHref = String(formData.get("buttonHref") ?? "").trim();
-    const scrollTarget = String(formData.get("scrollTarget") ?? "").trim();
-    const desktopVideo = formData.get("desktopVideo");
-    const mobileVideo = formData.get("mobileVideo");
-    const poster = formData.get("poster");
+    let title = "";
+    let subtitle = "";
+    let buttonLabel = "";
+    let buttonHref = "";
+    let scrollTarget = "";
+    let desktopVideoUrl: string | undefined;
+    let mobileVideoUrl: string | undefined;
+    let posterUrl: string | undefined;
+    let desktopVideo: any = null;
+    let mobileVideo: any = null;
+    let poster: any = null;
+
+    const contentType = request.headers.get("content-type") || "";
+    const isJson = contentType.includes("application/json");
+
+    if (isJson) {
+      const body = await request.json();
+      title = String(body.title ?? "").trim();
+      subtitle = String(body.subtitle ?? "").trim();
+      buttonLabel = String(body.buttonLabel ?? "").trim();
+      buttonHref = String(body.buttonHref ?? "").trim();
+      scrollTarget = String(body.scrollTarget ?? "").trim();
+      desktopVideoUrl = body.desktopVideoUrl;
+      mobileVideoUrl = body.mobileVideoUrl;
+      posterUrl = body.posterUrl;
+    } else {
+      const formData = await request.formData();
+      title = String(formData.get("title") ?? "").trim();
+      subtitle = String(formData.get("subtitle") ?? "").trim();
+      buttonLabel = String(formData.get("buttonLabel") ?? "").trim();
+      buttonHref = String(formData.get("buttonHref") ?? "").trim();
+      scrollTarget = String(formData.get("scrollTarget") ?? "").trim();
+      desktopVideo = formData.get("desktopVideo");
+      mobileVideo = formData.get("mobileVideo");
+      poster = formData.get("poster");
+    }
 
     if (!title || !subtitle || !buttonLabel || !buttonHref || !scrollTarget) {
       return NextResponse.json(
@@ -104,28 +131,49 @@ export async function PUT(request: Request) {
       scroll_target: scrollTarget,
     };
 
-    if (desktopVideo instanceof File) {
-      // Delete old desktop video if exists
-      if (current?.desktop_video_url) {
-        await deleteStorageFile(current.desktop_video_url, STORAGE_BUCKETS.HERO);
+    if (isJson) {
+      if (desktopVideoUrl) {
+        if (current?.desktop_video_url) {
+          await deleteStorageFile(current.desktop_video_url, STORAGE_BUCKETS.HERO);
+        }
+        payload.desktop_video_url = desktopVideoUrl;
       }
-      payload.desktop_video_url = await uploadFile(desktopVideo, "desktop-video");
-    }
+      if (mobileVideoUrl) {
+        if (current?.mobile_video_url) {
+          await deleteStorageFile(current.mobile_video_url, STORAGE_BUCKETS.HERO);
+        }
+        payload.mobile_video_url = mobileVideoUrl;
+      }
+      if (posterUrl) {
+        if (current?.poster_url) {
+          await deleteStorageFile(current.poster_url, STORAGE_BUCKETS.HERO);
+        }
+        payload.poster_url = posterUrl;
+      }
+    } else {
+      if (desktopVideo instanceof File) {
+        // Delete old desktop video if exists
+        if (current?.desktop_video_url) {
+          await deleteStorageFile(current.desktop_video_url, STORAGE_BUCKETS.HERO);
+        }
+        payload.desktop_video_url = await uploadFile(desktopVideo, "desktop-video");
+      }
 
-    if (mobileVideo instanceof File) {
-      // Delete old mobile video if exists
-      if (current?.mobile_video_url) {
-        await deleteStorageFile(current.mobile_video_url, STORAGE_BUCKETS.HERO);
+      if (mobileVideo instanceof File) {
+        // Delete old mobile video if exists
+        if (current?.mobile_video_url) {
+          await deleteStorageFile(current.mobile_video_url, STORAGE_BUCKETS.HERO);
+        }
+        payload.mobile_video_url = await uploadFile(mobileVideo, "mobile-video");
       }
-      payload.mobile_video_url = await uploadFile(mobileVideo, "mobile-video");
-    }
 
-    if (poster instanceof File) {
-      // Delete old poster if exists
-      if (current?.poster_url) {
-        await deleteStorageFile(current.poster_url, STORAGE_BUCKETS.HERO);
+      if (poster instanceof File) {
+        // Delete old poster if exists
+        if (current?.poster_url) {
+          await deleteStorageFile(current.poster_url, STORAGE_BUCKETS.HERO);
+        }
+        payload.poster_url = await uploadFile(poster, "poster");
       }
-      payload.poster_url = await uploadFile(poster, "poster");
     }
 
     if (!current && (!payload.desktop_video_url || !payload.mobile_video_url || !payload.poster_url)) {

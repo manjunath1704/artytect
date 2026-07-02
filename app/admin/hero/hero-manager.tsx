@@ -119,6 +119,26 @@ export default function HeroManager({
     return () => subscription.unsubscribe();
   }, [initialUserEmail, router]);
 
+  const uploadClientFile = async (file: File, prefix: string) => {
+    const timestamp = Date.now();
+    const extension = file.name.includes(".") ? file.name.split(".").pop() : "jpg";
+    const filePath = `${prefix}-${timestamp}.${extension}`;
+
+    const { error } = await supabase.storage
+      .from("hero-media")
+      .upload(filePath, file, {
+        contentType: file.type || "application/octet-stream",
+        upsert: false,
+      });
+
+    if (error) {
+      throw new Error(`Failed to upload ${prefix}: ${error.message}`);
+    }
+
+    const { data } = supabase.storage.from("hero-media").getPublicUrl(filePath);
+    return data.publicUrl;
+  };
+
   const saveHero = async () => {
     if (!title.trim() || !subtitle.trim() || !buttonLabel.trim() || !buttonHref.trim() || !scrollTarget.trim()) {
       toast.error("Please fill all required hero fields.");
@@ -129,22 +149,57 @@ export default function HeroManager({
     const toastId = toast.loading("Saving hero section...");
 
     try {
-      const formData = new FormData();
-      formData.append("title", title.trim());
-      formData.append("subtitle", subtitle.trim());
-      formData.append("buttonLabel", buttonLabel.trim());
-      formData.append("buttonHref", buttonHref.trim());
-      formData.append("scrollTarget", scrollTarget.trim());
-      if (desktopVideoFile) formData.append("desktopVideo", desktopVideoFile);
-      if (mobileVideoFile) formData.append("mobileVideo", mobileVideoFile);
-      if (posterFile) formData.append("poster", posterFile);
+      let desktopVideoUrl: string | undefined;
+      let mobileVideoUrl: string | undefined;
+      let posterUrl: string | undefined;
+
+      if (desktopVideoFile) {
+        toast.loading("Uploading desktop video...", { id: toastId });
+        desktopVideoUrl = await uploadClientFile(desktopVideoFile, "desktop-video");
+      }
+
+      if (mobileVideoFile) {
+        toast.loading("Uploading mobile video...", { id: toastId });
+        mobileVideoUrl = await uploadClientFile(mobileVideoFile, "mobile-video");
+      }
+
+      if (posterFile) {
+        toast.loading("Uploading poster image...", { id: toastId });
+        posterUrl = await uploadClientFile(posterFile, "poster");
+      }
+
+      toast.loading("Saving details to database...", { id: toastId });
+
+      const payload = {
+        title: title.trim(),
+        subtitle: subtitle.trim(),
+        buttonLabel: buttonLabel.trim(),
+        buttonHref: buttonHref.trim(),
+        scrollTarget: scrollTarget.trim(),
+        desktopVideoUrl,
+        mobileVideoUrl,
+        posterUrl,
+      };
 
       const response = await fetch("/api/admin/hero-section", {
         method: "PUT",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result?.error ?? "Unable to save hero section.");
+
+      let result;
+      const text = await response.text();
+      try {
+        result = text ? JSON.parse(text) : null;
+      } catch (e) {
+        // Not a JSON response (e.g. 413 plain text error or similar)
+      }
+
+      if (!response.ok) {
+        throw new Error(result?.error ?? text ?? "Unable to save hero section.");
+      }
 
       setCurrentHero({
         id: String(result.hero.id),
@@ -281,6 +336,7 @@ export default function HeroManager({
           <Button onClick={saveHero} disabled={saving} className="mt-8 h-12 rounded-full bg-[#1b1511] px-8 text-[#f8f2e8] hover:bg-[#2a211a]">
             {saving ? "Saving..." : "Save Hero"}
           </Button>
+          {/* <h1></h1> */}
         </section>
       </div>
     </div>
