@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Bold,
-  CalendarDays,
   Code2,
   Eye,
   EyeOff,
@@ -190,11 +189,6 @@ export default function ClassesManager({ initialUserEmail }: { initialUserEmail:
   const insertImage = () => {
     const url = window.prompt("Enter image URL");
     if (url) runEditorCommand("insertImage", url);
-  };
-
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) setImageFile(file);
   };
 
   const handleSubmit = async () => {

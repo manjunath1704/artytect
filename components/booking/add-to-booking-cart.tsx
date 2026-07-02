@@ -26,7 +26,7 @@ export function AddToBookingCart({ classData }: { classData: PotteryClass }) {
       addItem(classData, seats);
       toast.success(`Added ${seats} seat(s) to booking cart`);
       setSeats(1);
-    } catch (error) {
+    } catch {
       toast.error("Failed to add to cart");
     } finally {
       setIsAdding(false);

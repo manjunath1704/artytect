@@ -68,9 +68,9 @@ export async function PUT(request: Request) {
     let desktopVideoUrl: string | undefined;
     let mobileVideoUrl: string | undefined;
     let posterUrl: string | undefined;
-    let desktopVideo: any = null;
-    let mobileVideo: any = null;
-    let poster: any = null;
+    let desktopVideo: FormDataEntryValue | null = null;
+    let mobileVideo: FormDataEntryValue | null = null;
+    let poster: FormDataEntryValue | null = null;
 
     const contentType = request.headers.get("content-type") || "";
     const isJson = contentType.includes("application/json");

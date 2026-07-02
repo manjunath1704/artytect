@@ -193,7 +193,7 @@ export default function HeroManager({
       const text = await response.text();
       try {
         result = text ? JSON.parse(text) : null;
-      } catch (e) {
+      } catch {
         // Not a JSON response (e.g. 413 plain text error or similar)
       }
 

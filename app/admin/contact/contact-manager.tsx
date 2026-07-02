@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Plus, X } from "lucide-react";
@@ -192,10 +193,12 @@ console.log(form,'form')
                       
                       <div className="relative aspect-[1.35/1] overflow-hidden rounded-[32px] bg-[#e8dfd2] mb-3">
                         {form.hero_image_url ? (
-                          <img
+                          <Image
                             src={form.hero_image_url}
                             alt="Current hero image"
-                            className="w-full h-full object-cover"
+                            fill
+                            unoptimized
+                            className="object-cover"
                           />
                         ) : (
                           <div className="flex h-full items-center justify-center text-[#8a7765]">
@@ -208,10 +211,12 @@ console.log(form,'form')
                         <>
                           <p className="text-xs font-medium text-[#352a21] mb-2">New Image Preview</p>
                           <div className="relative aspect-[1.35/1] overflow-hidden rounded-[32px] bg-[#e8dfd2] mb-3">
-                            <img
+                            <Image
                               src={URL.createObjectURL(imageFile)}
                               alt="New hero image preview"
-                              className="w-full h-full object-cover"
+                              fill
+                              unoptimized
+                              className="object-cover"
                             />
                           </div>
                           <p className="text-xs text-[#8a7765] mb-4">This new image will replace the current one when saved</p>
@@ -300,10 +305,12 @@ console.log(form,'form')
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8a7765] mb-4">Hero Image Preview</p>
                 <div className="relative aspect-[1.35/1] overflow-hidden rounded-[32px] bg-[#e8dfd2]">
                   {form.hero_image_url ? (
-                    <img
+                    <Image
                       src={form.hero_image_url}
                       alt="Hero image preview"
-                      className="w-full h-full object-cover"
+                      fill
+                      unoptimized
+                      className="object-cover"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-[#8a7765]">

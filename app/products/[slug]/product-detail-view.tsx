@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { Check, Minus, PackageCheck, Plus, Ruler, ShieldCheck } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import AddToCartButton from "@/components/cart/add-to-cart-button";
-import type { Product, ProductVariant } from "@/lib/products";
+import type { Product } from "@/lib/products";
 import { formatPrice } from "@/lib/whatsapp";
 
 type ProductDetailViewProps = {
